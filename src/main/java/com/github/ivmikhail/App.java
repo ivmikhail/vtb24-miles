@@ -87,7 +87,7 @@ public final class App {
 
     private static void printHelpAndExit(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java vtb24-miles.jar -s statement.csv", options);
+        formatter.printHelp("java -jar vtb24-miles.jar -s statement.csv", options);
         System.exit(1);
     }
 
