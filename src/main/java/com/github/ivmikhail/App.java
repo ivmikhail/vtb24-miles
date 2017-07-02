@@ -136,7 +136,6 @@ public final class App {
         options.addOption(Option
                 .builder(OPT_HELP)
                 .desc("print this help message and exit")
-                .numberOfArgs(1)
                 .required(false)
                 .build());
 
