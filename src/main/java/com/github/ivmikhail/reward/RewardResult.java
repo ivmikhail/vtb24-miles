@@ -109,15 +109,16 @@ public class RewardResult {
     }
 
     public BigDecimal getCashbackInRURByTheory() {
-        return totalWithdrawRUR.negate().multiply(cashbackPercentInTheory);
+        return totalWithdrawRUR
+                .negate()
+                .multiply(cashbackPercentInTheory)
+                .divide(HUNDRED, SCALE, ROUNDING_MODE);
     }
 
     public BigDecimal getCashbackInRURByFact() {
         if (totalRewardMiles.compareTo(BigDecimal.ZERO) == 0) return null;
 
-        return totalRewardMiles
-                .multiply(oneMileInRUR)
-                .divide(HUNDRED, SCALE, ROUNDING_MODE);
+        return totalRewardMiles.multiply(oneMileInRUR);
     }
 
     public BigDecimal getOneMileInRUR() {
@@ -133,7 +134,9 @@ public class RewardResult {
         if (cashbackInRURByFact == null || cashbackInRURByFact.compareTo(BigDecimal.ZERO) == 0) {
             return null;
         } else {
-            return cashbackInRURByFact.multiply(HUNDRED).divide(totalWithdrawRUR.negate(), SCALE, ROUNDING_MODE);
+            return cashbackInRURByFact
+                    .multiply(HUNDRED)
+                    .divide(totalWithdrawRUR.negate(), SCALE, ROUNDING_MODE);
         }
     }
 

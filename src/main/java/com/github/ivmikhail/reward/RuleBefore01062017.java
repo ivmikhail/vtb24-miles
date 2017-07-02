@@ -20,7 +20,7 @@ public class RuleBefore01062017 implements MilesRewardRule {
     private static final BigDecimal TWO = new BigDecimal("2");
     private static final String RUR = "RUR";
     private static final String COMMA = ",";
-    private static final BigDecimal CASHBACK_PERCENT_BY_THEORY = new BigDecimal("0.038");
+    private static final BigDecimal CASHBACK_PERCENT_BY_THEORY = new BigDecimal("3.8");
     private static final BigDecimal ONE_MILE_IN_RUR = new BigDecimal("0.33");
 
 
