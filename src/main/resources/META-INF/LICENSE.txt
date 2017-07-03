@@ -1,4 +1,4 @@
-* Copyright (c) 2017, Mikhail Ivanov <com.github.ivmikhail at gmail com>
+* Copyright (c) 2017, Mikhail Ivanov <ivmikhail at gmail com>
 *
 * Разрешается повторное распространение и использование как в виде исходного
 * кода, так и в двоичной форме, с изменениями или без, при соблюдении
