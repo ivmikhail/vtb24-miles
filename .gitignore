@@ -1,6 +1,10 @@
 /.idea
 /target
 /vtb24-miles.iml
+
+#maven-release-plguin
 /release.properties
+/pom.xml.releaseBackup
+/dependency-reduced-pom.xml
 
 /statement.csv
