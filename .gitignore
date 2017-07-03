@@ -1,5 +1,6 @@
 /.idea
 /target
 /vtb24-miles.iml
+/release.properties
 
 /statement.csv
