@@ -1,7 +1,6 @@
 package com.github.ivmikhail.reward;
 
 import com.github.ivmikhail.Transaction;
-import org.omg.CORBA.TRANSACTION_MODE;
 
 import java.math.BigDecimal;
 import java.util.*;
