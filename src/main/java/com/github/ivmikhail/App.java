@@ -3,7 +3,7 @@ package com.github.ivmikhail;
 
 import com.github.ivmikhail.reward.MilesRewardRule;
 import com.github.ivmikhail.reward.RewardResult;
-import com.github.ivmikhail.reward.RuleBefore01062017;
+import com.github.ivmikhail.reward.RuleAfter01062017;
 import com.github.ivmikhail.writer.AbstractWriter;
 import com.github.ivmikhail.writer.PlaintTextWriter;
 import org.apache.commons.cli.*;
@@ -45,7 +45,7 @@ public final class App {
 
         List<Transaction> transactions = CSVLoader.load(settings);
 
-        MilesRewardRule rule = new RuleBefore01062017(settings.getProperties());
+        MilesRewardRule rule = new RuleAfter01062017(settings.getProperties());
 
         RewardResult result = rule.process(transactions);
 

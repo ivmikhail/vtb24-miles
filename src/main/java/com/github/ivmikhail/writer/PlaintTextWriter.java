@@ -24,17 +24,24 @@ public class PlaintTextWriter extends AbstractWriter {
     @Override
     protected String format(RewardResult rewardResult) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Операции с кэшбеком");
+        sb.append("Операции с кэшбеком 4%");
         sb.append(LINE_SEPARATOR);
         sb.append(LINE_SEPARATOR);
         sb.append(toString(rewardResult.getNormal(), true));
 
         sb.append(LINE_SEPARATOR);
         sb.append(LINE_SEPARATOR);
-        sb.append("Операции с двойным кэшбеком");
+        sb.append("Операции с кешбэком 5%");
         sb.append(LINE_SEPARATOR);
         sb.append(LINE_SEPARATOR);
-        sb.append(toString(rewardResult.getX2()));
+        sb.append(toString(rewardResult.getForeign()));
+
+//        sb.append(LINE_SEPARATOR);
+//        sb.append(LINE_SEPARATOR);
+//        sb.append("Операции с двойным кэшбеком");
+//        sb.append(LINE_SEPARATOR);
+//        sb.append(LINE_SEPARATOR);
+//        sb.append(toString(rewardResult.getX2()));
 
         sb.append(LINE_SEPARATOR);
         sb.append(LINE_SEPARATOR);
