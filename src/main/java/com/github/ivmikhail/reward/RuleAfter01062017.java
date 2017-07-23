@@ -56,11 +56,9 @@ public class RuleAfter01062017 extends MilesRewardRule {
                     .negate()
                     .setScale(0, BigDecimal.ROUND_DOWN);//убираем копейки
 
-            amount = amount.setScale(-2, BigDecimal.ROUND_DOWN); //округление до ста, вниз
-
+            amount = amount.setScale(-2, BigDecimal.ROUND_DOWN); //4% каждые 100 руб, округление: 199 -> 100, 201 -> 200  и т.д
             miles = amount.multiply(cashback);
         }
-
 
         TransactionRewardResult result = new TransactionRewardResult();
         result.setMiles(miles);
