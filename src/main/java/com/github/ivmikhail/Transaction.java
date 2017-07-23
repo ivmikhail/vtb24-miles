@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
  */
 public class Transaction {
 
+    public enum Type {REFILL, WITHDRAW}
+
     private String cardNumberMasked;
     private LocalDateTime dateTime;
     private LocalDate processedDate;

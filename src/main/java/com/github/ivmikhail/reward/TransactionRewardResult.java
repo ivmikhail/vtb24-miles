@@ -8,18 +8,23 @@ import java.math.BigDecimal;
  * Created by ivmikhail on 01/07/2017.
  */
 public class TransactionRewardResult {
+
     private BigDecimal miles;
-    private boolean withdraw;
     private boolean x2;
     private boolean ignore;
     private Transaction transaction;
+    private Transaction.Type type;
 
     public boolean isWithdraw() {
-        return withdraw;
+        return Transaction.Type.WITHDRAW == type;
     }
 
-    public void setWithdraw(boolean withdraw) {
-        this.withdraw = withdraw;
+    public Transaction.Type getType() {
+        return type;
+    }
+
+    public void setType(Transaction.Type type) {
+        this.type = type;
     }
 
     public boolean isIgnore() {
@@ -58,7 +63,7 @@ public class TransactionRewardResult {
     public String toString() {
         return "TransactionRewardResult{" +
                 "miles=" + miles +
-                ", withdraw=" + withdraw +
+                ", type=" + type +
                 ", x2=" + x2 +
                 ", ignore=" + ignore +
                 ", transaction=" + transaction +
