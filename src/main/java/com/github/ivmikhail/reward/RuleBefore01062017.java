@@ -13,31 +13,20 @@ import java.util.*;
  * <p>
  * Created by ivmikhail on 01/07/2017.
  */
-public class RuleBefore01062017 implements MilesRewardRule {
+@Deprecated
+public class RuleBefore01062017 extends MilesRewardRule {
 
     private static final BigDecimal FOUR_MILE_PRICE_RUR = new BigDecimal("35");
     private static final BigDecimal FOUR = new BigDecimal("4");
     private static final BigDecimal TWO = new BigDecimal("2");
-    private static final String RUR = "RUR";
-    private static final String COMMA = ",";
     private static final BigDecimal CASHBACK_PERCENT_BY_THEORY = new BigDecimal("3.8");
     private static final BigDecimal ONE_MILE_IN_RUR = new BigDecimal("0.33");
 
-
-    protected Set<String> ignoreWords;
-    protected Set<String> x2MilesWords;
+    private Set<String> x2MilesWords;
 
     public RuleBefore01062017(Properties properties) {
-        x2MilesWords = new HashSet<>();
-        ignoreWords = new HashSet<>();
-
-        if (properties != null) {
-            String[] x2Arr = properties.getProperty(getClass().getSimpleName() + ".description.x2Miles").split(COMMA);
-            String[] ignoreArr = properties.getProperty(getClass().getSimpleName() + ".description.ignore").split(COMMA);
-
-            x2MilesWords.addAll(Arrays.asList(x2Arr));
-            ignoreWords.addAll(Arrays.asList(ignoreArr));
-        }
+        super(properties);
+        x2MilesWords = getProperty(getClass().getSimpleName() + ".description.x2Miles", properties);
     }
 
     @Override
@@ -63,13 +52,13 @@ public class RuleBefore01062017 implements MilesRewardRule {
 
     @Override
     public TransactionRewardResult process(final Transaction transaction) {
-        boolean isWithdraw = transaction.getAmountInAccountCurrency().compareTo(BigDecimal.ZERO) < 0;
-        boolean x2 = !transaction.getCurrencyCode().equals(RUR);//покупки за рубежом
+        Transaction.Type type = determineType(transaction);
+        boolean x2 = isForeign(transaction);//покупки за рубежом
         boolean ignore = isIgnore(transaction);
 
         BigDecimal miles = BigDecimal.ZERO;
 
-        if (isWithdraw && !ignore) {
+        if (type == Transaction.Type.WITHDRAW && !ignore) {
             miles = transaction.getAmountInAccountCurrency()
                     .negate()
                     .divide(FOUR_MILE_PRICE_RUR, 0, BigDecimal.ROUND_DOWN)
@@ -90,15 +79,8 @@ public class RuleBefore01062017 implements MilesRewardRule {
         result.setX2(x2);
         result.setTransaction(transaction);
         result.setIgnore(ignore);
-        result.setWithdraw(isWithdraw);
+        result.setType(type);
 
         return result;
-    }
-
-    private boolean isIgnore(Transaction transaction) {
-        for (String word : ignoreWords) {
-            if (transaction.getDescription().contains(word)) return true;
-        }
-        return false;
     }
 }

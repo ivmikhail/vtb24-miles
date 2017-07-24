@@ -1,5 +1,7 @@
 package com.github.ivmikhail.reward;
 
+import com.github.ivmikhail.Transaction;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -12,7 +14,6 @@ public class RewardResult {
 
     private static final RoundingMode ROUNDING_MODE = RoundingMode.DOWN;
     private static int SCALE = 4;
-    private static final BigDecimal HUNDRED = new BigDecimal("100");
 
     private BigDecimal totalRewardMiles = BigDecimal.ZERO;
     private BigDecimal totalRefillRUR = BigDecimal.ZERO;
@@ -25,12 +26,22 @@ public class RewardResult {
     private List<TransactionRewardResult> x2;
     private List<TransactionRewardResult> refill;
     private List<TransactionRewardResult> normal;
+    private List<TransactionRewardResult> foreign;
 
     public RewardResult() {
         this.ignored = new ArrayList<>();
         this.x2 = new ArrayList<>();
         this.refill = new ArrayList<>();
         this.normal = new ArrayList<>();
+        this.foreign = new ArrayList<>();
+    }
+
+    public List<TransactionRewardResult> getForeign() {
+        return foreign;
+    }
+
+    public void setForeign(List<TransactionRewardResult> foreign) {
+        this.foreign = foreign;
     }
 
     public List<TransactionRewardResult> getIgnored() {
@@ -41,10 +52,12 @@ public class RewardResult {
         this.ignored = ignored;
     }
 
+    @Deprecated
     public List<TransactionRewardResult> getX2() {
         return x2;
     }
 
+    @Deprecated
     public void setX2(List<TransactionRewardResult> x2) {
         this.x2 = x2;
     }
@@ -74,7 +87,7 @@ public class RewardResult {
     }
 
     public void addAsRefill(TransactionRewardResult trr) {
-        processRefill(trr);
+        process(trr);
         refill.add(trr);
     }
 
@@ -82,14 +95,20 @@ public class RewardResult {
         ignored.add(trr);
     }
 
+    @Deprecated
     public void addAsX2(TransactionRewardResult trr) {
-        processWithdraw(trr);
+        process(trr);
         x2.add(trr);
     }
 
     public void addAsNormal(TransactionRewardResult trr) {
-        processWithdraw(trr);
+        process(trr);
         normal.add(trr);
+    }
+
+    public void addAsForeign(TransactionRewardResult trr) {
+        process(trr);
+        foreign.add(trr);
     }
 
     public BigDecimal getTotalRefillRUR() {
@@ -111,8 +130,7 @@ public class RewardResult {
     public BigDecimal getCashbackInRURByTheory() {
         return totalWithdrawRUR
                 .negate()
-                .multiply(cashbackPercentInTheory)
-                .divide(HUNDRED, SCALE, ROUNDING_MODE);
+                .multiply(cashbackPercentInTheory);
     }
 
     public BigDecimal getCashbackInRURByFact() {
@@ -135,23 +153,18 @@ public class RewardResult {
             return null;
         } else {
             return cashbackInRURByFact
-                    .multiply(HUNDRED)
                     .divide(totalWithdrawRUR.negate(), SCALE, ROUNDING_MODE);
         }
     }
 
-    private void processWithdraw(TransactionRewardResult trr) {
-        if (!trr.isWithdraw()) new IllegalArgumentException("Transaction cannot be refill");
+    private void process(TransactionRewardResult trr) {
+        if (trr.getType() == Transaction.Type.WITHDRAW) {
+            totalWithdrawRUR = totalWithdrawRUR.add(trr.getTransaction().getAmountInAccountCurrency());
+            totalRewardMiles = totalRewardMiles.add(trr.getMiles());
 
-        totalWithdrawRUR = totalWithdrawRUR.add(trr.getTransaction().getAmountInAccountCurrency());
-        totalRewardMiles = totalRewardMiles.add(trr.getMiles());
-
-    }
-
-    private void processRefill(TransactionRewardResult trr) {
-        if (trr.isWithdraw()) new IllegalArgumentException("Transaction cannot be withdraw");
-
-        totalRefillRUR = totalRefillRUR.add(trr.getTransaction().getAmountInAccountCurrency());
+        } else if (trr.getType() == Transaction.Type.REFILL) {
+            totalRefillRUR = totalRefillRUR.add(trr.getTransaction().getAmountInAccountCurrency());
+        }
     }
 
     @Override
@@ -166,6 +179,7 @@ public class RewardResult {
                 ", x2=" + x2 +
                 ", refill=" + refill +
                 ", normal=" + normal +
+                ", foreign=" + foreign +
                 '}';
     }
 }

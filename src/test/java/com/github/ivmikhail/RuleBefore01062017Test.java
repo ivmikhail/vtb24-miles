@@ -25,7 +25,7 @@ public class RuleBefore01062017Test {
     @Before
     public void setUp() {
         Properties properties = new Properties();
-        properties.setProperty("RuleBefore01062017.description.ignore", "ignore, another ignore");
+        properties.setProperty("MilesRewardRule.description.ignore", "ignore, another ignore");
         properties.setProperty("RuleBefore01062017.description.x2Miles", "x2,x3");
 
         rule = new RuleBefore01062017(properties);

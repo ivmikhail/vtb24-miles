@@ -3,7 +3,7 @@ package com.github.ivmikhail;
 
 import com.github.ivmikhail.reward.MilesRewardRule;
 import com.github.ivmikhail.reward.RewardResult;
-import com.github.ivmikhail.reward.RuleBefore01062017;
+import com.github.ivmikhail.reward.RuleAfter01062017;
 import com.github.ivmikhail.writer.AbstractWriter;
 import com.github.ivmikhail.writer.PlaintTextWriter;
 import org.apache.commons.cli.*;
@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +33,7 @@ public final class App {
 
     private App() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException, ParseException, java.text.ParseException {
 
         Settings settings = null;
         try {
@@ -45,7 +44,7 @@ public final class App {
 
         List<Transaction> transactions = CSVLoader.load(settings);
 
-        MilesRewardRule rule = new RuleBefore01062017(settings.getProperties());
+        MilesRewardRule rule = new RuleAfter01062017(settings.getProperties());
 
         RewardResult result = rule.process(transactions);
 
@@ -53,7 +52,7 @@ public final class App {
         writer.write(result);
     }
 
-    private static Settings parse(String[] args) throws org.apache.commons.cli.ParseException, IOException {
+    private static Settings parse(String[] args) throws ParseException, IOException {
         CommandLineParser parser = new DefaultParser();
         CommandLine cli = parser.parse(OPTS, args);
 
