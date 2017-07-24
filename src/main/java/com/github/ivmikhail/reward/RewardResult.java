@@ -14,7 +14,6 @@ public class RewardResult {
 
     private static final RoundingMode ROUNDING_MODE = RoundingMode.DOWN;
     private static int SCALE = 4;
-    private static final BigDecimal HUNDRED = new BigDecimal("100");
 
     private BigDecimal totalRewardMiles = BigDecimal.ZERO;
     private BigDecimal totalRefillRUR = BigDecimal.ZERO;
