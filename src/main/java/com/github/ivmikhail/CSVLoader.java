@@ -14,7 +14,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.github.ivmikhail.CSVLoader.Column.*;
 
@@ -22,10 +24,14 @@ import static com.github.ivmikhail.CSVLoader.Column.*;
  * Created by ivmikhail on 01/07/2017.
  */
 public class CSVLoader {
-    private static final Character COLUMN_SEPARATOR = ';';
+    private static final Logger LOG =  Logger.getLogger(CSVLoader.class.getName());
+
+    private static final Character DELIMITER = ';';
     private static final String CHARSET_NAME = "windows-1251";
     private static final long SKIP_FIRST_ROWS = 12;
-    private static final CSVFormat CSV_FORMAT = CSVFormat.newFormat(COLUMN_SEPARATOR);
+    private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT
+            .withDelimiter(DELIMITER)
+            .withQuote('"');
 
     private static final DateTimeFormatter CSV_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter CSV_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -56,23 +62,44 @@ public class CSVLoader {
     }
 
     public static List<Transaction> load(Settings settings) throws IOException, ParseException {
+        List<Transaction> result = new ArrayList<>();
+
+        LocalDate min = settings.getMinDate();
+        LocalDate max = settings.getMaxDate();
+        for (String path : settings.getPathsToStatement()) {
+            result.addAll(load(path, min, max));
+        }
+        result.sort(
+                Comparator
+                        .comparing(Transaction::getProcessedDate)
+                        .thenComparing(Transaction::getDateTime)
+                        .thenComparing(Transaction::getDescription)
+        );
+        return result;
+    }
+
+    private static List<Transaction> load(String path, LocalDate min, LocalDate max) throws IOException, ParseException {
 
         List<Transaction> transactionList = new ArrayList<>();
-
         try (
-                Reader reader = new InputStreamReader(new FileInputStream(settings.getStatementFile()), CHARSET_NAME);
-                CSVParser parser = new CSVParser(reader, CSV_FORMAT);
+                Reader reader = new InputStreamReader(new FileInputStream(path), CHARSET_NAME);
+                CSVParser parser = new CSVParser(reader, CSV_FORMAT)
         ) {
-            LocalDate min = settings.getMinDate();
-            LocalDate max = settings.getMaxDate();
-
             for (CSVRecord r : parser) {
                 if (parser.getCurrentLineNumber() <= SKIP_FIRST_ROWS) continue;
-                if (r.size() != Column.values().length) continue;
+                if (r.size() != Column.values().length) {
+                    LOG.warning("Skip row, expected size " + Column.values().length
+                            + ", actual size " + r.size()
+                            + ", row "+ r.toString());
+                    continue;
+                }
 
                 Transaction t = mapRecord(r);
                 LocalDate date = t.getProcessedDate();
-                if (date == null) continue; //transaction not processed by Bank, skip it
+                if (date == null) {
+                    LOG.info("Transaction not processed by Bank, skip it " + r.toString());
+                    continue;
+                }
                 boolean isInRange = (date.isEqual(min) || date.isAfter(min)) && (date.isEqual(max) || date.isBefore(max));
 
                 if (isInRange) transactionList.add(t);

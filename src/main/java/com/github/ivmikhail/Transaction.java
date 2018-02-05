@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  */
 public class Transaction {
 
-    public enum Type {REFILL, WITHDRAW}
+    public enum Type {REFILL, WITHDRAW_NORMAL, WITHDRAW_FOREIGN, IGNORE}
 
     private String cardNumberMasked;
     private LocalDateTime dateTime;

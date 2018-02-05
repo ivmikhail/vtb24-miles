@@ -8,10 +8,18 @@ import java.util.Properties;
  * Created by ivmikhail on 02/07/2017.
  */
 public class Settings {
-    private File statementFile;
+    private String[] pathsToStatement;
     private LocalDate minDate;
     private LocalDate maxDate;
     private Properties properties;
+
+    public String[] getPathsToStatement() {
+        return pathsToStatement;
+    }
+
+    public void setPathsToStatement(String[] pathsToStatement) {
+        this.pathsToStatement = pathsToStatement;
+    }
 
     public Properties getProperties() {
         return properties;
@@ -19,14 +27,6 @@ public class Settings {
 
     public void setProperties(Properties properties) {
         this.properties = properties;
-    }
-
-    public File getStatementFile() {
-        return statementFile;
-    }
-
-    public void setStatementFile(File statementFile) {
-        this.statementFile = statementFile;
     }
 
     public LocalDate getMinDate() {
@@ -43,15 +43,5 @@ public class Settings {
 
     public void setMaxDate(LocalDate maxDate) {
         this.maxDate = maxDate;
-    }
-
-    @Override
-    public String toString() {
-        return "Settings{" +
-                "statementFile=" + statementFile +
-                ", minDate=" + minDate +
-                ", maxDate=" + maxDate +
-                ", properties=" + properties +
-                '}';
     }
 }

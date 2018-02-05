@@ -10,49 +10,15 @@ import java.math.BigDecimal;
 public class TransactionRewardResult {
 
     private BigDecimal miles;
-    @Deprecated
-    private boolean x2;
-    private boolean ignore;
-    private boolean foreign;
     private Transaction transaction;
-    private Transaction.Type type;
+    private Transaction.Type transactionType;
 
-    public boolean isForeign() {
-        return foreign;
+    public Transaction.Type getTransactionType() {
+        return transactionType;
     }
 
-    public void setForeign(boolean foreign) {
-        this.foreign = foreign;
-    }
-
-    public boolean isWithdraw() {
-        return Transaction.Type.WITHDRAW == type;
-    }
-
-    public Transaction.Type getType() {
-        return type;
-    }
-
-    public void setType(Transaction.Type type) {
-        this.type = type;
-    }
-
-    public boolean isIgnore() {
-        return ignore;
-    }
-
-    public void setIgnore(boolean ignore) {
-        this.ignore = ignore;
-    }
-
-    @Deprecated
-    public boolean isX2() {
-        return x2;
-    }
-
-    @Deprecated
-    public void setX2(boolean x2) {
-        this.x2 = x2;
+    public void setTransactionType(Transaction.Type transactionType) {
+        this.transactionType = transactionType;
     }
 
     public Transaction getTransaction() {
@@ -71,15 +37,4 @@ public class TransactionRewardResult {
         this.miles = miles;
     }
 
-    @Override
-    public String toString() {
-        return "TransactionRewardResult{" +
-                "miles=" + miles +
-                ", type=" + type +
-                ", x2=" + x2 +
-                ", ignore=" + ignore +
-                ", foreign=" + foreign +
-                ", transaction=" + transaction +
-                '}';
-    }
 }

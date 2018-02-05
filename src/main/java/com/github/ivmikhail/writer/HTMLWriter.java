@@ -1,5 +1,6 @@
 package com.github.ivmikhail.writer;
 
+import com.github.ivmikhail.Settings;
 import com.github.ivmikhail.reward.RewardResult;
 
 import java.io.OutputStream;
@@ -14,7 +15,7 @@ public class HTMLWriter extends AbstractWriter {
     }
 
     @Override
-    public String format(RewardResult rewardResult) {
+    public String format(Settings settings, RewardResult rewardResult) {
         throw new UnsupportedOperationException("Method not implemented");
     }
 }

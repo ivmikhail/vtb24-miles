@@ -1,14 +1,11 @@
 package com.github.ivmikhail;
 
-
 import com.github.ivmikhail.reward.MilesRewardRule;
 import com.github.ivmikhail.reward.RewardResult;
-import com.github.ivmikhail.reward.RuleAfter01062017;
 import com.github.ivmikhail.writer.AbstractWriter;
 import com.github.ivmikhail.writer.PlaintTextWriter;
 import org.apache.commons.cli.*;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,9 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
 
-
 public final class App {
-
 
     private static final String PROPERTIES_CLASSPATH = "/app.properties";
     private static final DateTimeFormatter DATEFORMAT_ARG = DateTimeFormatter.ofPattern("MMyyyy");
@@ -33,30 +28,30 @@ public final class App {
 
     private App() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws IOException, ParseException, java.text.ParseException {
+    public static void main(String[] args) throws IOException, java.text.ParseException {
 
         Settings settings = null;
         try {
             settings = parse(args);
         } catch (org.apache.commons.cli.ParseException e) {
-            printHelpAndExit(OPTS);
+            printHelp(OPTS);
+            System.exit(1);
         }
 
         List<Transaction> transactions = CSVLoader.load(settings);
 
-        MilesRewardRule rule = new RuleAfter01062017(settings.getProperties());
-
+        MilesRewardRule rule = new MilesRewardRule(settings.getProperties());
         RewardResult result = rule.process(transactions);
 
         AbstractWriter writer = new PlaintTextWriter(System.out);
-        writer.write(result);
+        writer.write(settings, result);
     }
 
     private static Settings parse(String[] args) throws ParseException, IOException {
         CommandLineParser parser = new DefaultParser();
         CommandLine cli = parser.parse(OPTS, args);
 
-        File statementsFile = new File(cli.getOptionValue(OPT_STATEMENT_PATH));
+        String[] paths = cli.getOptionValues(OPT_STATEMENT_PATH);
         String propertiesPath = cli.getOptionValue(OPT_PROPS_PATH, null);
         Properties properties = loadProperties(propertiesPath);
         LocalDate minDate;
@@ -76,7 +71,7 @@ public final class App {
         }
 
         Settings settings = new Settings();
-        settings.setStatementFile(statementsFile);
+        settings.setPathsToStatement(paths);
         settings.setMinDate(minDate);
         settings.setMaxDate(maxDate);
         settings.setProperties(properties);
@@ -84,10 +79,9 @@ public final class App {
         return settings;
     }
 
-    private static void printHelpAndExit(Options options) {
+    private static void printHelp(Options options) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("java -jar vtb24-miles.jar -s statement.csv", options);
-        System.exit(1);
     }
 
     private static Properties loadProperties(String path) throws IOException {
@@ -113,7 +107,8 @@ public final class App {
 
         options.addOption(Option
                 .builder(OPT_STATEMENT_PATH)
-                .desc("path to statement.csv downloaded from http://telebank.ru")
+                .desc("path to statement.csv downloaded from http://telebank.ru." +
+                 " You can specify few paths like -s statement1.csv -s statement.csv. In this case transactions will be merged")
                 .numberOfArgs(1)
                 .required(true)
                 .build());
