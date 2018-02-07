@@ -15,6 +15,7 @@ import java.util.Map;
 public class PlaintTextWriter extends AbstractWriter {
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static final String SPACE4 = "    ";
+
     private static final int PAD_ACC = 10;
     private static final int PAD_DATE = 10;
     private static final int PAD_DESCRIPTION = 30;
@@ -30,10 +31,10 @@ public class PlaintTextWriter extends AbstractWriter {
     protected String format(Settings settings, RewardResult rewardResult) {
         Map<Transaction.Type, List<TransactionRewardResult>> transactionsMap = rewardResult.getTransactionsMap();
 
-        return toString("Операции с кэшбеком 4%", transactionsMap.get(Transaction.Type.WITHDRAW_NORMAL)) +
-                toString("Операции с кешбэком 5%", transactionsMap.get(Transaction.Type.WITHDRAW_FOREIGN)) +
-                toString("Пополнения", transactionsMap.get(Transaction.Type.REFILL)) +
-                toString("Операции, кэшбек за которые не положен", transactionsMap.get(Transaction.Type.IGNORE)) +
+        return printTransactions("Операции с кэшбеком 4%", transactionsMap.get(Transaction.Type.WITHDRAW_NORMAL)) +
+                printTransactions("Операции с кешбэком 5%", transactionsMap.get(Transaction.Type.WITHDRAW_FOREIGN)) +
+                printTransactions("Пополнения", transactionsMap.get(Transaction.Type.REFILL)) +
+                printTransactions("Операции, кэшбек за которые не положен", transactionsMap.get(Transaction.Type.IGNORE)) +
                 "Период c " + settings.getMinDate() + " по " + settings.getMaxDate() +
                 LINE_SEPARATOR +
                 LINE_SEPARATOR +
@@ -43,7 +44,7 @@ public class PlaintTextWriter extends AbstractWriter {
                 "Эффективный кэшбек %    " + rewardResult.getEffectiveCashback();
     }
 
-    private String toString(String title, List<TransactionRewardResult> transactionsResults) {
+    private String printTransactions(String title, List<TransactionRewardResult> transactionsResults) {
         StringBuilder sb = new StringBuilder();
         sb.append(title);
         sb.append(LINE_SEPARATOR);
