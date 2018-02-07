@@ -24,7 +24,7 @@ import static com.github.ivmikhail.CSVLoader.Column.*;
  * Created by ivmikhail on 01/07/2017.
  */
 public class CSVLoader {
-    private static final Logger LOG =  Logger.getLogger(CSVLoader.class.getName());
+    private static final Logger LOG = Logger.getLogger(CSVLoader.class.getName());
 
     private static final Character DELIMITER = ';';
     private static final String CHARSET_NAME = "windows-1251";
@@ -88,9 +88,7 @@ public class CSVLoader {
             for (CSVRecord r : parser) {
                 if (parser.getCurrentLineNumber() <= SKIP_FIRST_ROWS) continue;
                 if (r.size() != Column.values().length) {
-                    LOG.warning("Skip row, expected size " + Column.values().length
-                            + ", actual size " + r.size()
-                            + ", row "+ r.toString());
+                    LOG.warning("Skip row, expected size " + Column.values().length + ", row " + r.toString());
                     continue;
                 }
 
