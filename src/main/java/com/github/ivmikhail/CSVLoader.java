@@ -23,7 +23,7 @@ import static com.github.ivmikhail.CSVLoader.Column.*;
 /**
  * Created by ivmikhail on 01/07/2017.
  */
-public class CSVLoader {
+public final class CSVLoader {
     private static final Logger LOG = Logger.getLogger(CSVLoader.class.getName());
 
     private static final Character DELIMITER = ';';
@@ -60,6 +60,8 @@ public class CSVLoader {
         DESCRIPTION,
         STATUS
     }
+
+    private CSVLoader() { /* static helper class */}
 
     public static List<Transaction> load(Settings settings) throws IOException, ParseException {
         List<Transaction> result = new ArrayList<>();
