@@ -3,12 +3,12 @@
 <#macro transactions transactionsList>
 СЧЕТ                ДАТА ОБР     ОПИСАНИЕ                   СУММА       ВАЛЮТА МИЛИ
 ------------------------------------------------------------------------------------
-    <#if transactionsList??>
+    <#if transactionsList?has_content>
         <#list transactionsList as var>
 ${var.transaction.accountNumberMasked}   ${var.transaction.processedDate}   ${var.transaction.description?right_pad(25)}  ${var.transaction.amountInAccountCurrency?right_pad(10)}  ${var.transaction.accountCurrencyCode?right_pad(4)}   ${var.miles}
         </#list>
     <#else>
-        <нет операций>
+<нет операций>
     </#if>
 </#macro>
 
