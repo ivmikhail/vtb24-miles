@@ -28,7 +28,7 @@ public class RewardResult {
 
     public List<TransactionRewardResult> getTransactions(String transactionTypeName) {
         Transaction.Type type = Transaction.Type.valueOf(transactionTypeName);
-        return transactionsMap.get(type);
+        return transactionsMap.getOrDefault(type, Collections.emptyList());
     }
 
     public void add(TransactionRewardResult trr) {
