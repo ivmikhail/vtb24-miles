@@ -66,5 +66,6 @@ public class RewardResultTest {
         assertEquals(0, result.getTotalRefillRUR().compareTo(new BigDecimal("50")));
         assertEquals(0, result.getTotalWithdrawRUR().compareTo(new BigDecimal("-100")));
         assertEquals(0, result.getTotalRewardMiles().compareTo(new BigDecimal("4")));
+        assertEquals(0, result.getEffectiveCashback().compareTo(new BigDecimal("4")));
     }
 }
