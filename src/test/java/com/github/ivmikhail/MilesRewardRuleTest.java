@@ -6,7 +6,6 @@ import com.github.ivmikhail.reward.TransactionRewardResult;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,8 +14,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class MilesRewardRuleTest {
 
@@ -82,7 +79,7 @@ public class MilesRewardRuleTest {
         transaction.setCurrencyCode("USD");
         transaction.setAmountInAccountCurrency(new BigDecimal("-100.0"));
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> foreignTransactions = result.getTransactions(Transaction.Type.WITHDRAW_FOREIGN);
+        List<TransactionRewardResult> foreignTransactions = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_FOREIGN);
 
         assertEquals(1, foreignTransactions.size());
 

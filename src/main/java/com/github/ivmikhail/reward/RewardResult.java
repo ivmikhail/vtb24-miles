@@ -22,19 +22,18 @@ public class RewardResult {
         transactionsMap = new TreeMap<>();
     }
 
-    public List<TransactionRewardResult> getTransactions(Transaction.Type type) {
-        return transactionsMap.getOrDefault(type, Collections.emptyList());
+    public Map<Transaction.Type, List<TransactionRewardResult>> getTransactionsMap() {
+        return transactionsMap;
     }
 
     public void add(TransactionRewardResult trr) {
         totalRewardMiles = totalRewardMiles.add(trr.getMiles());
         switch (trr.getTransactionType()) {
-            case WITHDRAW_FOREIGN:
-            case WITHDRAW_NORMAL:
-                totalWithdrawRUR = totalWithdrawRUR.add(trr.getTransaction().getAmountInAccountCurrency());
-                break;
             case REFILL:
                 totalRefillRUR = totalRefillRUR.add(trr.getTransaction().getAmountInAccountCurrency());
+                break;
+            default:
+                totalWithdrawRUR = totalWithdrawRUR.add(trr.getTransaction().getAmountInAccountCurrency());
                 break;
         }
 
@@ -57,8 +56,8 @@ public class RewardResult {
 
     public BigDecimal getEffectiveCashback() {
         //1 mile = 1 rub
-        BigDecimal onePercent = totalWithdrawRUR.negate().divide(ONE_HUNDRED);
-        if(onePercent.compareTo(BigDecimal.ZERO) == 0) {
+        BigDecimal onePercent = totalWithdrawRUR.negate().divide(ONE_HUNDRED, RoundingMode.DOWN);
+        if (onePercent.compareTo(BigDecimal.ZERO) == 0) {
             return null;
         } else {
             return totalRewardMiles.divide(onePercent, 2, RoundingMode.DOWN);

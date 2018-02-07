@@ -28,61 +28,32 @@ public class PlaintTextWriter extends AbstractWriter {
 
     @Override
     protected String format(Settings settings, RewardResult rewardResult) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Операции с кэшбеком 4%");
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append(toString(rewardResult.getTransactions(Transaction.Type.WITHDRAW_NORMAL)));
+        Map<Transaction.Type, List<TransactionRewardResult>> transactionsMap = rewardResult.getTransactionsMap();
 
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append("Операции с кешбэком 5%");
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append(toString(rewardResult.getTransactions(Transaction.Type.WITHDRAW_FOREIGN)));
-
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append("Пополнения");
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append(toString(rewardResult.getTransactions(Transaction.Type.REFILL)));
-
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append("Операции, кэшбек за которые не положен");
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append(toString(rewardResult.getTransactions(Transaction.Type.IGNORE)));
-
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-
-        sb.append("Период c ")
-                .append(settings.getMinDate())
-                .append(" по ")
-                .append(settings.getMaxDate());
-        sb.append(LINE_SEPARATOR);
-        sb.append(LINE_SEPARATOR);
-        sb.append("Всего миль получено     ").append(rewardResult.getTotalRewardMiles()).append(LINE_SEPARATOR);
-        sb.append("Всего пополнений, в руб ").append(rewardResult.getTotalRefillRUR()).append(LINE_SEPARATOR);
-        sb.append("Всего списаний  , в руб ").append(rewardResult.getTotalWithdrawRUR()).append(LINE_SEPARATOR);
-        sb.append("Эффективный кэшбек %    ").append(rewardResult.getEffectiveCashback()).append(LINE_SEPARATOR);
-
-        return sb.toString();
+        return toString("Операции с кэшбеком 4%", transactionsMap.get(Transaction.Type.WITHDRAW_NORMAL)) +
+                toString("Операции с кешбэком 5%", transactionsMap.get(Transaction.Type.WITHDRAW_FOREIGN)) +
+                toString("Пополнения", transactionsMap.get(Transaction.Type.REFILL)) +
+                toString("Операции, кэшбек за которые не положен", transactionsMap.get(Transaction.Type.IGNORE)) +
+                "Период c " + settings.getMinDate() + " по " + settings.getMaxDate() +
+                LINE_SEPARATOR +
+                LINE_SEPARATOR +
+                "Всего миль получено     " + rewardResult.getTotalRewardMiles() + LINE_SEPARATOR +
+                "Всего пополнений, в руб " + rewardResult.getTotalRefillRUR() + LINE_SEPARATOR +
+                "Всего списаний  , в руб " + rewardResult.getTotalWithdrawRUR() + LINE_SEPARATOR +
+                "Эффективный кэшбек %    " + rewardResult.getEffectiveCashback();
     }
 
-    private String toString(List<TransactionRewardResult> transactionsResults) {
-        return toString(transactionsResults, true);
-    }
-
-    private String toString(List<TransactionRewardResult> transactionsResults, boolean withColumnHeader) {
+    private String toString(String title, List<TransactionRewardResult> transactionsResults) {
         StringBuilder sb = new StringBuilder();
+        sb.append(title);
+        sb.append(LINE_SEPARATOR);
+        sb.append(LINE_SEPARATOR);
+
         boolean noTransaction = transactionsResults.isEmpty();
 
         if (noTransaction) sb.append("<нет операций>");
 
-        if (!noTransaction && withColumnHeader) {
+        if (!noTransaction) {
             sb.append(rightPad("СЧЕТ", PAD_ACC)).append(SPACE4);
             sb.append(rightPad("ДАТА ОБР", PAD_DATE)).append(SPACE4);
             sb.append(rightPad("ОПИСАНИЕ", PAD_DESCRIPTION)).append(SPACE4);
@@ -110,6 +81,9 @@ public class PlaintTextWriter extends AbstractWriter {
 
             sb.append(LINE_SEPARATOR);
         }
+        sb.append(LINE_SEPARATOR);
+        sb.append(LINE_SEPARATOR);
+
         return sb.toString();
     }
 
