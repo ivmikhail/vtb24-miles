@@ -1,9 +1,9 @@
 <#macro transactions transactionsList>
-СЧЕТ                 ДАТА ОБР      ОПИСАНИЕ    СУММА    ВАЛЮТА    МИЛИ
+СЧЕТ                 ДАТА ОБР      ОПИСАНИЕ                      СУММА         ВАЛЮТА  МИЛИ
 --------------------------------------------------------------------------------------------
     <#if transactionsList??>
         <#list transactionsList as var>
-${var.transaction.accountNumberMasked}    ${var.transaction.processedDate}    ${var.transaction.description}    ${var.transaction.amountInAccountCurrency}    ${var.transaction.accountCurrencyCode}    ${var.miles}
+${var.transaction.accountNumberMasked}    ${var.transaction.processedDate}    ${var.transaction.description?right_pad(26)}    ${var.transaction.amountInAccountCurrency?right_pad(10)}    ${var.transaction.accountCurrencyCode?right_pad(4)}    ${var.miles}
         </#list>
     <#else>
         <нет операций>
