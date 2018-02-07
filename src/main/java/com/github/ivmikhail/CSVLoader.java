@@ -87,8 +87,8 @@ public class CSVLoader {
         ) {
             for (CSVRecord r : parser) {
                 if (parser.getCurrentLineNumber() <= SKIP_FIRST_ROWS) continue;
-                if (r.size() != Column.values().length) {
-                    LOG.warning("Skip row, expected size " + Column.values().length + ", row " + r.toString());
+                if (r.size() != values().length) {
+                    LOG.warning("Skip row, expected size " + values().length + ", row " + r.toString());
                     continue;
                 }
 
