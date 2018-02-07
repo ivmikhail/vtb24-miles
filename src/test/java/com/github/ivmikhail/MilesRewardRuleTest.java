@@ -63,7 +63,7 @@ public class MilesRewardRuleTest {
         transaction.setDescription("Ignore this transaction, please ignore");
         RewardResult result = rule.process(Collections.singletonList(transaction));
 
-        List<TransactionRewardResult> foreignTransactions = result.getTransactionsMap().get(Transaction.Type.IGNORE);
-        assertEquals(0, result.getTotalRewardMiles().compareTo(new BigDecimal("0")));
+        List<TransactionRewardResult> ignored = result.getTransactionsMap().get(Transaction.Type.IGNORE);
+        assertEquals(1, ignored.size());
     }
 }
