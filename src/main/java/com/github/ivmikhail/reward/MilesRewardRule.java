@@ -63,9 +63,13 @@ public class MilesRewardRule {
     }
 
     private Set<String> getProperty(String key, Properties properties) {
-        String[] arr = properties.getProperty(key).split(COMMA);
+        String[] arr = properties.getProperty(key, "").split(COMMA);
         Set<String> set = new HashSet<>();
-        for (String s : arr) set.add(s.trim());
+        for (String s : arr) {
+            if(!s.trim().isEmpty()) {
+                set.add(s.trim());
+            }
+        }
         return set;
     }
 
@@ -73,7 +77,7 @@ public class MilesRewardRule {
         if (t.getAmountInAccountCurrency().signum() == 1) {
             return Transaction.Type.REFILL;
         } else if (isIgnore(t)) {
-            return Transaction.Type.IGNORE;
+            return Transaction.Type.WITHDRAW_IGNORE;
         } else if (isForeign(t)) {
             return Transaction.Type.WITHDRAW_FOREIGN;
         } else {

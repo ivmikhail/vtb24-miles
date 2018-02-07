@@ -1,19 +1,17 @@
 package com.github.ivmikhail;
 
 import com.github.ivmikhail.reward.MilesRewardRule;
-import com.github.ivmikhail.reward.RewardResult;
-import com.github.ivmikhail.writer.AbstractWriter;
-import com.github.ivmikhail.writer.PlaintTextWriter;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.cli.*;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public final class App {
 
@@ -26,9 +24,12 @@ public final class App {
     private static final String OPT_HELP = "h";
     private static final Options OPTS = createOptions();
 
+    private static final String TEMPLATES_CLASSPATH_DIR = "/templates";
+    private static final String TEMPLATE_REWARD_RESULT = "rewardResult.ftl";
+
     private App() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws IOException, java.text.ParseException {
+    public static void main(String[] args) throws IOException, java.text.ParseException, TemplateException {
 
         Settings settings = null;
         try {
@@ -39,12 +40,26 @@ public final class App {
         }
 
         List<Transaction> transactions = CSVLoader.load(settings);
-
         MilesRewardRule rule = new MilesRewardRule(settings.getProperties());
-        RewardResult result = rule.process(transactions);
 
-        AbstractWriter writer = new PlaintTextWriter(System.out);
-        writer.write(settings, result);
+        Map model = new HashMap();
+        model.put("reward", rule.process(transactions));
+        model.put("settings", settings);
+
+        Template template = createTemplateEngine().getTemplate(TEMPLATE_REWARD_RESULT);
+        Writer out = new OutputStreamWriter(System.out);
+        template.process(model, out);
+    }
+
+    private static Configuration createTemplateEngine() {
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
+        cfg.setClassForTemplateLoading(App.class, TEMPLATES_CLASSPATH_DIR);
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+        cfg.setWrapUncheckedExceptions(true);
+        cfg.setAPIBuiltinEnabled(true);
+        return cfg;
     }
 
     private static Settings parse(String[] args) throws ParseException, IOException {

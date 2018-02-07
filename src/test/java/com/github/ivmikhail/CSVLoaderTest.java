@@ -50,7 +50,7 @@ public class CSVLoaderTest {
         Transaction t = transactionList.get(2);
         LOG.info(t.toString());
 
-        assertEquals("'123456XXXXXX7890", t.getCardNumberMasked());
+        assertEquals("'123456XXXXXX7890", t.getAccountNumberMasked());
         assertEquals(LocalDateTime.of(2017, Month.JUNE,4,11,21,6), t.getDateTime());
         assertEquals(LocalDate.of(2017,Month.JUNE, 5), t.getProcessedDate());
         assertEquals(0, t.getAmount().compareTo(new BigDecimal("-41.00")));

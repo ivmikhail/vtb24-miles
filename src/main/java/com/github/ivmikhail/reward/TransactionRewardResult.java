@@ -36,5 +36,4 @@ public class TransactionRewardResult {
     public void setMiles(BigDecimal miles) {
         this.miles = miles;
     }
-
 }

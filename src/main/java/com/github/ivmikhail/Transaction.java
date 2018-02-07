@@ -9,9 +9,14 @@ import java.time.LocalDateTime;
  */
 public class Transaction {
 
-    public enum Type {REFILL, WITHDRAW_NORMAL, WITHDRAW_FOREIGN, IGNORE}
+    public enum Type {
+        REFILL,
+        WITHDRAW_NORMAL,
+        WITHDRAW_FOREIGN,
+        WITHDRAW_IGNORE
+    }
 
-    private String cardNumberMasked;
+    private String accountNumberMasked;
     private LocalDateTime dateTime;
     private LocalDate processedDate;
     private BigDecimal amount;
@@ -21,12 +26,12 @@ public class Transaction {
     private String description;
     private String status;
 
-    public String getCardNumberMasked() {
-        return cardNumberMasked;
+    public String getAccountNumberMasked() {
+        return accountNumberMasked;
     }
 
-    public void setCardNumberMasked(String cardNumberMasked) {
-        this.cardNumberMasked = cardNumberMasked;
+    public void setAccountNumberMasked(String accountNumberMasked) {
+        this.accountNumberMasked = accountNumberMasked;
     }
 
     public LocalDateTime getDateTime() {
@@ -96,7 +101,7 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "cardNumberMasked='" + cardNumberMasked + '\'' +
+                "accountNumberMasked='" + accountNumberMasked + '\'' +
                 ", dateTime=" + dateTime +
                 ", processedDate=" + processedDate +
                 ", amount=" + amount +

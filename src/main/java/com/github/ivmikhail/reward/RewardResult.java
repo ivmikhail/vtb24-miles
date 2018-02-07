@@ -26,6 +26,11 @@ public class RewardResult {
         return transactionsMap;
     }
 
+    public List<TransactionRewardResult> getTransactions(String transactionTypeName) {
+        Transaction.Type type = Transaction.Type.valueOf(transactionTypeName);
+        return transactionsMap.get(type);
+    }
+
     public void add(TransactionRewardResult trr) {
         totalRewardMiles = totalRewardMiles.add(trr.getMiles());
         switch (trr.getTransactionType()) {

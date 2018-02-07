@@ -116,7 +116,7 @@ public class CSVLoader {
         BigDecimal amount = (BigDecimal) DF.parseObject(r.get(AMOUNT.ordinal()));
         BigDecimal amountInAccountCurrency = (BigDecimal) DF.parseObject(r.get(AMOUNT_IN_ACC_CCY.ordinal()));
 
-        t.setCardNumberMasked(r.get(CARD_NUM_MASKED.ordinal()));
+        t.setAccountNumberMasked(r.get(CARD_NUM_MASKED.ordinal()));
         t.setDateTime(dateTime);
         t.setProcessedDate(processedDate);
         t.setAmount(amount);
