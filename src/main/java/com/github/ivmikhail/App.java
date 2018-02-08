@@ -1,5 +1,6 @@
 package com.github.ivmikhail;
 
+import com.github.ivmikhail.fx.FakeFxProvider;
 import com.github.ivmikhail.reward.MilesRewardRule;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -8,6 +9,7 @@ import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.cli.*;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +43,7 @@ public final class App {
 
         List<Transaction> transactions = CSVLoader.load(settings);
         MilesRewardRule rule = new MilesRewardRule(settings.getProperties());
+        rule.setCcyConverter(new FakeFxProvider()); //TODO need to implement FxProvider
 
         Map model = new HashMap();
         model.put("reward", rule.process(transactions));
@@ -102,8 +105,10 @@ public final class App {
     private static Properties loadProperties(String path) throws IOException {
         //load default properties from classpath
         Properties defaults = new Properties();
-        try (InputStream in = App.class.getResourceAsStream(PROPERTIES_CLASSPATH)) {
-            defaults.load(in);
+        try (InputStream is = App.class.getResourceAsStream(PROPERTIES_CLASSPATH);
+             InputStreamReader isr = new InputStreamReader(is, Charset.forName("UTF-8"))
+        ) {
+            defaults.load(isr);
         }
 
         if (path == null || path.isEmpty()) return defaults;
@@ -123,7 +128,7 @@ public final class App {
         options.addOption(Option
                 .builder(OPT_STATEMENT_PATH)
                 .desc("path to statement.csv downloaded from http://telebank.ru." +
-                 " You can specify few paths like -s statement1.csv -s statement.csv. In this case transactions will be merged")
+                        " You can specify few paths like -s statement1.csv -s statement.csv. In this case transactions will be merged")
                 .numberOfArgs(1)
                 .required(true)
                 .build());

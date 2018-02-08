@@ -1,14 +1,19 @@
 package com.github.ivmikhail.reward;
 
+import com.github.ivmikhail.fx.FakeFxProvider;
 import com.github.ivmikhail.Transaction;
+import com.github.ivmikhail.fx.FxProvider;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by ivmikhail on 01/07/2017.
  */
 public class MilesRewardRule {
+    private static final Logger LOG = Logger.getLogger(FakeFxProvider.class.getName());
+
     private static final String RUR = "RUR";
     private static final String COMMA = ",";
     private static final BigDecimal PERCENT_5 = new BigDecimal("0.05");
@@ -17,9 +22,15 @@ public class MilesRewardRule {
     private Set<String> ignoreWords;
     private Set<String> foreignTransactionWords;
 
+    private FxProvider fxProvider;
+
     public MilesRewardRule(Properties properties) {
-        ignoreWords = getProperty("MilesRewardRule.transactions.ignore.description", properties);
-        foreignTransactionWords = getProperty("MilesRewardRule.transactions.foreign.description", properties);
+        ignoreWords = getPropertyAsSet("MilesRewardRule.transactions.ignore.description", properties);
+        foreignTransactionWords = getPropertyAsSet("MilesRewardRule.transactions.foreign.description", properties);
+    }
+
+    public void setCcyConverter(FxProvider fxProvider) {
+        this.fxProvider = fxProvider;
     }
 
     public RewardResult process(List<Transaction> transactionList) {
@@ -38,7 +49,7 @@ public class MilesRewardRule {
 
         if (calculateMiles) {
             BigDecimal cashbackPercent = getCashbackPercent(tType);
-            BigDecimal amountInRUR = getAmountInRUB(t);
+            BigDecimal amountInRUR = getAmountInRUR(t);
 
             //4% каждые 100 руб, округление: 199 -> 100, 201 -> 200  и т.д
             amountInRUR = amountInRUR.negate().setScale(-2, BigDecimal.ROUND_DOWN);
@@ -53,20 +64,35 @@ public class MilesRewardRule {
         return result;
     }
 
-    private BigDecimal getAmountInRUB(Transaction t) {
-        if(t.getAccountCurrencyCode().equals(RUR)) {
+    private BigDecimal getAmountInRUR(Transaction t) {
+        if (t.getAccountCurrencyCode().equals(RUR)) {
             return t.getAmountInAccountCurrency();
         } else {
-            BigDecimal usdrub = new BigDecimal("58.25");//TODO fix
-            return t.getAmountInAccountCurrency().multiply(usdrub);
+            String base = t.getAccountCurrencyCode();
+            String quote = RUR;
+
+            BigDecimal rate = fxProvider.getRate(
+                    base,
+                    quote,
+                    t.getProcessedDate());
+
+            BigDecimal amountInRUR = t.getAmountInAccountCurrency().multiply(rate);
+
+            LOG.info(String.format("%s%s on %s is %s",
+                    base,
+                    quote,
+                    t.getProcessedDate().toString(),
+                    rate.toString()
+            ));
+            return amountInRUR;
         }
     }
 
-    private Set<String> getProperty(String key, Properties properties) {
+    private Set<String> getPropertyAsSet(String key, Properties properties) {
         String[] arr = properties.getProperty(key, "").split(COMMA);
         Set<String> set = new HashSet<>();
         for (String s : arr) {
-            if(!s.trim().isEmpty()) {
+            if (!s.trim().isEmpty()) {
                 set.add(s.trim());
             }
         }
