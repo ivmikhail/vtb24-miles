@@ -83,7 +83,7 @@
   <dd>Пишите на почту ivmikhail собака gmail com, а еще лучше сюда https://github.com/ivmikhail/vtb24-miles/issues/new</dd>
 </dl>
 
-### License
+### Лицензия/License
 
 ```
 Copyright (c) 2017, Mikhail Ivanov <ivmikhail at gmail com>
