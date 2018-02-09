@@ -10,7 +10,7 @@
 
     <name>vtb24-miles</name>
     <description>Counting miles reward for credit cards of VTB24</description>
-    <url>https://github.com/ivmikhail/vtb24-miles/wiki</url>
+    <url>https://github.com/ivmikhail/vtb24-miles</url>
 
     <issueManagement>
         <url>hhttps://github.com/com.github.ivmikhail/vtb24-miles/issues</url>
@@ -57,6 +57,8 @@
                 <configuration>
                     <archive>
                         <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             <mainClass>com.github.ivmikhail.App</mainClass>
                         </manifest>
                     </archive>
