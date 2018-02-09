@@ -35,8 +35,6 @@ public class VTBFxProvider implements FxProvider {
     private static final MediaType JSON = MediaType.parse("application/json");
     private static final String USER_AGENT = "vtb24-miles (https://github.com/ivmikhail/vtb24-miles)";
 
-    private Lock lock = new ReentrantLock();
-
     private String url;
     private OkHttpClient httpClient;
     private String[][] supportedPairs;
