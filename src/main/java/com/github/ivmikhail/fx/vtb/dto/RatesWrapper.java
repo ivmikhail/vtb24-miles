@@ -8,6 +8,34 @@ public class RatesWrapper {
     private List<ExchangeRate> getHalfYearCardsRatesJsonResult;
     private String error;
 
+    public String getItems() {
+        return items;
+    }
+
+    public void setItems(String items) {
+        this.items = items;
+    }
+
+    public String getSettings() {
+        return settings;
+    }
+
+    public void setSettings(String settings) {
+        this.settings = settings;
+    }
+
+    public void setGetHalfYearCardsRatesJsonResult(List<ExchangeRate> getHalfYearCardsRatesJsonResult) {
+        this.getHalfYearCardsRatesJsonResult = getHalfYearCardsRatesJsonResult;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
     public List<ExchangeRate> getGetHalfYearCardsRatesJsonResult() {
         return getHalfYearCardsRatesJsonResult;
     }

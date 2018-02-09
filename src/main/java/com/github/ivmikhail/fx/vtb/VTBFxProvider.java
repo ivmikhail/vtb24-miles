@@ -57,7 +57,7 @@ public class VTBFxProvider implements FxProvider {
                 .stream()
                 .filter(rate -> rate.getDateActiveFrom().toLocalDate().isEqual(date) ||
                         rate.getDateActiveFrom().toLocalDate().isAfter(date))
-                .filter(rate -> (baseCurrency.equals(rate.getCurrencyAbbr()) && quoteCurrency.equals("RUR")) ||
+                .filter(rate -> (baseCurrency.equals(rate.getCurrencyAbbr()) && "RUR".equals(quoteCurrency)) ||
                         (rate.getCurrencyAbbr().startsWith(baseCurrency) && rate.getCurrencyAbbr().endsWith(quoteCurrency))
                 )
                 .min(Comparator.comparing(ExchangeRate::getDateActiveFrom, (d1, d2) -> {
