@@ -1,18 +1,15 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.fx.FakeFxProvider;
 import com.github.ivmikhail.Transaction;
 import com.github.ivmikhail.fx.FxProvider;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Created by ivmikhail on 01/07/2017.
  */
 public class MilesRewardRule {
-    private static final Logger LOG = Logger.getLogger(FakeFxProvider.class.getName());
 
     private static final String RUR = "RUR";
     private static final String COMMA = ",";
@@ -29,7 +26,7 @@ public class MilesRewardRule {
         foreignTransactionWords = getPropertyAsSet("MilesRewardRule.transactions.foreign.description", properties);
     }
 
-    public void setCcyConverter(FxProvider fxProvider) {
+    public void setFxProvider(FxProvider fxProvider) {
         this.fxProvider = fxProvider;
     }
 
@@ -68,23 +65,10 @@ public class MilesRewardRule {
         if (t.getAccountCurrencyCode().equals(RUR)) {
             return t.getAmountInAccountCurrency();
         } else {
-            String base = t.getAccountCurrencyCode();
-            String quote = RUR;
+            String baseCurrency = t.getAccountCurrencyCode();
+            BigDecimal rate = fxProvider.getRate(baseCurrency, RUR, t.getProcessedDate());
 
-            BigDecimal rate = fxProvider.getRate(
-                    base,
-                    quote,
-                    t.getProcessedDate());
-
-            BigDecimal amountInRUR = t.getAmountInAccountCurrency().multiply(rate);
-
-            LOG.info(String.format("%s%s on %s is %s",
-                    base,
-                    quote,
-                    t.getProcessedDate().toString(),
-                    rate.toString()
-            ));
-            return amountInRUR;
+            return t.getAmountInAccountCurrency().multiply(rate);
         }
     }
 

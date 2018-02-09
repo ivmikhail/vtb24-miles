@@ -1,6 +1,6 @@
 package com.github.ivmikhail;
 
-import com.github.ivmikhail.fx.FakeFxProvider;
+import com.github.ivmikhail.fx.vtb.VTBFxProvider;
 import com.github.ivmikhail.reward.MilesRewardRule;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -43,7 +43,7 @@ public final class App {
 
         List<Transaction> transactions = CSVLoader.load(settings);
         MilesRewardRule rule = new MilesRewardRule(settings.getProperties());
-        rule.setCcyConverter(new FakeFxProvider()); //TODO need to implement FxProvider
+        rule.setFxProvider(new VTBFxProvider(settings.getProperties()).load());
 
         Map model = new HashMap();
         model.put("reward", rule.process(transactions));

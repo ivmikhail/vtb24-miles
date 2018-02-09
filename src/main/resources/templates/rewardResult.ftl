@@ -23,16 +23,15 @@ ${var.transaction.accountNumberMasked}   ${var.transaction.processedDate}   ${va
 <@transactions reward?api.getTransactions("WITHDRAW_FOREIGN") />
 
 
+Операции, кешбэк за которые не положен
+
+<@transactions reward?api.getTransactions("WITHDRAW_IGNORE") />
+
+
 
 Пополнения
 
 <@transactions reward?api.getTransactions("REFILL") />
-
-
-
-Операции, кешбэк за которые не положен
-
-<@transactions reward?api.getTransactions("WITHDRAW_IGNORE") />
 
 
 Период с ${settings.minDate} с ${settings.maxDate}
