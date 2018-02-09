@@ -105,7 +105,7 @@ public class VTBFxProvider implements FxProvider {
     }
 
     private RatesWrapper loadFromRemote() throws IOException {
-        RequestBody requestBody = RequestBody.create(JSON, GSON.toJson(PayloadFactory.create()));
+        RequestBody requestBody = RequestBody.create(JSON, GSON.toJson(PayloadFactory.createFX()));
 
         Request request = new Request.Builder()
                 .url(url)
