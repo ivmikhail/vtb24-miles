@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Retrieves rates from
@@ -32,6 +35,8 @@ public class VTBFxProvider implements FxProvider {
     private static final MediaType JSON = MediaType.parse("application/json");
     private static final String USER_AGENT = "vtb24-miles (https://github.com/ivmikhail/vtb24-miles)";
 
+    private Lock lock = new ReentrantLock();
+
     private String url;
     private OkHttpClient httpClient;
     private String[][] supportedPairs;
@@ -46,12 +51,14 @@ public class VTBFxProvider implements FxProvider {
         };
 
         httpClient = new OkHttpClient();
-        rates = new ArrayList<>();
+        rates = new CopyOnWriteArrayList<>();
     }
 
     @Override
     public BigDecimal getRate(final String baseCurrency, final String quoteCurrency, final LocalDate date) {
         throwExceptionIfNotSupported(baseCurrency, quoteCurrency);
+
+        populateRatesIfEmpty();
 
         //transaction processed date without time, also exchange rate may not exist on given date
         //so let's take nearest rate by date
@@ -76,15 +83,16 @@ public class VTBFxProvider implements FxProvider {
         return exchangeRate.getBuy();
     }
 
-    @Override
-    public FxProvider load() {
+    private void populateRatesIfEmpty() {
+        //single thread app, so code below is ok
+        if (!rates.isEmpty()) return;
+
         try {
-            RatesWrapper ratesWrapper = loadFromRemote();
-            rates = ratesWrapper.getGetHalfYearCardsRatesJsonResult();
+            RatesWrapper wrapper = loadFromRemote();
+            rates.addAll(wrapper.getGetHalfYearCardsRatesJsonResult());
         } catch (IOException e) {
             throw new IllegalStateException("Failed to retrieve FX rates from url " + url, e);
         }
-        return this;
     }
 
     @Override

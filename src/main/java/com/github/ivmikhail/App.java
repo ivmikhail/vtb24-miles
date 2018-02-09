@@ -43,7 +43,7 @@ public final class App {
 
         List<Transaction> transactions = CSVLoader.load(settings);
         MilesRewardRule rule = new MilesRewardRule(settings.getProperties());
-        rule.setFxProvider(new VTBFxProvider(settings.getProperties()).load());
+        rule.setFxProvider(new VTBFxProvider(settings.getProperties()));
 
         Map model = new HashMap();
         model.put("reward", rule.process(transactions));

@@ -37,7 +37,6 @@ public class VTBFxProviderTest {
         properties.setProperty("fx.provider.vtb.url", baseUrl.toString());
 
         fxProvider = new VTBFxProvider(properties);
-        fxProvider.load();
     }
 
     @Test
@@ -59,7 +58,6 @@ public class VTBFxProviderTest {
 
     @After
     public void after() throws IOException {
-        fxProvider.clear();
         webServer.shutdown();
     }
 

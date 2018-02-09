@@ -6,7 +6,5 @@ import java.time.LocalDate;
 public interface FxProvider {
     BigDecimal getRate(String baseCurrency, String quoteCurrency, LocalDate date);
 
-    FxProvider load();
-
     void clear();
 }

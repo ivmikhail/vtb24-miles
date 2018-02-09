@@ -35,6 +35,7 @@ public class MilesRewardRule {
         for (Transaction t : transactionList) {
             result.add(process(t));
         }
+        if (fxProvider != null) fxProvider.clear();
         return result;
     }
 
