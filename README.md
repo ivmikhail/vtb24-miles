@@ -80,7 +80,7 @@
   <dd>https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project</dd>
   
   <dt>Если у вас есть предложение/вопрос или вы нашли ошибку</dt>
-  <dd>Пишите на почту ivmikhail собака gmail com, а еще лучше сюда https://github.com/ivmikhail/vtb24-miles/issues/new</dd>
+  <dd>Пишите на почту ivmikhail собака gmail com, а еще лучше сюда https://github.com/ivmikhail/vtb24-miles/issues/</dd>
 </dl>
 
 ### Лицензия/License
