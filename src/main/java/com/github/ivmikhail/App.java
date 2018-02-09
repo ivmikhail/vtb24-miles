@@ -70,8 +70,14 @@ public final class App {
         CommandLine cli = parser.parse(OPTS, args);
 
         String[] paths = cli.getOptionValues(OPT_STATEMENT_PATH);
-        String propertiesPath = cli.getOptionValue(OPT_PROPS_PATH, null);
-        Properties properties = loadProperties(propertiesPath);
+        String propertiesPath = cli.getOptionValue(OPT_PROPS_PATH);
+
+        Properties properties;
+        if (propertiesPath == null) {
+            properties = loadPropertiesFromClasspath();
+        } else {
+            properties = loadProperties(propertiesPath);
+        }
         LocalDate minDate;
         LocalDate maxDate;
         String rawYearMonth = cli.getOptionValue(OPT_MONTH, null);
@@ -102,20 +108,18 @@ public final class App {
         formatter.printHelp("java -jar vtb24-miles.jar -s statement.csv", options);
     }
 
-    private static Properties loadProperties(String path) throws IOException {
-        //load default properties from classpath
-        Properties defaults = new Properties();
+    private static Properties loadPropertiesFromClasspath() throws IOException {
+        Properties properties = new Properties();
         try (InputStream is = App.class.getResourceAsStream(PROPERTIES_CLASSPATH);
              InputStreamReader isr = new InputStreamReader(is, Charset.forName("UTF-8"))
         ) {
-            defaults.load(isr);
+            properties.load(isr);
         }
+        return properties;
+    }
 
-        if (path == null || path.isEmpty()) return defaults;
-
-        Properties properties = new Properties(defaults);
-
-        //load custom properties from given path and merge it tot default properties
+    private static Properties loadProperties(String path) throws IOException {
+        Properties properties = new Properties();
         try (FileReader reader = new FileReader(path)) {
             properties.load(reader);
         }
