@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 
@@ -22,9 +23,10 @@ import java.util.*;
  */
 public class VTBFxProvider implements FxProvider {
 
+    private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(BigDecimal.class, new BigDecimalDeserializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer(MOSCOW))
             .create();
 
     private static final MediaType JSON = MediaType.parse("application/json");

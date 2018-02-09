@@ -14,6 +14,12 @@ public class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime
     private static final String PREFIX = "/Date(";
     private static final String POSTFIX = ")/";
 
+    private ZoneId zoneId;
+
+    public LocalDateTimeDeserializer(ZoneId zoneId) {
+        this.zoneId = zoneId;
+    }
+
     @Override
     public LocalDateTime deserialize(JsonElement element,
                                      Type type,
@@ -22,6 +28,6 @@ public class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime
         String stringTimestamp = stringDate.substring(PREFIX.length(), stringDate.length() - POSTFIX.length());
         long timestamp = Long.parseLong(stringTimestamp);
 
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), zoneId);
     }
 }

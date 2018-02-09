@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +13,7 @@ public class LocalDateTimeDeserializerTest {
 
     @Test
     public void test() {
-        LocalDateTimeDeserializer deserializer = new LocalDateTimeDeserializer();
+        LocalDateTimeDeserializer deserializer = new LocalDateTimeDeserializer(ZoneId.of("Europe/Moscow"));
         JsonPrimitive element = new JsonPrimitive("/Date(1518108300000)/");
         LocalDateTime ldt = deserializer.deserialize(element, LocalDateTime.class, null);
 
