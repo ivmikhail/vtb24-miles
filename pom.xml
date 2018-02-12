@@ -19,6 +19,7 @@
     <scm>
         <connection>scm:git:git@github.com:ivmikhail/vtb24-miles.git</connection>
         <url>https://github.com/ivmikhail/vtb24-miles</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
