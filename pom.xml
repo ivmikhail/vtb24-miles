@@ -3,7 +3,7 @@
 
     <groupId>com.github.ivmikhail</groupId>
     <artifactId>vtb24-miles</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
 
@@ -19,7 +19,7 @@
     <scm>
         <connection>scm:git:git@github.com:ivmikhail/vtb24-miles.git</connection>
         <url>https://github.com/ivmikhail/vtb24-miles</url>
-        <tag>HEAD</tag>
+        <tag>vtb24-miles-1.3</tag>
     </scm>
 
     <properties>
