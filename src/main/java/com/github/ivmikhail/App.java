@@ -14,8 +14,11 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Logger;
 
 public final class App {
+
+    private static final Logger LOG = Logger.getLogger(App.class.getName());
 
     private static final String PROPERTIES_CLASSPATH = "/app.properties";
     private static final DateTimeFormatter DATEFORMAT_ARG = DateTimeFormatter.ofPattern("MMyyyy");
@@ -31,7 +34,8 @@ public final class App {
 
     private App() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws IOException, java.text.ParseException, TemplateException {
+    public static void main(String[] args) throws IOException, java.text.ParseException, TemplateException, InterruptedException {
+        tryToMakeWorldBetter();
 
         Settings settings = null;
         try {
@@ -49,8 +53,9 @@ public final class App {
         model.put("reward", rule.process(transactions));
         model.put("settings", settings);
 
+        PrintStream ps =new PrintStream(System.out, true);
         Template template = createTemplateEngine().getTemplate(TEMPLATE_REWARD_RESULT);
-        Writer out = new OutputStreamWriter(System.out);
+        Writer out = new OutputStreamWriter(ps);
         template.process(model, out);
     }
 
@@ -158,5 +163,22 @@ public final class App {
                 .build());
 
         return options;
+    }
+
+    private static void tryToMakeWorldBetter() throws InterruptedException, IOException {
+        if(isRunningOnWindows()) {
+            setOwnConsoleCodePage(65001);//unicode
+        }
+    }
+
+    private static boolean isRunningOnWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
+    }
+
+    private static void setOwnConsoleCodePage(int codePage) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "chcp", String.valueOf(codePage)).inheritIO();
+        Process p = pb.start();
+        int exitCode = p.waitFor();
+        if(exitCode != 0) LOG.warning("Failed to change code page, exit code " + exitCode);
     }
 }
