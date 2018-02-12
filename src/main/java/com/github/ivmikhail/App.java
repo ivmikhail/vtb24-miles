@@ -53,9 +53,8 @@ public final class App {
         model.put("reward", rule.process(transactions));
         model.put("settings", settings);
 
-        PrintStream ps =new PrintStream(System.out, true);
         Template template = createTemplateEngine().getTemplate(TEMPLATE_REWARD_RESULT);
-        Writer out = new OutputStreamWriter(ps);
+        Writer out = new OutputStreamWriter(System.out);
         template.process(model, out);
     }
 
