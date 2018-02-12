@@ -1,5 +1,6 @@
 package com.github.ivmikhail.reward;
 
+import com.github.ivmikhail.Settings;
 import com.github.ivmikhail.Transaction;
 
 import java.math.BigDecimal;
@@ -17,9 +18,18 @@ public class RewardResult {
     private BigDecimal totalWithdrawRUR = BigDecimal.ZERO;
 
     private Map<Transaction.Type, List<TransactionRewardResult>> transactionsMap;
+    private Settings settings;
 
     public RewardResult() {
         transactionsMap = new TreeMap<>();
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     public Map<Transaction.Type, List<TransactionRewardResult>> getTransactionsMap() {

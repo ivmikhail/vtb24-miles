@@ -17,7 +17,6 @@ ${var.transaction.accountNumberMasked}   ${var.transaction.processedDate}   ${va
 <@transactions reward?api.getTransactions("WITHDRAW_NORMAL") />
 
 
-
 Операции с кэшбеком 5%
 
 <@transactions reward?api.getTransactions("WITHDRAW_FOREIGN") />
@@ -28,13 +27,12 @@ ${var.transaction.accountNumberMasked}   ${var.transaction.processedDate}   ${va
 <@transactions reward?api.getTransactions("WITHDRAW_IGNORE") />
 
 
-
 Пополнения
 
 <@transactions reward?api.getTransactions("REFILL") />
 
 
-Период с ${settings.minDate} с ${settings.maxDate}
+Период с ${reward.settings.minDate} с ${reward.settings.maxDate}
 
 Всего миль получено      ${reward.totalRewardMiles}
 Всего пополнений, в руб  ${reward.totalRefillRUR}

@@ -1,9 +1,14 @@
 package com.github.ivmikhail.reward;
 
+import com.github.ivmikhail.CSVLoader;
+import com.github.ivmikhail.Settings;
 import com.github.ivmikhail.Transaction;
 import com.github.ivmikhail.fx.FxProvider;
+import com.github.ivmikhail.fx.vtb.VTBFxProvider;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -20,23 +25,46 @@ public class MilesRewardRule {
     private Set<String> foreignTransactionWords;
 
     private FxProvider fxProvider;
+    private Settings settings;
 
-    public MilesRewardRule(Properties properties) {
-        ignoreWords = getPropertyAsSet("MilesRewardRule.transactions.ignore.description", properties);
-        foreignTransactionWords = getPropertyAsSet("MilesRewardRule.transactions.foreign.description", properties);
+    public MilesRewardRule(Settings settings) {
+        this.settings = settings;
+        Properties properties = settings.getProperties();
+
+        if(properties == null) {
+            ignoreWords = new HashSet<>();
+            foreignTransactionWords = new HashSet<>();
+         } else {
+            fxProvider = new VTBFxProvider(properties);
+            ignoreWords = getPropertyAsSet("MilesRewardRule.transactions.ignore.description", properties);
+            foreignTransactionWords = getPropertyAsSet("MilesRewardRule.transactions.foreign.description", properties);
+        }
     }
 
     public void setFxProvider(FxProvider fxProvider) {
         this.fxProvider = fxProvider;
     }
 
-    public RewardResult process(List<Transaction> transactionList) {
+    public RewardResult process() {
+        return process(loadTransactions());
+    }
+
+    public RewardResult process(List<Transaction> transactions) {
         RewardResult result = new RewardResult();
-        for (Transaction t : transactionList) {
+        result.setSettings(settings);
+        for (Transaction t : transactions) {
             result.add(process(t));
         }
         if (fxProvider != null) fxProvider.clear();
         return result;
+    }
+
+    private List<Transaction> loadTransactions() {
+        try {
+            return CSVLoader.load(settings);
+        } catch (IOException | ParseException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private TransactionRewardResult process(final Transaction t) {

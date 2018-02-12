@@ -1,5 +1,6 @@
 package com.github.ivmikhail.reward;
 
+import com.github.ivmikhail.Settings;
 import com.github.ivmikhail.Transaction;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ public class RewardResultTest {
     @Before
     public void setUp() {
 
-        rule = new MilesRewardRule(new Properties());
+        rule = new MilesRewardRule(new Settings());
         transactions = new ArrayList<>();
 
         Transaction t1;

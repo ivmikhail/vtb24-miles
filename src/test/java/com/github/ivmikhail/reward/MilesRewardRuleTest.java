@@ -1,5 +1,6 @@
 package com.github.ivmikhail.reward;
 
+import com.github.ivmikhail.Settings;
 import com.github.ivmikhail.Transaction;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,10 @@ public class MilesRewardRuleTest {
         properties.setProperty("MilesRewardRule.transactions.ignore.description", "ignore, another ignore");
         properties.setProperty("MilesRewardRule.transactions.foreign.description", "foreign");
 
-        rule = new MilesRewardRule(properties);
+        Settings s = new Settings();
+        s.setProperties(properties);
+
+        rule = new MilesRewardRule(s);
 
         transaction = new Transaction();
         transaction.setAccountNumberMasked("123XXX1234");

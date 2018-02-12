@@ -1,11 +1,7 @@
 package com.github.ivmikhail;
 
-import com.github.ivmikhail.fx.vtb.VTBFxProvider;
 import com.github.ivmikhail.reward.MilesRewardRule;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+import com.github.ivmikhail.reward.RewardResult;
 import org.apache.commons.cli.*;
 
 import java.io.*;
@@ -27,53 +23,42 @@ public final class App {
     private static final String OPT_MONTH = "m";
     private static final String OPT_PROPS_PATH = "p";
     private static final String OPT_HELP = "h";
-    private static final Options OPTS = createOptions();
+    private static final String OPT_EXPORT_PATH = "export";
 
-    private static final String TEMPLATES_CLASSPATH_DIR = "/templates";
-    private static final String TEMPLATE_REWARD_RESULT = "rewardResult.ftl";
+    private static final Options OPTS = createOptions();
 
     private App() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws IOException, java.text.ParseException, TemplateException, InterruptedException {
+    public static void main(String[] args) throws IOException, java.text.ParseException {
         tryToMakeWorldBetter();
 
-        Settings settings = null;
+        CommandLine cli = null;
         try {
-            settings = parse(args);
+            cli = parse(args);
         } catch (org.apache.commons.cli.ParseException e) {
             printHelp(OPTS);
             System.exit(1);
         }
 
-        List<Transaction> transactions = CSVLoader.load(settings);
-        MilesRewardRule rule = new MilesRewardRule(settings.getProperties());
-        rule.setFxProvider(new VTBFxProvider(settings.getProperties()));
+        Settings settings = get(cli);
+        MilesRewardRule rule = new MilesRewardRule(settings);
+        RewardResult reward = rule.process();
 
-        Map model = new HashMap();
-        model.put("reward", rule.process(transactions));
-        model.put("settings", settings);
-
-        Template template = createTemplateEngine().getTemplate(TEMPLATE_REWARD_RESULT);
-        Writer out = new OutputStreamWriter(System.out);
-        template.process(model, out);
+        if(cli.hasOption(OPT_EXPORT_PATH)) {
+            ExportTo.csv(cli.getOptionValue(OPT_EXPORT_PATH), reward);
+        } else {
+            String txt = ExportTo.txt(reward);
+            System.out.println(txt);
+        }
     }
 
-    private static Configuration createTemplateEngine() {
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        cfg.setClassForTemplateLoading(App.class, TEMPLATES_CLASSPATH_DIR);
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        cfg.setLogTemplateExceptions(false);
-        cfg.setWrapUncheckedExceptions(true);
-        cfg.setAPIBuiltinEnabled(true);
-        return cfg;
-    }
-
-    private static Settings parse(String[] args) throws ParseException, IOException {
+    private static CommandLine parse(String[] args) throws ParseException {
         CommandLineParser parser = new DefaultParser();
-        CommandLine cli = parser.parse(OPTS, args);
+        return parser.parse(OPTS, args);
+    }
 
-        String[] paths = cli.getOptionValues(OPT_STATEMENT_PATH);
+    private static Settings get(CommandLine cli) {
+        String[] statementPaths = cli.getOptionValues(OPT_STATEMENT_PATH);
         String propertiesPath = cli.getOptionValue(OPT_PROPS_PATH);
 
         Properties properties;
@@ -99,7 +84,7 @@ public final class App {
         }
 
         Settings settings = new Settings();
-        settings.setPathsToStatement(paths);
+        settings.setPathsToStatement(statementPaths);
         settings.setMinDate(minDate);
         settings.setMaxDate(maxDate);
         settings.setProperties(properties);
@@ -112,20 +97,24 @@ public final class App {
         formatter.printHelp("java -jar vtb24-miles.jar -s statement.csv", options);
     }
 
-    private static Properties loadPropertiesFromClasspath() throws IOException {
+    private static Properties loadPropertiesFromClasspath() {
         Properties properties = new Properties();
         try (InputStream is = App.class.getResourceAsStream(PROPERTIES_CLASSPATH);
              InputStreamReader isr = new InputStreamReader(is, Charset.forName("UTF-8"))
         ) {
             properties.load(isr);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
         return properties;
     }
 
-    private static Properties loadProperties(String path) throws IOException {
+    private static Properties loadProperties(String path) {
         Properties properties = new Properties();
         try (FileReader reader = new FileReader(path)) {
             properties.load(reader);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
         return properties;
     }
@@ -161,11 +150,18 @@ public final class App {
                 .required(false)
                 .build());
 
+        options.addOption(Option
+                .builder(OPT_EXPORT_PATH)
+                .desc("path to file, where result will be exported as CSV. For example, statement-miles.csv")
+                .numberOfArgs(1)
+                .required(false)
+                .build());
+
         return options;
     }
 
-    private static void tryToMakeWorldBetter() throws InterruptedException, IOException {
-        if(isRunningOnWindows()) {
+    private static void tryToMakeWorldBetter() {
+        if (isRunningOnWindows()) {
             setOwnConsoleCodePage(65001);//unicode
         }
     }
@@ -174,10 +170,14 @@ public final class App {
         return System.getProperty("os.name").toLowerCase().contains("win");
     }
 
-    private static void setOwnConsoleCodePage(int codePage) throws IOException, InterruptedException {
+    private static void setOwnConsoleCodePage(int codePage) {
         ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "chcp", String.valueOf(codePage)).inheritIO();
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-        if(exitCode != 0) LOG.warning("Failed to change code page, exit code " + exitCode);
+        try {
+            Process p = pb.start();
+            int exitCode = p.waitFor();
+            if (exitCode != 0) LOG.warning("Failed to change code page, exit code " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
