@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class ExportTo {
+public final class ExportAs {
 
     private static final String TEMPLATES_CLASSPATH_DIR = "/templates";
     private static final String TEMPLATE_REWARD_RESULT = "rewardResult.ftl";
 
-    private ExportTo() { /* helper class */}
+    private ExportAs() { /* helper class */}
 
     public static String txt(RewardResult reward) {
         Map model = new HashMap();

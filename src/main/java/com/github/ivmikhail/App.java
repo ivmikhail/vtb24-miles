@@ -45,9 +45,9 @@ public final class App {
         RewardResult reward = rule.process();
 
         if(cli.hasOption(OPT_EXPORT_PATH)) {
-            ExportTo.csv(cli.getOptionValue(OPT_EXPORT_PATH), reward);
+            ExportAs.csv(cli.getOptionValue(OPT_EXPORT_PATH), reward);
         } else {
-            String txt = ExportTo.txt(reward);
+            String txt = ExportAs.txt(reward);
             System.out.println(txt);
         }
     }
