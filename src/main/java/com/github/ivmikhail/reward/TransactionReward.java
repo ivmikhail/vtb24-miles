@@ -1,13 +1,13 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.Transaction;
+import com.github.ivmikhail.transactions.Transaction;
 
 import java.math.BigDecimal;
 
 /**
  * Created by ivmikhail on 01/07/2017.
  */
-public class TransactionRewardResult {
+public class TransactionReward {
 
     private BigDecimal miles;
     private Transaction transaction;

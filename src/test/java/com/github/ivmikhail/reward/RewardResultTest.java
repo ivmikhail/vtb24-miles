@@ -1,7 +1,7 @@
 package com.github.ivmikhail.reward;
 
 import com.github.ivmikhail.Settings;
-import com.github.ivmikhail.Transaction;
+import com.github.ivmikhail.transactions.Transaction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,11 +57,7 @@ public class RewardResultTest {
     public void test() {
         RewardResult result = rule.process(transactions);
 
-        assertEquals(2, result.getTransactionsMap()
-                .values()
-                .stream()
-                .collect(Collectors.toList())
-                .size());
+        assertEquals(2, result.getTransactionsMap().values().size());
 
         assertEquals(0, result.getTotalRefillRUR().compareTo(new BigDecimal("50")));
         assertEquals(0, result.getTotalWithdrawRUR().compareTo(new BigDecimal("-100")));

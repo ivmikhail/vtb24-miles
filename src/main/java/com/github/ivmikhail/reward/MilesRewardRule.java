@@ -1,8 +1,8 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.CSVLoader;
+import com.github.ivmikhail.transactions.CSVLoader;
 import com.github.ivmikhail.Settings;
-import com.github.ivmikhail.Transaction;
+import com.github.ivmikhail.transactions.Transaction;
 import com.github.ivmikhail.fx.FxProvider;
 import com.github.ivmikhail.fx.vtb.VTBFxProvider;
 
@@ -67,7 +67,7 @@ public class MilesRewardRule {
         }
     }
 
-    private TransactionRewardResult process(final Transaction t) {
+    private TransactionReward process(final Transaction t) {
         Transaction.Type tType = determineType(t);
         BigDecimal miles = BigDecimal.ZERO;
 
@@ -83,7 +83,7 @@ public class MilesRewardRule {
             miles = amountInRUR.multiply(cashbackPercent);
         }
 
-        TransactionRewardResult result = new TransactionRewardResult();
+        TransactionReward result = new TransactionReward();
         result.setMiles(miles);
         result.setTransaction(t);
         result.setTransactionType(tType);

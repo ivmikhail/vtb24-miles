@@ -1,4 +1,4 @@
-package com.github.ivmikhail;
+package com.github.ivmikhail.transactions;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

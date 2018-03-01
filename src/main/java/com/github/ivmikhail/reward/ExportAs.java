@@ -1,7 +1,6 @@
-package com.github.ivmikhail;
+package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.reward.RewardResult;
-import com.github.ivmikhail.reward.TransactionRewardResult;
+import com.github.ivmikhail.transactions.Transaction;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -10,6 +9,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +33,6 @@ public final class ExportAs {
         } catch (IOException | TemplateException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private static Configuration createTemplateEngine() {
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        cfg.setClassForTemplateLoading(App.class, TEMPLATES_CLASSPATH_DIR);
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        cfg.setLogTemplateExceptions(false);
-        cfg.setWrapUncheckedExceptions(true);
-        cfg.setAPIBuiltinEnabled(true);
-        return cfg;
     }
 
     public static void csv(String filePath, RewardResult reward) throws IOException {
@@ -74,23 +63,36 @@ public final class ExportAs {
         }
     }
 
-    private static void printTransactions(CSVPrinter printer, String title, List<TransactionRewardResult> transactions) throws IOException {
+    private static Configuration createTemplateEngine() {
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
+        cfg.setClassForTemplateLoading(ExportAs.class, TEMPLATES_CLASSPATH_DIR);
+        cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+        cfg.setWrapUncheckedExceptions(true);
+        cfg.setAPIBuiltinEnabled(true);
+        return cfg;
+    }
+
+    private static void printTransactions(CSVPrinter printer,
+                                          String title,
+                                          List<TransactionReward> transactionRewards) throws IOException {
         printer.printRecord(title);
         printer.printRecord("СЧЕТ", "ДАТА ОБР", "ОПИСАНИЕ", "СУММА", "ВАЛЮТА", "МИЛИ");
 
-        if (transactions == null || transactions.isEmpty()) {
+        if (transactionRewards == null || transactionRewards.isEmpty()) {
             printer.printRecord("<нет операций>");
             return;
         }
 
-        for (TransactionRewardResult t : transactions) {
+        for (TransactionReward tr : transactionRewards) {
             printer.printRecord(
-                    t.getTransaction().getAccountNumberMasked(),
-                    t.getTransaction().getProcessedDate(),
-                    t.getTransaction().getDescription(),
-                    t.getTransaction().getAmountInAccountCurrency(),
-                    t.getTransaction().getAccountCurrencyCode(),
-                    t.getMiles()
+                    tr.getTransaction().getAccountNumberMasked(),
+                    tr.getTransaction().getProcessedDate(),
+                    tr.getTransaction().getDescription(),
+                    tr.getTransaction().getAmountInAccountCurrency(),
+                    tr.getTransaction().getAccountCurrencyCode(),
+                    tr.getMiles()
             );
         }
     }

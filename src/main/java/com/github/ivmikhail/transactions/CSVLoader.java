@@ -1,5 +1,6 @@
-package com.github.ivmikhail;
+package com.github.ivmikhail.transactions;
 
+import com.github.ivmikhail.Settings;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -18,7 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.github.ivmikhail.CSVLoader.Column.*;
+import static com.github.ivmikhail.transactions.CSVLoader.Column.*;
 
 /**
  * Created by ivmikhail on 01/07/2017.

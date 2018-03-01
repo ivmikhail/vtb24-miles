@@ -1,7 +1,7 @@
 package com.github.ivmikhail.reward;
 
 import com.github.ivmikhail.Settings;
-import com.github.ivmikhail.Transaction;
+import com.github.ivmikhail.transactions.Transaction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,19 +47,19 @@ public class MilesRewardRuleTest {
         transaction.setAmount(BigDecimal.ONE);
         transaction.setAmountInAccountCurrency(BigDecimal.ONE);
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> transactions = result.getTransactionsMap().get(Transaction.Type.REFILL);
+        List<TransactionReward> tRewards = result.getTransactionsMap().get(Transaction.Type.REFILL);
 
-        assertEquals(1, transactions.size());
-        assertEquals(0, transactions.get(0).getMiles().compareTo(BigDecimal.ZERO));
+        assertEquals(1, tRewards.size());
+        assertEquals(0, tRewards.get(0).getMiles().compareTo(BigDecimal.ZERO));
     }
 
     @Test
     public void testWithdrawNormal() {
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> transactions = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_NORMAL);
+        List<TransactionReward> tRewards = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_NORMAL);
 
-        assertEquals(1, transactions.size());
-        assertEquals(0, transactions.get(0).getMiles().compareTo(new BigDecimal("4")));
+        assertEquals(1, tRewards.size());
+        assertEquals(0, tRewards.get(0).getMiles().compareTo(new BigDecimal("4")));
     }
 
     @Test
@@ -67,37 +67,37 @@ public class MilesRewardRuleTest {
         transaction.setAmount(new BigDecimal("-99.9"));
         transaction.setAmountInAccountCurrency(new BigDecimal("-99.9"));
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> transactions = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_NORMAL);
+        List<TransactionReward> tRewards = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_NORMAL);
 
-        assertEquals(1, transactions.size());
-        assertEquals(0, transactions.get(0).getMiles().compareTo(BigDecimal.ZERO));
+        assertEquals(1, tRewards.size());
+        assertEquals(0, tRewards.get(0).getMiles().compareTo(BigDecimal.ZERO));
     }
 
     @Test
     public void testWithdrawForeignByCurrencyCode() {
         transaction.setCurrencyCode("USD");
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> foreignTransactions = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_FOREIGN);
+        List<TransactionReward> tRewards = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_FOREIGN);
 
-        assertEquals(1, foreignTransactions.size());
-        assertEquals(0, foreignTransactions.get(0).getMiles().compareTo(new BigDecimal("5")));
+        assertEquals(1, tRewards.size());
+        assertEquals(0, tRewards.get(0).getMiles().compareTo(new BigDecimal("5")));
     }
 
     @Test
     public void testWithdrawForeignByDescription() {
         transaction.setDescription("my foreign transaction");
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> foreignTransactions = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_FOREIGN);
+        List<TransactionReward> tRewards = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_FOREIGN);
 
-        assertEquals(0, foreignTransactions.get(0).getMiles().compareTo(new BigDecimal("5")));
-        assertEquals(1, foreignTransactions.size());
+        assertEquals(0, tRewards.get(0).getMiles().compareTo(new BigDecimal("5")));
+        assertEquals(1, tRewards.size());
     }
 
     @Test
     public void testWithdrawIgnoreByDescription() {
         transaction.setDescription("Ignore this transaction, please ignore");
         RewardResult result = rule.process(Collections.singletonList(transaction));
-        List<TransactionRewardResult> ignored = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_IGNORE);
+        List<TransactionReward> ignored = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_IGNORE);
 
 
         assertEquals(0, ignored.get(0).getMiles().compareTo(BigDecimal.ZERO));

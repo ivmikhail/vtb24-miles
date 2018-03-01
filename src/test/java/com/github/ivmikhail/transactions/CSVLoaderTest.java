@@ -1,7 +1,8 @@
-package com.github.ivmikhail;
+package com.github.ivmikhail.transactions;
 
 import static org.junit.Assert.assertEquals;
 
+import com.github.ivmikhail.Settings;
 import org.junit.Before;
 import org.junit.Test;
 

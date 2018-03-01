@@ -1,7 +1,7 @@
 package com.github.ivmikhail.reward;
 
 import com.github.ivmikhail.Settings;
-import com.github.ivmikhail.Transaction;
+import com.github.ivmikhail.transactions.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,7 +17,7 @@ public class RewardResult {
     private BigDecimal totalRefillRUR = BigDecimal.ZERO;
     private BigDecimal totalWithdrawRUR = BigDecimal.ZERO;
 
-    private Map<Transaction.Type, List<TransactionRewardResult>> transactionsMap;
+    private Map<Transaction.Type, List<TransactionReward>> transactionsMap;
     private Settings settings;
 
     public RewardResult() {
@@ -32,29 +32,29 @@ public class RewardResult {
         this.settings = settings;
     }
 
-    public Map<Transaction.Type, List<TransactionRewardResult>> getTransactionsMap() {
+    public Map<Transaction.Type, List<TransactionReward>> getTransactionsMap() {
         return transactionsMap;
     }
 
-    public List<TransactionRewardResult> getTransactions(String transactionTypeName) {
+    public List<TransactionReward> getTransactions(String transactionTypeName) {
         Transaction.Type type = Transaction.Type.valueOf(transactionTypeName);
         return transactionsMap.getOrDefault(type, Collections.emptyList());
     }
 
-    public void add(TransactionRewardResult trr) {
-        totalRewardMiles = totalRewardMiles.add(trr.getMiles());
-        switch (trr.getTransactionType()) {
+    public void add(TransactionReward tr) {
+        totalRewardMiles = totalRewardMiles.add(tr.getMiles());
+        switch (tr.getTransactionType()) {
             case REFILL:
-                totalRefillRUR = totalRefillRUR.add(trr.getTransaction().getAmountInAccountCurrency());
+                totalRefillRUR = totalRefillRUR.add(tr.getTransaction().getAmountInAccountCurrency());
                 break;
             default:
-                totalWithdrawRUR = totalWithdrawRUR.add(trr.getTransaction().getAmountInAccountCurrency());
+                totalWithdrawRUR = totalWithdrawRUR.add(tr.getTransaction().getAmountInAccountCurrency());
                 break;
         }
 
-        List<TransactionRewardResult> transactions = transactionsMap.getOrDefault(trr.getTransactionType(), new ArrayList<>());
-        transactions.add(trr);
-        transactionsMap.putIfAbsent(trr.getTransactionType(), transactions);
+        List<TransactionReward> transactions = transactionsMap.getOrDefault(tr.getTransactionType(), new ArrayList<>());
+        transactions.add(tr);
+        transactionsMap.putIfAbsent(tr.getTransactionType(), transactions);
     }
 
     public BigDecimal getTotalRefillRUR() {

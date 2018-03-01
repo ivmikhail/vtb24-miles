@@ -11,6 +11,24 @@ public class Settings {
     private LocalDate minDate;
     private LocalDate maxDate;
     private Properties properties;
+    private boolean printHelpAndExit;
+    private String exportPath;
+
+    public boolean isPrintHelpAndExit() {
+        return printHelpAndExit;
+    }
+
+    public void setPrintHelpAndExit(boolean printHelpAndExit) {
+        this.printHelpAndExit = printHelpAndExit;
+    }
+
+    public String getExportPath() {
+        return exportPath;
+    }
+
+    public void setExportPath(String exportPath) {
+        this.exportPath = exportPath;
+    }
 
     public String[] getPathsToStatement() {
         return pathsToStatement;
