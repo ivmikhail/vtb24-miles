@@ -15,6 +15,8 @@ public final class LoadProperties {
      */
     public static Properties fromClasspath(String resourceName) {
         InputStream is = LoadProperties.class.getResourceAsStream(resourceName);
+        if (is == null) throw new IllegalStateException(resourceName + " not found");
+
         return loadAndClose(is);
     }
 
@@ -33,8 +35,6 @@ public final class LoadProperties {
 
     private static Properties loadAndClose(InputStream is) {
         Properties properties = new Properties();
-
-        if (is == null) return properties;
 
         try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             properties.load(isr);

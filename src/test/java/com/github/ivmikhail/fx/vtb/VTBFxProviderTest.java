@@ -40,13 +40,13 @@ public class VTBFxProviderTest {
     }
 
     @Test
-    public void testRateOnExactDateUSDRUBon20180208() {
+    public void testRateOnExactDateUSDRUB() {
         BigDecimal rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2018, Month.FEBRUARY, 8));
         assertEquals(0, rate.compareTo(new BigDecimal("56.6000")));
     }
 
     @Test
-    public void testRateOnNearestDateUSDRUBon20171202() {
+    public void testRateOnNearestDateUSDRUB() {
         BigDecimal rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2017, Month.DECEMBER, 2));
         assertEquals(0, rate.compareTo(new BigDecimal("57.7100")));
     }
