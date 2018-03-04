@@ -20,7 +20,6 @@ public class LaunchOptions {
 
     private Options options;
     private String[] args;
-    private CommandLine cli;
 
     public LaunchOptions(String[] args) {
         this.options = createOptions();
@@ -28,6 +27,7 @@ public class LaunchOptions {
     }
 
     public Settings createSettings() {
+        CommandLine cli;
         try {
             cli = new DefaultParser().parse(options, args);
         } catch (ParseException e) {
@@ -56,10 +56,6 @@ public class LaunchOptions {
             YearMonth yearMonth = YearMonth.parse(rawYearMonth, DATEFORMAT_ARG);
             minDate = yearMonth.atDay(1);
             maxDate = yearMonth.atEndOfMonth();
-        }
-
-        if (minDate.isAfter(maxDate)) {
-            throw new IllegalArgumentException("<minDate> should be before <maxDate>");
         }
 
         Settings settings = new Settings();
