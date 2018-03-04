@@ -34,7 +34,7 @@ ${var.transaction.accountNumberMasked}   ${var.transaction.processedDate}   ${va
 
 Период с ${reward.settings.minDate} с ${reward.settings.maxDate}
 
-Всего миль получено      ${reward.totalRewardMiles}
-Всего пополнений, в руб  ${reward.totalRefillRUR}
+Всего миль получено     ${reward.totalRewardMiles}
+Всего пополнений, в руб ${reward.totalRefillRUR}
 Всего списаний  , в руб ${reward.totalWithdrawRUR}
-Эффективный кэшбек %     ${reward.effectiveCashback}
+Эффективный кэшбек %    ${reward.effectiveCashback}

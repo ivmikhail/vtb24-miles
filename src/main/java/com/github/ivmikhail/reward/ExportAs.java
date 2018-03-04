@@ -35,7 +35,7 @@ public final class ExportAs {
         }
     }
 
-    public static void csv(String filePath, RewardResult reward) throws IOException {
+    public static File csv(String filePath, RewardResult reward) throws IOException {
         File f = new File(filePath);
         if (!f.exists()) f.createNewFile();
 
@@ -61,6 +61,7 @@ public final class ExportAs {
             printer.printRecord("Всего списаний  , в руб " + reward.getTotalWithdrawRUR());
             printer.printRecord("Эффективный кэшбек %    " + reward.getEffectiveCashback());
         }
+        return f;
     }
 
     private static Configuration createTemplateEngine() {

@@ -73,7 +73,7 @@ public class RewardResult {
         //1 mile = 1 rub
         BigDecimal onePercent = totalWithdrawRUR.negate().divide(ONE_HUNDRED, RoundingMode.DOWN);
         if (onePercent.compareTo(BigDecimal.ZERO) == 0) {
-            return null;
+            return BigDecimal.ZERO;
         } else {
             return totalRewardMiles.divide(onePercent, 2, RoundingMode.DOWN);
         }
