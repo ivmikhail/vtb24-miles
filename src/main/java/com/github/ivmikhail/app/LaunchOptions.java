@@ -1,4 +1,4 @@
-package com.github.ivmikhail;
+package com.github.ivmikhail.app;
 
 import com.github.ivmikhail.util.LoadProperties;
 import org.apache.commons.cli.*;

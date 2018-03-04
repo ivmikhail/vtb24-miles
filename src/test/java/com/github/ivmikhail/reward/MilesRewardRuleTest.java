@@ -1,6 +1,6 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.Settings;
+import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.transactions.Transaction;
 import org.junit.Before;
 import org.junit.Test;

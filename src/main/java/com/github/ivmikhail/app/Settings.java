@@ -1,4 +1,4 @@
-package com.github.ivmikhail;
+package com.github.ivmikhail.app;
 
 import java.time.LocalDate;
 import java.util.Properties;

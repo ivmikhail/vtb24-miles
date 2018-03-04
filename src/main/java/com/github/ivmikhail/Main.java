@@ -1,5 +1,7 @@
 package com.github.ivmikhail;
 
+import com.github.ivmikhail.app.LaunchOptions;
+import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.reward.ExportAs;
 import com.github.ivmikhail.reward.MilesRewardRule;
 import com.github.ivmikhail.reward.RewardResult;
@@ -7,15 +9,15 @@ import com.github.ivmikhail.reward.RewardResult;
 import java.io.*;
 import java.util.logging.Logger;
 
-public final class App {
-    private static final Logger LOG = Logger.getLogger(App.class.getName());
+public final class Main {
+    private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
-    private App() {/* static class with Main method, no need to initialize */}
+    private Main() {/* static class with Main method, no need to initialize */}
 
     public static void main(String[] args) throws IOException {
         tryToMakeWorldBetter();
 
-        Settings settings = tryGetSettings(new LaunchOptions(args));
+        Settings settings = getSettingsOrExit(new LaunchOptions(args));
 
         MilesRewardRule rule = new MilesRewardRule(settings);
         RewardResult reward = rule.process();
@@ -46,7 +48,7 @@ public final class App {
         }
     }
 
-    private static Settings tryGetSettings(LaunchOptions opts) {
+    private static Settings getSettingsOrExit(LaunchOptions opts) {
         Settings settings = null;
         int exitCode = -1;
         try {

@@ -58,7 +58,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.github.ivmikhail.App</mainClass>
+                            <mainClass>com.github.ivmikhail.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

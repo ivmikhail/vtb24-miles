@@ -10,6 +10,9 @@ public final class LoadProperties {
 
     private LoadProperties() { /* helper static class */}
 
+    /**
+     * / means root of classpath
+     */
     public static Properties fromClasspath(String resourceName) {
         InputStream is = LoadProperties.class.getResourceAsStream(resourceName);
         return loadAndClose(is);

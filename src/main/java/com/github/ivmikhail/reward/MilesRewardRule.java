@@ -1,7 +1,7 @@
 package com.github.ivmikhail.reward;
 
 import com.github.ivmikhail.transactions.CSVLoader;
-import com.github.ivmikhail.Settings;
+import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.transactions.Transaction;
 import com.github.ivmikhail.fx.FxProvider;
 import com.github.ivmikhail.fx.vtb.VTBFxProvider;
