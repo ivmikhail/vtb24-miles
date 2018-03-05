@@ -1,9 +1,9 @@
 package com.github.ivmikhail.app;
 
-import com.github.ivmikhail.app.LaunchOptions;
-import com.github.ivmikhail.app.Settings;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -52,6 +52,18 @@ public class LaunchOptionsTest {
 
         assertEquals("export.txt", s.getExportPath());
     }
+
+    @Test
+    public void testUserProperties() throws IOException {
+        File f = File.createTempFile("user.properties.", ".tmp");
+
+        String args = "-s 1.txt -p " + f.getAbsolutePath();
+        LaunchOptions opts = new LaunchOptions(args.split(" "));
+        Settings s = opts.createSettings();
+
+        assertEquals(0, s.getProperties().size());
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void testWrongArguments() {
