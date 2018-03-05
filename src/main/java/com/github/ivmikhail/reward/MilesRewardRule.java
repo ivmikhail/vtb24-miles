@@ -5,6 +5,7 @@ import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.transactions.Transaction;
 import com.github.ivmikhail.fx.FxProvider;
 import com.github.ivmikhail.fx.vtb.VTBFxProvider;
+import com.github.ivmikhail.util.PropsUtil;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -36,8 +37,8 @@ public class MilesRewardRule {
             foreignTransactionWords = new HashSet<>();
          } else {
             fxProvider = new VTBFxProvider(properties);
-            ignoreWords = getPropertyAsSet("MilesRewardRule.transactions.ignore.description", properties);
-            foreignTransactionWords = getPropertyAsSet("MilesRewardRule.transactions.foreign.description", properties);
+            ignoreWords = PropsUtil.getAsSet(properties, "MilesRewardRule.transactions.ignore.description", COMMA);
+            foreignTransactionWords = PropsUtil.getAsSet(properties, "MilesRewardRule.transactions.foreign.description", COMMA);
         }
     }
 
@@ -99,17 +100,6 @@ public class MilesRewardRule {
 
             return t.getAmountInAccountCurrency().multiply(rate);
         }
-    }
-
-    private Set<String> getPropertyAsSet(String key, Properties properties) {
-        String[] arr = properties.getProperty(key, "").split(COMMA);
-        Set<String> set = new HashSet<>();
-        for (String s : arr) {
-            if (!s.trim().isEmpty()) {
-                set.add(s.trim());
-            }
-        }
-        return set;
     }
 
     private Transaction.Type determineType(Transaction t) {

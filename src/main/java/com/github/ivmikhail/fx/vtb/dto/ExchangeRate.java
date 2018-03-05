@@ -64,22 +64,4 @@ public class ExchangeRate {
     public int getZone() {
         return zone;
     }
-
-    @Override
-    public String toString() {
-        return "ExchangeRate{" +
-                "buy=" + buy +
-                ", buyArrow='" + buyArrow + '\'' +
-                ", currencyAbbr='" + currencyAbbr + '\'' +
-                ", currencyGroupAbbr='" + currencyGroupAbbr + '\'' +
-                ", dateActiveFrom=" + dateActiveFrom +
-                ", gradation=" + gradation +
-                ", metal=" + metal +
-                ", quantity=" + quantity +
-                ", sell=" + sell +
-                ", sellArrow='" + sellArrow + '\'' +
-                ", title='" + title + '\'' +
-                ", zone=" + zone +
-                '}';
-    }
 }

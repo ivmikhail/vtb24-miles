@@ -4,14 +4,6 @@ public class Payload {
     private String action;
     private String scopeData;
 
-    public String getAction() {
-        return action;
-    }
-
-    public String getScopeData() {
-        return scopeData;
-    }
-
     public void setAction(String action) {
         this.action = action;
     }

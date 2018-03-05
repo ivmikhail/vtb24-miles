@@ -17,12 +17,14 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 /**
  * Retrieves rates from
  * https://www.vtb24.ru/banking/currency/rate-of-conversion/?NoMobileRedirect=true
  */
 public class VTBFxProvider implements FxProvider {
+    private static final Logger LOG = Logger.getLogger(VTBFxProvider.class.getName());
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final Gson GSON = new GsonBuilder()
@@ -105,6 +107,8 @@ public class VTBFxProvider implements FxProvider {
     }
 
     private RatesWrapper loadFromRemote() throws IOException {
+        LOG.info("Fetching FX rates from " + url);
+
         RequestBody requestBody = RequestBody.create(JSON, GSON.toJson(PayloadFactory.createFX()));
 
         Request request = new Request.Builder()
