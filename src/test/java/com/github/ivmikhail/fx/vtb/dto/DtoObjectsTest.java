@@ -13,13 +13,17 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class DtoObjectsTest {
+    private static final int EXPECTED_CLASS_COUNT = 1;
+
     // The top level package for all classes to be tested
     private String packageName = this.getClass().getPackage().getName();
     private List<PojoClass> pojoClasses;
 
     @Before
-    public void setup() {
+    public void setUp() {
         // Get all classes recursively under package
         pojoClasses = PojoClassFactory.getPojoClassesRecursively(packageName, pojoClass -> {
             //exclude this class because of it's not pojo, it's a test
@@ -29,6 +33,8 @@ public class DtoObjectsTest {
 
     @Test
     public void testGettersAndSettersOfAllDtoObjects() {
+        assertEquals(EXPECTED_CLASS_COUNT, 3);
+
         Validator v = ValidatorBuilder.create()
                 // Lets make sure that we have a getter and a setter for every field defined.
                 .with(new SetterMustExistRule())
