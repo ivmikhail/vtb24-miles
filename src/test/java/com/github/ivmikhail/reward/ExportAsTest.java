@@ -67,4 +67,9 @@ public class ExportAsTest {
 
         assertEquals("Эффективный кэшбек %    4", lastLine);
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void testExportTxtFail() {
+        ExportAs.txt(rewardResult, "/this-templates-path-is-fake");
+    }
 }

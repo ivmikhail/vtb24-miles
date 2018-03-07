@@ -22,11 +22,15 @@ public final class ExportAs {
     private ExportAs() { /* helper class */}
 
     public static String txt(RewardResult reward) {
+        return txt(reward, TEMPLATES_CLASSPATH_DIR);
+    }
+
+    static String txt(RewardResult reward, String templatesDir) {
         Map model = new HashMap();
         model.put("reward", reward);
 
         try (Writer out = new StringWriter()) {
-            Template template = createTemplateEngine().getTemplate(TEMPLATE_REWARD_RESULT);
+            Template template = createTemplateEngine(templatesDir).getTemplate(TEMPLATE_REWARD_RESULT);
             template.process(model, out);
 
             return out.toString();
@@ -64,9 +68,9 @@ public final class ExportAs {
         return f;
     }
 
-    private static Configuration createTemplateEngine() {
+    private static Configuration createTemplateEngine(String templatesClasspathDir) {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        cfg.setClassForTemplateLoading(ExportAs.class, TEMPLATES_CLASSPATH_DIR);
+        cfg.setClassForTemplateLoading(ExportAs.class, templatesClasspathDir);
         cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);
