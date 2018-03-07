@@ -74,8 +74,8 @@ public class MilesRewardRule {
             result.add(process(t));
         }
 
-        result.setMinDate(DateUtil.coalesceMin(settings.getMinDate(), min));
-        result.setMaxDate(DateUtil.coalesceMax(settings.getMaxDate(), max));
+        result.setMinDate(DateUtil.minOf(settings.getMinDate(), min));
+        result.setMaxDate(DateUtil.maxOf(settings.getMaxDate(), max));
 
         if (fxProvider != null) fxProvider.clear();
         return result;

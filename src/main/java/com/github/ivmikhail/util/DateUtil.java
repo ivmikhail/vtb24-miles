@@ -6,13 +6,13 @@ public final class DateUtil {
     private DateUtil() {/* util class */}
 
     /**
-     * Return MAX date
+     * Return max date
      * <p>
-     * NULL will be ignored
+     * NULL and LocalDate.MAX will be ignored
      * <p>
-     * In case of all nulls, LocalDate.MAX will be returned
+     * In case of all NULLs and/or LocalDate.MAX, LocalDate.MAX will be returned
      */
-    public static LocalDate coalesceMax(LocalDate... dates) {
+    public static LocalDate maxOf(LocalDate... dates) {
         LocalDate max = null;
 
         for (LocalDate d : dates) {
@@ -29,13 +29,13 @@ public final class DateUtil {
     }
 
     /**
-     * Return MIN date
+     * Return min date
      * <p>
-     * NULL will be ignored
+     * NULL and LocalDate.MAX will be ignored
      * <p>
-     * In case of all nulls, LocalDate.MIN will be returned
+     * In case of all NULLs and/or LocalDate.MIN, LocalDate.MIN will be returned
      */
-    public static LocalDate coalesceMin(LocalDate... dates) {
+    public static LocalDate minOf(LocalDate... dates) {
         LocalDate min = null;
 
         for (LocalDate d : dates) {
