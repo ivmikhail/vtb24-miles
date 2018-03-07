@@ -38,7 +38,15 @@ public class LoadPropertiesTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testLoadFromNonExistentFile() {
+    public void testLoadFromNonFile() {
         LoadProperties.fromFile(".");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testLoadFromNonExistentFile() throws IOException {
+        File temp = File.createTempFile("junit.test.app.properties.", ".tmp");
+        temp.delete();
+
+        LoadProperties.fromFile(temp.getAbsolutePath());
     }
 }
