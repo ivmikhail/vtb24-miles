@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class DtoObjectsTest {
-    private static final int EXPECTED_CLASS_COUNT = 1;
+    private static final int EXPECTED_CLASS_COUNT = 3;
 
     // The top level package for all classes to be tested
     private String packageName = this.getClass().getPackage().getName();
