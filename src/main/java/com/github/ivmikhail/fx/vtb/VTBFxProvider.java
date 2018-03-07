@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -36,12 +37,15 @@ public class VTBFxProvider implements FxProvider {
     private static final String USER_AGENT = "vtb24-miles (https://github.com/ivmikhail/vtb24-miles)";
 
     private String url;
+    private int readTimeoutMillis;
     private OkHttpClient httpClient;
     private String[][] supportedPairs;
     private List<ExchangeRate> rates;
 
     public VTBFxProvider(Properties properties) {
         url = properties.getProperty("fx.provider.vtb.url");
+        readTimeoutMillis = Integer.parseInt(properties.getProperty("fx.provider.vtb.readTimeoutMillis", "10000"));
+
         supportedPairs = new String[][]{
                 {"USD", "RUR"},
                 {"EUR", "RUR"},
@@ -85,12 +89,14 @@ public class VTBFxProvider implements FxProvider {
         //single thread app, so code below is ok
         if (!rates.isEmpty()) return;
 
+        RatesWrapper wrapper;
         try {
-            RatesWrapper wrapper = loadFromRemote();
-            rates.addAll(wrapper.getGetHalfYearCardsRatesJsonResult());
+            wrapper = loadFromRemote();
         } catch (IOException e) {
             throw new IllegalStateException("Failed to retrieve FX rates from url " + url, e);
         }
+
+        rates.addAll(wrapper.getGetHalfYearCardsRatesJsonResult());
     }
 
     @Override
@@ -118,9 +124,15 @@ public class VTBFxProvider implements FxProvider {
                 .header("Accept-Encoding", "gzip, deflate")
                 .post(requestBody)
                 .build();
-        Response response = httpClient
+        Response response = httpClient.newBuilder()
+                .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
+                .build()
                 .newCall(request)
                 .execute();
+
+        if (response.code() != 200) {
+            throw new IllegalStateException("Failed to get FX rates, response code is " + response.code());
+        }
 
         String responseBody = response.body().string();
 
@@ -128,7 +140,7 @@ public class VTBFxProvider implements FxProvider {
                 responseBody,
                 RatesWrapper.class);
 
-        if (!result.isValid()) {
+        if (result == null || !result.isValid()) {
             throw new IllegalStateException(
                     String.format("Failed to get FX rates from %s, response: %s ", url, responseBody)
             );

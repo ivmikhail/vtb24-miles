@@ -1,7 +1,6 @@
-package com.github.ivmikhail.fx.vtb;
+package com.github.ivmikhail.fx;
 
-import com.github.ivmikhail.fx.FxProvider;
-import okhttp3.HttpUrl;
+import com.github.ivmikhail.fx.vtb.VTBFxProvider;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
@@ -17,8 +16,7 @@ import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 
-public class VTBFxProviderTest {
-    private static final String VTB_API_URL = "https://www.vtb24.ru/services/ExecuteAction";
+public class FxProviderTest {
     private static final String RATES_JSON_PATH = "/fx/vtb/rates.json";
 
     private MockWebServer webServer;
@@ -28,13 +26,12 @@ public class VTBFxProviderTest {
     public void setUp() throws IOException {
         String ratesJson = loadResourceAsString(RATES_JSON_PATH);
         webServer = new MockWebServer();
+        webServer.start();
+
         webServer.enqueue(new MockResponse().setBody(ratesJson));
 
-        webServer.start();
-        HttpUrl baseUrl = webServer.url(VTB_API_URL);
-
         Properties properties = new Properties();
-        properties.setProperty("fx.provider.vtb.url", baseUrl.toString());
+        properties.setProperty("fx.provider.vtb.url", webServer.url("/").toString());
 
         fxProvider = new VTBFxProvider(properties);
     }
@@ -49,11 +46,6 @@ public class VTBFxProviderTest {
     public void testRateOnNearestDateUSDRUB() {
         BigDecimal rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2017, Month.DECEMBER, 2));
         assertEquals(0, rate.compareTo(new BigDecimal("57.7100")));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testUSDJPY() {
-        fxProvider.getRate("USD", "JPY", LocalDate.MIN);
     }
 
     @After
