@@ -2,8 +2,10 @@ package com.github.ivmikhail.app;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -75,5 +77,19 @@ public class LaunchOptionsTest {
     public void testWithoutRequiredArgument() {
         LaunchOptions opts = new LaunchOptions("no minuss arg".split(" "));
         opts.createSettings();
+    }
+
+    @Test
+    public void testHelpPrint() {
+        LaunchOptions opts = new LaunchOptions(new String[]{});
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));//change out
+
+        opts.printHelp();
+
+        System.setOut(System.out);//restore out
+
+        assertTrue(outContent.size() > 0);
     }
 }
