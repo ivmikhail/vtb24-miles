@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,8 +50,10 @@ public class ExportAsTest {
 
     @Test
     public void testExportCsv() throws IOException {
-        Path tempFilePath = Files.createTempFile("junit.test.export.csv.", "tmp");
-        File csv = ExportAs.csv(tempFilePath.toAbsolutePath().toString(), rewardResult);
+        File temp = File.createTempFile("junit.test.export.csv.", "tmp");
+        temp.deleteOnExit();
+
+        File csv = ExportAs.csv(rewardResult, temp.getAbsolutePath());
 
         List<String> lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
         String lastLine = lines.get(lines.size() - 1).replace("\"", "");

@@ -25,7 +25,7 @@ public final class ExportAs {
         return txt(reward, TEMPLATES_CLASSPATH_DIR);
     }
 
-    static String txt(RewardResult reward, String templatesDir) {
+    public static String txt(RewardResult reward, String templatesDir) {
         Map model = new HashMap();
         model.put("reward", reward);
 
@@ -39,7 +39,7 @@ public final class ExportAs {
         }
     }
 
-    public static File csv(String filePath, RewardResult reward) throws IOException {
+    public static File csv(RewardResult reward, String filePath) throws IOException {
         File f = new File(filePath);
         if (!f.exists()) f.createNewFile();
 

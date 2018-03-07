@@ -26,7 +26,7 @@ public final class Main {
             String txt = ExportAs.txt(reward);
             System.out.println(txt);
         } else {
-            ExportAs.csv(settings.getExportPath(), reward);
+            ExportAs.csv(reward, settings.getExportPath());
         }
     }
 
