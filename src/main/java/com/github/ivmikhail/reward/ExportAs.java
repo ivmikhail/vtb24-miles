@@ -16,21 +16,21 @@ import java.util.Map;
 
 public final class ExportAs {
 
-    private static final String TEMPLATES_CLASSPATH_DIR = "/templates";
+    private static final String TEMPLATES_CLASSPATH = "/templates";
     private static final String TEMPLATE_REWARD_RESULT = "rewardResult.ftl";
 
     private ExportAs() { /* helper class */}
 
     public static String txt(RewardResult reward) {
-        return txt(reward, TEMPLATES_CLASSPATH_DIR);
+        return txt(reward, TEMPLATES_CLASSPATH);
     }
 
-    public static String txt(RewardResult reward, String templatesDir) {
+    public static String txt(RewardResult reward, String templatesClasspath) {
         Map model = new HashMap();
         model.put("reward", reward);
 
         try (Writer out = new StringWriter()) {
-            Template template = createTemplateEngine(templatesDir).getTemplate(TEMPLATE_REWARD_RESULT);
+            Template template = createTemplateEngine(templatesClasspath).getTemplate(TEMPLATE_REWARD_RESULT);
             template.process(model, out);
 
             return out.toString();
