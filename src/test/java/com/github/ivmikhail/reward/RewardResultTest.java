@@ -15,14 +15,27 @@ import static org.junit.Assert.assertEquals;
 
 public class RewardResultTest {
 
-    private MilesRewardRule rule;
-    private List<Transaction> transactions;
+    @Test
+    public void testZeroEffectiveCashback() {
+        RewardResult reward = new RewardResult();
+        assertEquals(0, BigDecimal.ZERO.compareTo(reward.getEffectiveCashback()));
+    }
 
-    @Before
-    public void setUp() {
+    @Test
+    public void test() {
+        RewardResult result = createMockResult();
 
-        rule = new MilesRewardRule(new Settings());
-        transactions = new ArrayList<>();
+        assertEquals(2, result.getTransactionsMap().values().size());
+
+        assertEquals(0, result.getTotalRefillRUR().compareTo(new BigDecimal("50")));
+        assertEquals(0, result.getTotalWithdrawRUR().compareTo(new BigDecimal("-100")));
+        assertEquals(0, result.getTotalRewardMiles().compareTo(new BigDecimal("4")));
+        assertEquals(0, result.getEffectiveCashback().compareTo(new BigDecimal("4")));
+    }
+
+    private RewardResult createMockResult() {
+        MilesRewardRule rule = new MilesRewardRule(new Settings());
+        List<Transaction> transactions = new ArrayList<>();
 
         Transaction t1;
         t1 = new Transaction();
@@ -50,17 +63,7 @@ public class RewardResultTest {
 
         transactions.add(t1);
         transactions.add(t2);
-    }
 
-    @Test
-    public void test() {
-        RewardResult result = rule.process(transactions);
-
-        assertEquals(2, result.getTransactionsMap().values().size());
-
-        assertEquals(0, result.getTotalRefillRUR().compareTo(new BigDecimal("50")));
-        assertEquals(0, result.getTotalWithdrawRUR().compareTo(new BigDecimal("-100")));
-        assertEquals(0, result.getTotalRewardMiles().compareTo(new BigDecimal("4")));
-        assertEquals(0, result.getEffectiveCashback().compareTo(new BigDecimal("4")));
+        return rule.process(transactions);
     }
 }
