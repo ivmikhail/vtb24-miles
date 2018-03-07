@@ -21,47 +21,95 @@ public class ExchangeRate {
         return buy;
     }
 
+    public void setBuy(BigDecimal buy) {
+        this.buy = buy;
+    }
+
     public String getBuyArrow() {
         return buyArrow;
+    }
+
+    public void setBuyArrow(String buyArrow) {
+        this.buyArrow = buyArrow;
     }
 
     public String getCurrencyAbbr() {
         return currencyAbbr;
     }
 
+    public void setCurrencyAbbr(String currencyAbbr) {
+        this.currencyAbbr = currencyAbbr;
+    }
+
     public String getCurrencyGroupAbbr() {
         return currencyGroupAbbr;
+    }
+
+    public void setCurrencyGroupAbbr(String currencyGroupAbbr) {
+        this.currencyGroupAbbr = currencyGroupAbbr;
     }
 
     public LocalDateTime getDateActiveFrom() {
         return dateActiveFrom;
     }
 
+    public void setDateActiveFrom(LocalDateTime dateActiveFrom) {
+        this.dateActiveFrom = dateActiveFrom;
+    }
+
     public int getGradation() {
         return gradation;
+    }
+
+    public void setGradation(int gradation) {
+        this.gradation = gradation;
     }
 
     public boolean isMetal() {
         return metal;
     }
 
+    public void setMetal(boolean metal) {
+        this.metal = metal;
+    }
+
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public BigDecimal getSell() {
         return sell;
     }
 
+    public void setSell(BigDecimal sell) {
+        this.sell = sell;
+    }
+
     public String getSellArrow() {
         return sellArrow;
+    }
+
+    public void setSellArrow(String sellArrow) {
+        this.sellArrow = sellArrow;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public int getZone() {
         return zone;
+    }
+
+    public void setZone(int zone) {
+        this.zone = zone;
     }
 }
