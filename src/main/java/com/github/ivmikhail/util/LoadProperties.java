@@ -41,18 +41,8 @@ public final class LoadProperties {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         } finally {
-            close(is);
+            IOUtils.close(is);
         }
         return properties;
-    }
-
-    private static void close(InputStream is) {
-        if (is == null) return;
-
-        try {
-            is.close();
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to close input stream", e);
-        }
     }
 }

@@ -28,6 +28,7 @@ public class LoadPropertiesTest {
         //load from resource and save to temp file
         Properties properties = LoadProperties.fromClasspath("/util/app.properties");
         File temp = File.createTempFile("junit.test.app.properties.", ".tmp");
+        temp.deleteOnExit();
         properties.store(new FileWriter(temp), "");
 
         //test loading from test file
@@ -37,7 +38,7 @@ public class LoadPropertiesTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testLoadFromFileFail() {
+    public void testLoadFromNonExistentFile() {
         LoadProperties.fromFile(".");
     }
 }
