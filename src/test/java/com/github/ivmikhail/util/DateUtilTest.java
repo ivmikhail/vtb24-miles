@@ -16,6 +16,17 @@ public class DateUtilTest {
 
         LocalDate date = DateUtil.coalesceMax(null, feb08, LocalDate.MAX, null, feb07);
 
+
+        assertTrue(feb08.isEqual(date));
+    }
+
+    @Test
+    public void testCoalesceMaxSpecifiedDates() {
+        LocalDate feb07 = LocalDate.of(2018, Month.MARCH, 7);
+        LocalDate feb08 = LocalDate.of(2018, Month.MARCH, 8);
+
+        LocalDate date = DateUtil.coalesceMax(feb07, feb08);
+
         assertTrue(feb08.isEqual(date));
     }
 
