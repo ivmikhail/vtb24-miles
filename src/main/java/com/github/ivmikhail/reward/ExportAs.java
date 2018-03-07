@@ -59,7 +59,7 @@ public final class ExportAs {
             printTransactions(printer, "Пополнения", reward.getTransactionsMap().get(Transaction.Type.REFILL));
             printer.printRecord("");
 
-            printer.printRecord("Период с" + reward.getSettings().getMinDate() + " c " + reward.getSettings().getMaxDate());
+            printer.printRecord("Период, с " + reward.getMinDate() + " по " + reward.getMaxDate());
             printer.printRecord("Всего миль получено     " + reward.getTotalRewardMiles());
             printer.printRecord("Всего пополнений, в руб " + reward.getTotalRefillRUR());
             printer.printRecord("Всего списаний  , в руб " + reward.getTotalWithdrawRUR());

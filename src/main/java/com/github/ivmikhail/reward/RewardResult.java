@@ -1,10 +1,10 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.transactions.Transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -13,23 +13,36 @@ import java.util.*;
 public class RewardResult {
     private BigDecimal ONE_HUNDRED = new BigDecimal("100");
 
-    private BigDecimal totalRewardMiles = BigDecimal.ZERO;
-    private BigDecimal totalRefillRUR = BigDecimal.ZERO;
-    private BigDecimal totalWithdrawRUR = BigDecimal.ZERO;
+    private BigDecimal totalRewardMiles;
+    private BigDecimal totalRefillRUR;
+    private BigDecimal totalWithdrawRUR;
+
+    private LocalDate minDate;
+    private LocalDate maxDate;
 
     private Map<Transaction.Type, List<TransactionReward>> transactionsMap;
-    private Settings settings;
 
     public RewardResult() {
         transactionsMap = new TreeMap<>();
+        totalRewardMiles = BigDecimal.ZERO;
+        totalRefillRUR = BigDecimal.ZERO;
+        totalWithdrawRUR = BigDecimal.ZERO;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public LocalDate getMinDate() {
+        return minDate;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setMinDate(LocalDate minDate) {
+        this.minDate = minDate;
+    }
+
+    public LocalDate getMaxDate() {
+        return maxDate;
+    }
+
+    public void setMaxDate(LocalDate maxDate) {
+        this.maxDate = maxDate;
     }
 
     public Map<Transaction.Type, List<TransactionReward>> getTransactionsMap() {

@@ -32,7 +32,7 @@ ${var.transaction.accountNumberMasked}   ${var.transaction.processedDate}   ${va
 <@transactions reward?api.getTransactions("REFILL") />
 
 
-Период с ${reward.settings.minDate} с ${reward.settings.maxDate}
+Период, с ${reward.minDate} по ${reward.maxDate}
 
 Всего миль получено     ${reward.totalRewardMiles}
 Всего пополнений, в руб ${reward.totalRefillRUR}

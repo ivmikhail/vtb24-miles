@@ -23,7 +23,7 @@ public class RewardResultTest {
 
     @Test
     public void test() {
-        RewardResult result = createMockResult();
+        RewardResult result = processMockTransactions();
 
         assertEquals(2, result.getTransactionsMap().values().size());
 
@@ -33,7 +33,7 @@ public class RewardResultTest {
         assertEquals(0, result.getEffectiveCashback().compareTo(new BigDecimal("4")));
     }
 
-    private RewardResult createMockResult() {
+    private RewardResult processMockTransactions() {
         MilesRewardRule rule = new MilesRewardRule(new Settings());
         List<Transaction> transactions = new ArrayList<>();
 

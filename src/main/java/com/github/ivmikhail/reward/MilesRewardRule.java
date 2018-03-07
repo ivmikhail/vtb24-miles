@@ -5,11 +5,13 @@ import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.transactions.Transaction;
 import com.github.ivmikhail.fx.FxProvider;
 import com.github.ivmikhail.fx.vtb.VTBFxProvider;
+import com.github.ivmikhail.util.DateUtil;
 import com.github.ivmikhail.util.PropsUtil;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -32,10 +34,10 @@ public class MilesRewardRule {
         this.settings = settings;
         Properties properties = settings.getProperties();
 
-        if(properties == null) {
+        if (properties == null) {
             ignoreWords = new HashSet<>();
             foreignTransactionWords = new HashSet<>();
-         } else {
+        } else {
             fxProvider = new VTBFxProvider(properties);
             ignoreWords = PropsUtil.getAsSet(properties, "MilesRewardRule.transactions.ignore.description", COMMA);
             foreignTransactionWords = PropsUtil.getAsSet(properties, "MilesRewardRule.transactions.foreign.description", COMMA);
@@ -52,10 +54,29 @@ public class MilesRewardRule {
 
     public RewardResult process(List<Transaction> transactions) {
         RewardResult result = new RewardResult();
-        result.setSettings(settings);
+
+        //processed transaction min/max date
+        LocalDate min = LocalDate.MIN;
+        LocalDate max = LocalDate.MAX;
+
+        LocalDate processedDate = null;
         for (Transaction t : transactions) {
+            if (processedDate == null) { //first iteration
+                min = t.getProcessedDate();
+                max = t.getProcessedDate();
+            }
+
+            processedDate = t.getProcessedDate();
+
+            if (processedDate.isBefore(min)) min = processedDate;
+            if (processedDate.isAfter(max)) max = processedDate;
+
             result.add(process(t));
         }
+
+        result.setMinDate(DateUtil.coalesceMin(settings.getMinDate(), min));
+        result.setMaxDate(DateUtil.coalesceMax(settings.getMaxDate(), max));
+
         if (fxProvider != null) fxProvider.clear();
         return result;
     }

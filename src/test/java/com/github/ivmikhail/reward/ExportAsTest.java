@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -33,19 +34,8 @@ public class ExportAsTest {
         t.setAccountNumberMasked("12**34");
         t.setStatus("Обработано");
 
-
-        TransactionReward tr = new TransactionReward();
-        tr.setMiles(new BigDecimal("4.00"));
-        tr.setTransactionType(Transaction.Type.WITHDRAW_NORMAL);
-        tr.setTransaction(t);
-
-        Settings s = new Settings();
-        s.setMinDate(LocalDate.MIN);
-        s.setMaxDate(LocalDate.MAX);
-
-        rewardResult = new RewardResult();
-        rewardResult.setSettings(s);
-        rewardResult.add(tr);
+        MilesRewardRule rule = new MilesRewardRule(new Settings());
+        rewardResult = rule.process(Collections.singletonList(t));
     }
 
     @Test
