@@ -29,7 +29,7 @@ public class FxProviderExceptionsTest {
 
         Properties properties = new Properties();
         properties.setProperty("fx.provider.vtb.url", webServer.url("/").toString());
-        properties.setProperty("fx.provider.vtb.readTimeoutMillis", "1000");
+        properties.setProperty("fx.provider.vtb.readTimeoutMillis", "100");
         fxProvider = new VTBFxProvider(properties);
     }
 
@@ -91,7 +91,7 @@ public class FxProviderExceptionsTest {
     public void testUnreachableServer() {
         webServer.enqueue(new MockResponse()
                 .setBody("123")
-                .setBodyDelay(2, TimeUnit.SECONDS));
+                .setBodyDelay(101, TimeUnit.MILLISECONDS));
 
         try {
             fxProvider.getRate("USD", "RUR", LocalDate.of(2018, Month.MARCH, 8));
