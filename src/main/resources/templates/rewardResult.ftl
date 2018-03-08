@@ -1,3 +1,5 @@
+<#-- @ftlvariable name="reward" type="com.github.ivmikhail.reward.RewardResult" -->
+
 <#setting number_format="###.##">
 
 <#macro transactions transactionsList>
