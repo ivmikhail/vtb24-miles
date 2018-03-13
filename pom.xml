@@ -8,7 +8,7 @@
 
 
     <name>vtb24-miles</name>
-    <description>Counting miles rewardPercent for credit cards of VTB24</description>
+    <description>Counting reward miles/bonuses for VTB cards</description>
     <url>https://github.com/ivmikhail/vtb24-miles</url>
 
     <issueManagement>
