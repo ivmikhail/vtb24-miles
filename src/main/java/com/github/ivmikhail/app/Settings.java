@@ -14,6 +14,10 @@ public class Settings {
     private boolean printHelpAndExit;
     private String exportPath;
 
+    public Settings() {
+        this.properties = new Properties();
+    }
+
     public boolean isPrintHelpAndExit() {
         return printHelpAndExit;
     }

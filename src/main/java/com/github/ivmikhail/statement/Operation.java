@@ -1,4 +1,4 @@
-package com.github.ivmikhail.transactions;
+package com.github.ivmikhail.statement;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -7,15 +7,7 @@ import java.time.LocalDateTime;
 /**
  * Created by ivmikhail on 01/07/2017.
  */
-public class Transaction {
-
-    public enum Type {
-        REFILL,
-        WITHDRAW_NORMAL,
-        WITHDRAW_FOREIGN,
-        WITHDRAW_IGNORE
-    }
-
+public class Operation {
     private String accountNumberMasked;
     private LocalDateTime dateTime;
     private LocalDate processedDate;
@@ -100,7 +92,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" +
+        return "Operation{" +
                 "accountNumberMasked='" + accountNumberMasked + '\'' +
                 ", dateTime=" + dateTime +
                 ", processedDate=" + processedDate +

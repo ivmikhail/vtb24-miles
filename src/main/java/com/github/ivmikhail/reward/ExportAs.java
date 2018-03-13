@@ -1,104 +1,179 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.transactions.Transaction;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+import com.github.ivmikhail.fx.FxRate;
+import com.github.ivmikhail.reward.rule.RewardRule;
+import com.github.ivmikhail.statement.Operation;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.QuoteMode;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class ExportAs {
+    private static final char ZERO_WIDTH_SPACE = '\u200B';
+    private static final CSVFormat TEXT_FORMAT = CSVFormat.TDF
+            .withEscape(ZERO_WIDTH_SPACE)
+            .withQuoteMode(QuoteMode.NONE)
+            .withDelimiter(',');
+    private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
 
-    private static final String TEMPLATES_CLASSPATH = "/templates";
-    private static final String TEMPLATE_REWARD_RESULT = "rewardResult.ftl";
+    private static final int NO_PAD = 0;//value will be printed as value.trim(), without padding
+
+    private static final int PAD_ACC = 16;
+    private static final int PAD_DATE = 10;
+    private static final int PAD_DESCRIPTION = 30;
+    private static final int PAD_AMOUNT = 11;
+    private static final int PAD_CCY = 6;
+    private static final int PAD_RATE = 6;
+    private static final int PAD_PERCENT = 6;
+    private static final int PAD_MILES = 9;
+
+    private static final int PAD_RULE = 27;
 
     private ExportAs() { /* helper class */}
 
-    public static String txt(RewardResult reward) {
-        return txt(reward, TEMPLATES_CLASSPATH);
+    public static String txt(RewardSummary reward) {
+        StringWriter out = new StringWriter();
+        writeAndClose(reward, TEXT_FORMAT, out);
+        return out.toString();
     }
 
-    public static String txt(RewardResult reward, String templatesClasspath) {
-        Map model = new HashMap();
-        model.put("reward", reward);
+    public static File csv(RewardSummary reward, String pathToCsv) {
+        File f = new File(pathToCsv);
+        //if (!f.exists()) f.createNewFile();
 
-        try (Writer out = new StringWriter()) {
-            Template template = createTemplateEngine(templatesClasspath).getTemplate(TEMPLATE_REWARD_RESULT);
-            template.process(model, out);
+        FileWriter out;
+        try {
+            out = new FileWriter(f);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        writeAndClose(reward, FILE_FORMAT, out);
 
-            return out.toString();
-        } catch (IOException | TemplateException e) {
+        return f;
+    }
+
+    public static void writeAndClose(RewardSummary reward, CSVFormat format, Writer out) {
+        try (
+                CSVPrinter csv = new CSVPrinter(out, format)
+        ) {
+            Map<Transaction.Type, List<Transaction>> transactionMap = reward.getTransactionsMap();
+            // printTransactions(csv, "Операции с кэшбеком", reward.getTransactionsMap().get(Transaction.Type.WITHDRAW));
+            //  csv.printRecord("");
+
+            printTransactions(csv, "Операции c кэшбеком", transactionMap.get(Transaction.Type.WITHDRAW), reward.getRules());
+            csv.println();
+
+            printTransactions(csv, "Операции, кешбэк за которые не положен", transactionMap.get(Transaction.Type.WITHDRAW_IGNORE));
+            csv.println();
+
+            printTransactions(csv, "Пополнения", transactionMap.get(Transaction.Type.REFILL));
+            csv.println();
+
+            csv.printRecord("Период, с " + reward.getMinDate() + " по " + reward.getMaxDate());
+            csv.println();
+
+            csv.printRecord("Всего миль/бонусов/cashback положено: ");
+            RewardRule[] rules = reward.getRules();
+            BigDecimal[] totalMiles = reward.getTotalMiles();
+            for (int i = 0; i < rules.length; i++) {
+                csv.printRecord(
+                        pad(rules[i].getName(), PAD_RULE),
+                        pad(totalMiles[i], NO_PAD));
+            }
+
+            csv.println();
+            csv.printRecord("Всего пополнений, в руб", reward.getTotalRefillRUR());
+            csv.printRecord("Всего списаний  , в руб", reward.getTotalWithdrawRUR());
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static File csv(RewardResult reward, String filePath) throws IOException {
-        File f = new File(filePath);
-        if (!f.exists()) f.createNewFile();
-
-        try (
-                FileWriter out = new FileWriter(f);
-                CSVPrinter printer = new CSVPrinter(out, CSVFormat.EXCEL)
-        ) {
-            printTransactions(printer, "Операции с кэшбеком 4%", reward.getTransactionsMap().get(Transaction.Type.WITHDRAW_NORMAL));
-            printer.printRecord("");
-
-            printTransactions(printer, "Операции с кэшбеком 5%", reward.getTransactionsMap().get(Transaction.Type.WITHDRAW_FOREIGN));
-            printer.printRecord("");
-
-            printTransactions(printer, "Операции, кешбэк за которые не положен", reward.getTransactionsMap().get(Transaction.Type.WITHDRAW_IGNORE));
-            printer.printRecord("");
-
-            printTransactions(printer, "Пополнения", reward.getTransactionsMap().get(Transaction.Type.REFILL));
-            printer.printRecord("");
-
-            printer.printRecord("Период, с " + reward.getMinDate() + " по " + reward.getMaxDate());
-            printer.printRecord("Всего миль получено     " + reward.getTotalRewardMiles());
-            printer.printRecord("Всего пополнений, в руб " + reward.getTotalRefillRUR());
-            printer.printRecord("Всего списаний  , в руб " + reward.getTotalWithdrawRUR());
-            printer.printRecord("Эффективный кэшбек %    " + reward.getEffectiveCashback());
-        }
-        return f;
-    }
-
-    private static Configuration createTemplateEngine(String templatesClasspathDir) {
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        cfg.setClassForTemplateLoading(ExportAs.class, templatesClasspathDir);
-        cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        cfg.setLogTemplateExceptions(false);
-        cfg.setWrapUncheckedExceptions(true);
-        cfg.setAPIBuiltinEnabled(true);
-        return cfg;
-    }
-
-    private static void printTransactions(CSVPrinter printer,
+    private static void printTransactions(CSVPrinter csv,
                                           String title,
-                                          List<TransactionReward> transactionRewards) throws IOException {
-        printer.printRecord(title);
-        printer.printRecord("СЧЕТ", "ДАТА ОБР", "ОПИСАНИЕ", "СУММА", "ВАЛЮТА", "МИЛИ");
+                                          List<Transaction> transactions) throws IOException {
+        printTransactions(csv, title, transactions, null);
+    }
 
-        if (transactionRewards == null || transactionRewards.isEmpty()) {
-            printer.printRecord("<нет операций>");
+    private static void printTransactions(CSVPrinter csv,
+                                          String title,
+                                          List<Transaction> transactions,
+                                          RewardRule[] rules) throws IOException {
+        csv.printRecord(title);
+        csv.println();
+        csv.printRecord(createHeader(rules));
+        csv.printRecord("-------------------------------------------------------------------------------------------------");
+
+        if (transactions == null || transactions.isEmpty()) {
+            csv.printRecord("<нет операций>");
             return;
         }
 
-        for (TransactionReward tr : transactionRewards) {
-            printer.printRecord(
-                    tr.getTransaction().getAccountNumberMasked(),
-                    tr.getTransaction().getProcessedDate(),
-                    tr.getTransaction().getDescription(),
-                    tr.getTransaction().getAmountInAccountCurrency(),
-                    tr.getTransaction().getAccountCurrencyCode(),
-                    tr.getMiles()
-            );
+        for (Transaction t : transactions) {
+            csv.printRecord(createRow(t, rules != null));
         }
+    }
+
+    private static List<String> createHeader(RewardRule[] rules) {
+
+        List<String> header = new ArrayList<>();
+        header.add(pad("СЧЕТ", PAD_ACC));
+        header.add(pad("ДАТА ОБР", PAD_DATE));
+        header.add(pad("ОПИСАНИЕ", PAD_DESCRIPTION));
+        header.add(pad("СУММА", PAD_AMOUNT));
+        header.add(pad("ВАЛЮТА", PAD_CCY));
+        header.add(pad("КУРС", PAD_RATE));
+        header.add(pad("СУММА(РУБ)", PAD_AMOUNT));
+
+        if (rules == null) return header;
+
+        for (RewardRule r : rules) {
+            header.add(pad(r.getName() + " %", PAD_PERCENT));
+            header.add(pad(r.getName() + " МИЛИ", PAD_MILES));
+        }
+
+        return header;
+    }
+
+    private static List<String> createRow(Transaction t, boolean withRewards) {
+
+        List<String> row = new ArrayList<>();
+
+        Operation op = t.getOperation();
+        row.add(pad(op.getAccountNumberMasked(), PAD_ACC));
+        row.add(pad(op.getProcessedDate(), PAD_DATE));
+        row.add(pad(op.getDescription(), PAD_DESCRIPTION));
+        row.add(pad(op.getAmountInAccountCurrency(), PAD_AMOUNT));
+        row.add(pad(op.getAccountCurrencyCode(), PAD_CCY));
+        row.add(pad(t.getAccountCurrencyRate().getValue(), PAD_RATE));
+        row.add(pad(t.getAmountInRUR(), PAD_AMOUNT));
+
+        if (withRewards) {
+            for (Transaction.Reward r : t.getRewards()) {
+                row.add(pad(r.getPercent(), PAD_PERCENT));
+                row.add(pad(r.getMiles(), PAD_MILES));
+            }
+        }
+        return row;
+    }
+
+    private static String pad(Object o, int length) {
+        if (o instanceof BigDecimal) {
+            BigDecimal b = (BigDecimal) o;
+            o = b.setScale(2, BigDecimal.ROUND_DOWN);
+        }
+        return pad(o.toString(), length);
+    }
+
+    private static String pad(String s, int length) {
+        if (length < 1) return s.trim();
+
+        String pad = s.trim() + String.format("%" + length + "s", "");
+        return pad.substring(0, length);
     }
 }

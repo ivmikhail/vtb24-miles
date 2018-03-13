@@ -2,11 +2,12 @@ package com.github.ivmikhail;
 
 import com.github.ivmikhail.app.LaunchOptions;
 import com.github.ivmikhail.app.Settings;
+import com.github.ivmikhail.reward.Calculator;
 import com.github.ivmikhail.reward.ExportAs;
-import com.github.ivmikhail.reward.MilesRewardRule;
-import com.github.ivmikhail.reward.RewardResult;
+import com.github.ivmikhail.reward.RewardSummary;
+import com.github.ivmikhail.statement.CSVLoader;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public final class Main {
@@ -14,13 +15,13 @@ public final class Main {
 
     private Main() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         tryToMakeWorldBetter();
 
         Settings settings = getSettingsOrExit(new LaunchOptions(args));
 
-        MilesRewardRule rule = new MilesRewardRule(settings);
-        RewardResult reward = rule.process();
+        Calculator calculator = new Calculator(settings);
+        RewardSummary reward = calculator.process(CSVLoader.load(settings));
 
         if (settings.getExportPath().isEmpty()) {
             String txt = ExportAs.txt(reward);

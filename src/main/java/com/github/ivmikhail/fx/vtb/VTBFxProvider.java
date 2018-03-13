@@ -1,6 +1,7 @@
 package com.github.ivmikhail.fx.vtb;
 
 import com.github.ivmikhail.fx.FxProvider;
+import com.github.ivmikhail.fx.FxRate;
 import com.github.ivmikhail.fx.vtb.dto.ExchangeRate;
 import com.github.ivmikhail.fx.vtb.dto.RatesWrapper;
 import com.github.ivmikhail.fx.vtb.util.BigDecimalDeserializer;
@@ -15,7 +16,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -43,7 +47,7 @@ public class VTBFxProvider implements FxProvider {
     private List<ExchangeRate> rates;
 
     public VTBFxProvider(Properties properties) {
-        url = properties.getProperty("fx.provider.vtb.url");
+        url = properties.getProperty("fx.provider.vtb.url", "");
         readTimeoutMillis = Integer.parseInt(properties.getProperty("fx.provider.vtb.readTimeoutMillis", "10000"));
 
         supportedPairs = new String[][]{
@@ -57,7 +61,11 @@ public class VTBFxProvider implements FxProvider {
     }
 
     @Override
-    public BigDecimal getRate(final String baseCurrency, final String quoteCurrency, final LocalDate date) {
+    public FxRate getRate(final String baseCurrency, final String quoteCurrency, final LocalDate date) {
+        if (baseCurrency.equals(quoteCurrency)) {
+            return createSameRate(baseCurrency, date);
+        }
+
         throwExceptionIfNotSupported(baseCurrency, quoteCurrency);
 
         populateRatesIfEmpty();
@@ -82,11 +90,24 @@ public class VTBFxProvider implements FxProvider {
         ExchangeRate exchangeRate = closestRateByDate.orElseThrow(() ->
                 new IllegalStateException("FX rate " + baseCurrency + quoteCurrency + " not found on " + date));
 
-        return exchangeRate.getBuy();
+        FxRate fxRate = new FxRate();
+        fxRate.setBaseCurrency(baseCurrency);
+        fxRate.setQuoteCurrency(quoteCurrency);
+        fxRate.setDate(exchangeRate.getDateActiveFrom().toLocalDate());
+        fxRate.setValue(exchangeRate.getBuy());
+        return fxRate;
+    }
+
+    private FxRate createSameRate(String currency, LocalDate date) {
+        FxRate fxRate = new FxRate();
+        fxRate.setBaseCurrency(currency);
+        fxRate.setQuoteCurrency(currency);
+        fxRate.setDate(date);
+        fxRate.setValue(BigDecimal.ONE);
+        return fxRate;
     }
 
     private void populateRatesIfEmpty() {
-        //single thread app, so code below is ok
         if (!rates.isEmpty()) return;
 
         RatesWrapper wrapper;

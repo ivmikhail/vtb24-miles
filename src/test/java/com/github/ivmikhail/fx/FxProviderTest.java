@@ -38,14 +38,30 @@ public class FxProviderTest {
 
     @Test
     public void testRateOnExactDateUSDRUB() {
-        BigDecimal rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2018, Month.FEBRUARY, 8));
-        assertEquals(0, rate.compareTo(new BigDecimal("56.6000")));
+        FxRate rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2018, Month.FEBRUARY, 8));
+        assertEquals(0, rate.getValue().compareTo(new BigDecimal("56.6000")));
+        assertEquals("USD", rate.getBaseCurrency());
+        assertEquals("RUR", rate.getQuoteCurrency());
+        assertEquals(LocalDate.of(2018, Month.FEBRUARY, 8), rate.getDate());
+
     }
 
     @Test
     public void testRateOnNearestDateUSDRUB() {
-        BigDecimal rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2017, Month.DECEMBER, 2));
-        assertEquals(0, rate.compareTo(new BigDecimal("57.7100")));
+        FxRate rate = fxProvider.getRate("USD", "RUR", LocalDate.of(2017, Month.DECEMBER, 2));
+        assertEquals(0, rate.getValue().compareTo(new BigDecimal("57.7100")));
+        assertEquals("USD", rate.getBaseCurrency());
+        assertEquals("RUR", rate.getQuoteCurrency());
+        assertEquals(LocalDate.of(2017, Month.DECEMBER, 4), rate.getDate());
+    }
+
+    @Test
+    public void testSameCurrency() {
+        FxRate rate = fxProvider.getRate("RUR", "RUR", LocalDate.of(2017, Month.DECEMBER, 2));
+        assertEquals(0, rate.getValue().compareTo(BigDecimal.ONE));
+        assertEquals("RUR", rate.getBaseCurrency());
+        assertEquals("RUR", rate.getQuoteCurrency());
+        assertEquals(LocalDate.of(2017, Month.DECEMBER, 2), rate.getDate());
     }
 
     @After

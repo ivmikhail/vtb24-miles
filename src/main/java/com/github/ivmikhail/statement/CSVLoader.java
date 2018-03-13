@@ -1,11 +1,14 @@
-package com.github.ivmikhail.transactions;
+package com.github.ivmikhail.statement;
 
 import com.github.ivmikhail.app.Settings;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -19,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.github.ivmikhail.transactions.CSVLoader.Column.*;
+import static com.github.ivmikhail.statement.CSVLoader.Column.*;
 
 /**
  * Created by ivmikhail on 01/07/2017.
@@ -64,26 +67,30 @@ public final class CSVLoader {
 
     private CSVLoader() { /* static helper class */}
 
-    public static List<Transaction> load(Settings settings) throws IOException, ParseException {
-        List<Transaction> result = new ArrayList<>();
+    public static List<Operation> load(Settings settings) {
+        List<Operation> result = new ArrayList<>();
 
         LocalDate min = settings.getMinDate();
         LocalDate max = settings.getMaxDate();
         for (String path : settings.getPathsToStatement()) {
-            result.addAll(load(path, min, max));
+            try {
+                result.addAll(load(path, min, max));
+            } catch (IOException | ParseException e) {
+                throw new IllegalStateException(e);
+            }
         }
         result.sort(
                 Comparator
-                        .comparing(Transaction::getProcessedDate)
-                        .thenComparing(Transaction::getDateTime)
-                        .thenComparing(Transaction::getDescription)
+                        .comparing(Operation::getProcessedDate)
+                        .thenComparing(Operation::getDateTime)
+                        .thenComparing(Operation::getDescription)
         );
         return result;
     }
 
-    private static List<Transaction> load(String path, LocalDate min, LocalDate max) throws IOException, ParseException {
+    private static List<Operation> load(String path, LocalDate min, LocalDate max) throws IOException, ParseException {
 
-        List<Transaction> transactionList = new ArrayList<>();
+        List<Operation> operations = new ArrayList<>();
         try (
                 Reader reader = new InputStreamReader(new FileInputStream(path), CHARSET_NAME);
                 CSVParser parser = new CSVParser(reader, CSV_FORMAT)
@@ -95,23 +102,23 @@ public final class CSVLoader {
                     continue;
                 }
 
-                Transaction t = mapRecord(r);
-                LocalDate date = t.getProcessedDate();
+                Operation o = mapRecord(r);
+                LocalDate date = o.getProcessedDate();
                 if (date == null) {
-                    LOG.info("Transaction not processed by Bank, skip it " + r.toString());
+                    LOG.info("Operation not processed by Bank, skip it " + r.toString());
                     continue;
                 }
                 boolean isInRange = (date.isEqual(min) || date.isAfter(min)) && (date.isEqual(max) || date.isBefore(max));
 
-                if (isInRange) transactionList.add(t);
+                if (isInRange) operations.add(o);
             }
         }
 
-        return transactionList;
+        return operations;
     }
 
-    private static Transaction mapRecord(CSVRecord r) throws ParseException {
-        Transaction t = new Transaction();
+    private static Operation mapRecord(CSVRecord r) throws ParseException {
+        Operation o = new Operation();
 
         String rawProcDate = r.get(PROCESSED_DATE.ordinal());
         LocalDate processedDate = rawProcDate.isEmpty() ? null : LocalDate.parse(rawProcDate, CSV_DATE_FORMAT);
@@ -119,16 +126,16 @@ public final class CSVLoader {
         BigDecimal amount = (BigDecimal) DF.parseObject(r.get(AMOUNT.ordinal()));
         BigDecimal amountInAccountCurrency = (BigDecimal) DF.parseObject(r.get(AMOUNT_IN_ACC_CCY.ordinal()));
 
-        t.setAccountNumberMasked(r.get(CARD_NUM_MASKED.ordinal()));
-        t.setDateTime(dateTime);
-        t.setProcessedDate(processedDate);
-        t.setAmount(amount);
-        t.setCurrencyCode(r.get(CCY.ordinal()));
-        t.setAmountInAccountCurrency(amountInAccountCurrency);
-        t.setAccountCurrencyCode(r.get(CCY_ACC.ordinal()));
-        t.setDescription(r.get(DESCRIPTION.ordinal()));
-        t.setStatus(r.get(STATUS.ordinal()));
+        o.setAccountNumberMasked(r.get(CARD_NUM_MASKED.ordinal()));
+        o.setDateTime(dateTime);
+        o.setProcessedDate(processedDate);
+        o.setAmount(amount);
+        o.setCurrencyCode(r.get(CCY.ordinal()));
+        o.setAmountInAccountCurrency(amountInAccountCurrency);
+        o.setAccountCurrencyCode(r.get(CCY_ACC.ordinal()));
+        o.setDescription(r.get(DESCRIPTION.ordinal()));
+        o.setStatus(r.get(STATUS.ordinal()));
 
-        return t;
+        return o;
     }
 }

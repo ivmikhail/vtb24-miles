@@ -32,7 +32,7 @@ public class DtoObjectsTest {
     }
 
     @Test
-    public void testGettersAndSettersOfAllDtoObjects() {
+    public void testGettersAndSetters() {
         assertEquals(EXPECTED_CLASS_COUNT, 3);
 
         Validator v = ValidatorBuilder.create()

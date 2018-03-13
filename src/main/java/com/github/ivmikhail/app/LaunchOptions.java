@@ -1,12 +1,13 @@
 package com.github.ivmikhail.app;
 
-import com.github.ivmikhail.util.LoadProperties;
 import org.apache.commons.cli.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
+
+import static com.github.ivmikhail.util.LoadProperties.*;
 
 public class LaunchOptions {
     private static final String PROPERTIES_CLASSPATH = "/app.properties";
@@ -42,9 +43,9 @@ public class LaunchOptions {
 
         Properties properties;
         if (userPropertiesPath == null) {
-            properties = LoadProperties.fromClasspath(PROPERTIES_CLASSPATH);
+            properties = fromClasspath(PROPERTIES_CLASSPATH);
         } else {
-            properties = LoadProperties.fromFile(userPropertiesPath);
+            properties = fromFile(userPropertiesPath);
         }
         LocalDate minDate;
         LocalDate maxDate;
