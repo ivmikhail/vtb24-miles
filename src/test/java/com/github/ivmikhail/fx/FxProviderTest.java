@@ -66,6 +66,7 @@ public class FxProviderTest {
 
     @After
     public void after() throws IOException {
+        fxProvider.clear();
         webServer.shutdown();
     }
 

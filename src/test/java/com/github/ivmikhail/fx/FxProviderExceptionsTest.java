@@ -111,6 +111,7 @@ public class FxProviderExceptionsTest {
 
     @After
     public void after() throws IOException {
+        fxProvider.clear();
         webServer.shutdown();
     }
 }
