@@ -6,6 +6,12 @@ import com.github.ivmikhail.statement.Operation;
 import java.math.BigDecimal;
 
 public class Transaction {
+    private Operation operation;
+    private Type type;
+    private FxRate accountCurrencyRate;
+    private BigDecimal amountInRUR;
+    private Reward reward;
+
     public enum Type {
         REFILL,
         WITHDRAW,
@@ -32,12 +38,6 @@ public class Transaction {
             this.miles = miles;
         }
     }
-
-    private Operation operation;
-    private Type type;
-    private FxRate accountCurrencyRate;
-    private BigDecimal amountInRUR;
-    private Reward reward;
 
     public Reward getReward() {
         return reward;

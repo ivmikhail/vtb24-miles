@@ -13,8 +13,6 @@ import java.util.Map;
  * Created by ivmikhail on 01/07/2017.
  */
 public class RewardSummary {
-    private BigDecimal ONE_HUNDRED = new BigDecimal("100");
-
     private LocalDate minDate;
     private LocalDate maxDate;
     private RewardRule rule;

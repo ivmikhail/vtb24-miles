@@ -150,7 +150,9 @@ public final class ExportAs {
     private static String pad(Object o, int length) {
         if (o instanceof BigDecimal) {
             BigDecimal b = (BigDecimal) o;
-            o = b.setScale(2, BigDecimal.ROUND_DOWN);
+            b.setScale(2, BigDecimal.ROUND_DOWN);
+
+            return pad(b.toString(), length);
         }
         return pad(o.toString(), length);
     }
