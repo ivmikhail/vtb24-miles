@@ -48,6 +48,8 @@ public class CSVLoaderTest {
 */
         Operation o = ops.get(2);
 
+        LOG.info("Loaded operation: " + o.toString());
+
         assertEquals("'123456XXXXXX7890", o.getAccountNumberMasked());
         assertEquals(LocalDateTime.of(2017, Month.JUNE, 4, 11, 21, 6), o.getDateTime());
         assertEquals(LocalDate.of(2017, Month.JUNE, 5), o.getProcessedDate());
