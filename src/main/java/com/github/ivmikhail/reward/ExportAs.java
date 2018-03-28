@@ -14,14 +14,16 @@ import java.util.Map;
 
 public final class ExportAs {
     private static final char ZERO_WIDTH_SPACE = '\u200B';
-    private static final CSVFormat TEXT_FORMAT = CSVFormat.TDF
+    private static final CSVFormat TEXT_FORMAT = CSVFormat.DEFAULT
+            .withDelimiter('\u2000')
             .withEscape(ZERO_WIDTH_SPACE)
-            .withQuoteMode(QuoteMode.NONE);
-    //.withDelimiter(',');
-    private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
-    private static final String TXT_HEADER_DELIMITER = String.join("", Collections.nCopies(120, "-"));
+            .withQuoteMode(QuoteMode.NONE)
+            ;
 
-    private static final int PAD_ACC = 16;
+    private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
+    private static final String TXT_HEADER_DELIMITER = String.join("", Collections.nCopies(110, "-"));
+
+    private static final int PAD_ACC = 17;
     private static final int PAD_DATE = 10;
     private static final int PAD_DESCRIPTION = 30;
     private static final int PAD_AMOUNT = 11;
