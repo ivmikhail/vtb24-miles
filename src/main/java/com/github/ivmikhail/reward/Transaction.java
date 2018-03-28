@@ -37,14 +37,14 @@ public class Transaction {
     private Type type;
     private FxRate accountCurrencyRate;
     private BigDecimal amountInRUR;
-    private Reward[] rewards;
+    private Reward reward;
 
-    public Reward[] getRewards() {
-        return rewards;
+    public Reward getReward() {
+        return reward;
     }
 
-    public void setRewards(Reward[] rewards) {
-        this.rewards = rewards;
+    public void setRewards(Reward reward) {
+        this.reward = reward;
     }
 
     public FxRate getAccountCurrencyRate() {

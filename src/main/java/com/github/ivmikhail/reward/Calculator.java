@@ -10,9 +10,12 @@ import com.github.ivmikhail.statement.Operation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
-import static com.github.ivmikhail.util.PropsUtil.*;
+import static com.github.ivmikhail.util.PropsUtil.getAsSet;
 
 /**
  * Created by ivmikhail on 01/07/2017.
@@ -39,11 +42,13 @@ public class Calculator {
     public RewardSummary process(List<Operation> ops) {
         List<Transaction> transactions = toTransactions(ops);
         BigDecimal totalWithdraw = getTotalWithdraw(transactions);
-        RewardRule[] rules = createRules(totalWithdraw);
-        RewardSummary result = new RewardSummary(totalWithdraw, rules);
+        RewardRule rule = createRule(totalWithdraw);
+        RewardSummary result = new RewardSummary(totalWithdraw, rule);
 
         for (Transaction t : transactions) {
-            t.setRewards(calculateRewardsFor(t, rules));
+            if (t.getType() == Transaction.Type.WITHDRAW) {
+                t.setRewards(rule.calculate(t));
+            }
             result.add(t);
         }
 
@@ -52,18 +57,6 @@ public class Calculator {
         result.setMaxDate(range[1]);
 
         return result;
-    }
-
-    private Transaction.Reward[] calculateRewardsFor(Transaction t, RewardRule[] rules) {
-        Transaction.Reward[] rewards = new Transaction.Reward[rules.length];
-
-        if (t.getType() == Transaction.Type.WITHDRAW) {
-            for (int i = 0; i < rules.length; i++) {
-                rewards[i] = rules[i].calculate(t);
-            }
-        }
-
-        return rewards;
     }
 
     private List<Transaction> toTransactions(List<Operation> ops) {
@@ -87,19 +80,12 @@ public class Calculator {
         return transactions;
     }
 
-    private RewardRule[] createRules(BigDecimal totalWithdraw) {
-
+    private RewardRule createRule(BigDecimal totalWithdraw) {
         RulesFactory f = new RulesFactory();
+        f.setForeignTransactionWords(foreignTransactionWords);
+        f.setWithdraw(totalWithdraw.abs());
 
-        BigDecimal withdrawAbs = totalWithdraw.abs();
-        RewardRule[] rules = new RewardRule[]{
-                f.createKMPlatinum(foreignTransactionWords),
-                f.createKMGold(foreignTransactionWords),
-                f.createCashback(withdrawAbs),
-                f.createTravel(withdrawAbs)
-        };
-
-        return rules;
+        return f.create(settings.getRuleId());
     }
 
     private Transaction.Type determineType(Operation op) {

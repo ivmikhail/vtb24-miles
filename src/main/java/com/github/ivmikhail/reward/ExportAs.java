@@ -1,7 +1,5 @@
 package com.github.ivmikhail.reward;
 
-import com.github.ivmikhail.fx.FxRate;
-import com.github.ivmikhail.reward.rule.RewardRule;
 import com.github.ivmikhail.statement.Operation;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -10,6 +8,7 @@ import org.apache.commons.csv.QuoteMode;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +16,10 @@ public final class ExportAs {
     private static final char ZERO_WIDTH_SPACE = '\u200B';
     private static final CSVFormat TEXT_FORMAT = CSVFormat.TDF
             .withEscape(ZERO_WIDTH_SPACE)
-            .withQuoteMode(QuoteMode.NONE)
-            .withDelimiter(',');
+            .withQuoteMode(QuoteMode.NONE);
+    //.withDelimiter(',');
     private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
-
-    private static final int NO_PAD = 0;//value will be printed as value.trim(), without padding
+    private static final String TXT_HEADER_DELIMITER = String.join("", Collections.nCopies(120, "-"));
 
     private static final int PAD_ACC = 16;
     private static final int PAD_DATE = 10;
@@ -29,10 +27,8 @@ public final class ExportAs {
     private static final int PAD_AMOUNT = 11;
     private static final int PAD_CCY = 6;
     private static final int PAD_RATE = 6;
-    private static final int PAD_PERCENT = 6;
-    private static final int PAD_MILES = 9;
-
-    private static final int PAD_RULE = 27;
+    private static final int PAD_PERCENT = 5;
+    private static final int PAD_MILES = 11;
 
     private ExportAs() { /* helper class */}
 
@@ -44,7 +40,6 @@ public final class ExportAs {
 
     public static File csv(RewardSummary reward, String pathToCsv) {
         File f = new File(pathToCsv);
-        //if (!f.exists()) f.createNewFile();
 
         FileWriter out;
         try {
@@ -62,10 +57,8 @@ public final class ExportAs {
                 CSVPrinter csv = new CSVPrinter(out, format)
         ) {
             Map<Transaction.Type, List<Transaction>> transactionMap = reward.getTransactionsMap();
-            // printTransactions(csv, "Операции с кэшбеком", reward.getTransactionsMap().get(Transaction.Type.WITHDRAW));
-            //  csv.printRecord("");
 
-            printTransactions(csv, "Операции c кэшбеком", transactionMap.get(Transaction.Type.WITHDRAW), reward.getRules());
+            printTransactions(csv, "Операции c кэшбеком", transactionMap.get(Transaction.Type.WITHDRAW), true);
             csv.println();
 
             printTransactions(csv, "Операции, кешбэк за которые не положен", transactionMap.get(Transaction.Type.WITHDRAW_IGNORE));
@@ -77,14 +70,8 @@ public final class ExportAs {
             csv.printRecord("Период, с " + reward.getMinDate() + " по " + reward.getMaxDate());
             csv.println();
 
-            csv.printRecord("Всего миль/бонусов/cashback положено: ");
-            RewardRule[] rules = reward.getRules();
-            BigDecimal[] totalMiles = reward.getTotalMiles();
-            for (int i = 0; i < rules.length; i++) {
-                csv.printRecord(
-                        pad(rules[i].getName(), PAD_RULE),
-                        pad(totalMiles[i], NO_PAD));
-            }
+            csv.printRecord("Правило расчета - " + reward.getRule().getName());
+            csv.printRecord("Всего миль/бонусов/cashback положено: " + reward.getTotalMiles());
 
             csv.println();
             csv.printRecord("Всего пополнений, в руб", reward.getTotalRefillRUR());
@@ -97,17 +84,17 @@ public final class ExportAs {
     private static void printTransactions(CSVPrinter csv,
                                           String title,
                                           List<Transaction> transactions) throws IOException {
-        printTransactions(csv, title, transactions, null);
+        printTransactions(csv, title, transactions, false);
     }
 
     private static void printTransactions(CSVPrinter csv,
                                           String title,
                                           List<Transaction> transactions,
-                                          RewardRule[] rules) throws IOException {
+                                          boolean withReward) throws IOException {
         csv.printRecord(title);
         csv.println();
-        csv.printRecord(createHeader(rules));
-        csv.printRecord("-------------------------------------------------------------------------------------------------");
+        csv.printRecord(createHeader(withReward));
+        csv.printRecord(TXT_HEADER_DELIMITER);
 
         if (transactions == null || transactions.isEmpty()) {
             csv.printRecord("<нет операций>");
@@ -115,11 +102,11 @@ public final class ExportAs {
         }
 
         for (Transaction t : transactions) {
-            csv.printRecord(createRow(t, rules != null));
+            csv.printRecord(createRow(t, withReward));
         }
     }
 
-    private static List<String> createHeader(RewardRule[] rules) {
+    private static List<String> createHeader(boolean withReward) {
 
         List<String> header = new ArrayList<>();
         header.add(pad("СЧЕТ", PAD_ACC));
@@ -130,11 +117,9 @@ public final class ExportAs {
         header.add(pad("КУРС", PAD_RATE));
         header.add(pad("СУММА(РУБ)", PAD_AMOUNT));
 
-        if (rules == null) return header;
-
-        for (RewardRule r : rules) {
-            header.add(pad(r.getName() + " %", PAD_PERCENT));
-            header.add(pad(r.getName() + " МИЛИ", PAD_MILES));
+        if (withReward) {
+            header.add(pad("КБ %", PAD_PERCENT));
+            header.add(pad("МИЛИ/БОНУСЫ", PAD_MILES));
         }
 
         return header;
@@ -154,10 +139,10 @@ public final class ExportAs {
         row.add(pad(t.getAmountInRUR(), PAD_AMOUNT));
 
         if (withRewards) {
-            for (Transaction.Reward r : t.getRewards()) {
-                row.add(pad(r.getPercent(), PAD_PERCENT));
-                row.add(pad(r.getMiles(), PAD_MILES));
-            }
+            Transaction.Reward r = t.getReward();
+
+            row.add(pad(r.getPercent(), PAD_PERCENT));
+            row.add(pad(r.getMiles(), PAD_MILES));
         }
         return row;
     }

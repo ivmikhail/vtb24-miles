@@ -4,7 +4,10 @@ import com.github.ivmikhail.reward.rule.RewardRule;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ivmikhail on 01/07/2017.
@@ -14,15 +17,15 @@ public class RewardSummary {
 
     private LocalDate minDate;
     private LocalDate maxDate;
-    private RewardRule[] rules;
+    private RewardRule rule;
     private BigDecimal totalRefillRUR;
     private BigDecimal totalWithdrawRUR;
-    private BigDecimal[] totalMiles;
+    private BigDecimal totalMiles;
     private Map<Transaction.Type, List<Transaction>> transactionsMap;
 
-    public RewardSummary(BigDecimal totalWithdrawRUR, RewardRule[] rules) {
-        this.rules = rules;
-        this.totalMiles = new BigDecimal[rules.length];
+    public RewardSummary(BigDecimal totalWithdrawRUR, RewardRule rule) {
+        this.rule = rule;
+        this.totalMiles = BigDecimal.ZERO;
         this.totalWithdrawRUR = totalWithdrawRUR;
         this.totalRefillRUR = BigDecimal.ZERO;
         this.transactionsMap = new HashMap<>();
@@ -36,12 +39,12 @@ public class RewardSummary {
         return totalWithdrawRUR;
     }
 
-    public BigDecimal[] getTotalMiles() {
+    public BigDecimal getTotalMiles() {
         return totalMiles;
     }
 
-    public RewardRule[] getRules() {
-        return rules;
+    public RewardRule getRule() {
+        return rule;
     }
 
     public LocalDate getMinDate() {
@@ -83,19 +86,12 @@ public class RewardSummary {
     }
 
     private void appendToMiles(Transaction t) {
-        //total miles calculation for every rule
-        Transaction.Reward[] rewards = t.getRewards();
-        Transaction.Reward r;
-        for (int i = 0; i < rewards.length; i++) {
-            r = rewards[i];
-            if (r == null) continue; //no reward for rules[i], do nothing
+        Transaction.Reward r = t.getReward();
+        if (r == null) return;
 
-            BigDecimal miles = totalMiles[i];
-            if (miles == null) {
-                totalMiles[i] = r.getMiles();
-            } else {
-                totalMiles[i] = miles.add(r.getMiles());
-            }
+        BigDecimal miles = r.getMiles();
+        if (miles != null) {
+            totalMiles = totalMiles.add(miles);
         }
     }
 }

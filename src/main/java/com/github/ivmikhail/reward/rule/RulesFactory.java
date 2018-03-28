@@ -3,11 +3,35 @@ package com.github.ivmikhail.reward.rule;
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class RulesFactory {
+import static com.github.ivmikhail.reward.rule.RulesFactory.RuleId.*;
 
-    public RewardRule createKMPlatinum(Set<String> foreignTransactionWords) {
+public class RulesFactory {
+    public enum RuleId {KM_PLATINUM, KM_GOLD, MC_TRAVEL, MC_CASHBACK}
+
+    private BigDecimal withdraw;
+    private Set<String> foreignTransactionWords;
+
+    public void setWithdraw(BigDecimal withdraw) {
+        this.withdraw = withdraw;
+    }
+
+    public void setForeignTransactionWords(Set<String> foreignTransactionWords) {
+        this.foreignTransactionWords = foreignTransactionWords;
+    }
+
+    public RewardRule create(RuleId id) {
+        if (id == null) return createKMPlatinum();
+
+        if (id == KM_GOLD) return createKMGold();
+        if (id == MC_TRAVEL) return createTravel();
+        if (id == MC_CASHBACK) return createCashback();
+
+        return createKMPlatinum();
+    }
+
+    private RewardRule createKMPlatinum() {
         KMRule km = new KMRule();
-        km.setName("КМ P");
+        km.setName("Карта Мира Platinum");
         km.setRewardPercent(new BigDecimal("0.04"));
         km.setForeignTransactionWords(foreignTransactionWords);
         km.setForeignRewardPercent(new BigDecimal("0.05"));
@@ -16,9 +40,9 @@ public class RulesFactory {
     }
 
 
-    public RewardRule createKMGold(Set<String> foreignTransactionWords) {
+    private RewardRule createKMGold() {
         KMRule km = new KMRule();
-        km.setName("КМ G");
+        km.setName("Карта Мира Gold");
         km.setRewardPercent(new BigDecimal("0.02"));
         km.setForeignTransactionWords(foreignTransactionWords);
         km.setForeignRewardPercent(new BigDecimal("0.03"));
@@ -26,21 +50,20 @@ public class RulesFactory {
         return km;
     }
 
-    public RewardRule createCashback(BigDecimal withdraw) {
-
+    private RewardRule createCashback() {
         BigDecimal reward = getReward(withdraw,
                 new BigDecimal("0.01"),
                 new BigDecimal("0.015"),
                 new BigDecimal("0.02"));
 
         Multicard cashback = new Multicard();
-        cashback.setName("М CB");
+        cashback.setName("Мультикарта Cashback");
         cashback.setRewardPercent(reward);
 
         return cashback;
     }
 
-    public RewardRule createTravel(BigDecimal withdraw) {
+    private RewardRule createTravel() {
 
         BigDecimal reward = getReward(withdraw,
                 new BigDecimal("0.01"),
@@ -48,7 +71,7 @@ public class RulesFactory {
                 new BigDecimal("0.04"));
 
         Multicard travel = new Multicard();
-        travel.setName("М TRVL/C");
+        travel.setName("Мльтикарта Travel/Коллекция");
         travel.setRewardPercent(reward);
 
         return travel;

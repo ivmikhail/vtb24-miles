@@ -1,23 +1,28 @@
 package com.github.ivmikhail.app;
 
+import com.github.ivmikhail.reward.rule.RulesFactory;
+import com.github.ivmikhail.reward.rule.RulesFactory.RuleId;
 import org.apache.commons.cli.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Properties;
 
-import static com.github.ivmikhail.util.LoadProperties.*;
+import static com.github.ivmikhail.util.LoadProperties.fromClasspath;
+import static com.github.ivmikhail.util.LoadProperties.fromFile;
 
 public class LaunchOptions {
     private static final String PROPERTIES_CLASSPATH = "/app.properties";
     private static final DateTimeFormatter DATEFORMAT_ARG = DateTimeFormatter.ofPattern("MMyyyy");
 
-    private static final String OPT_STATEMENT_PATH = "s";
-    private static final String OPT_MONTH = "m";
-    private static final String OPT_PROPS_PATH = "p";
-    private static final String OPT_HELP = "h";
-    private static final String OPT_EXPORT_PATH = "export";
+    private static final String STATEMENT_PATH = "s";
+    private static final String MONTH = "m";
+    private static final String PROPS_PATH = "p";
+    private static final String HELP = "h";
+    private static final String EXPORT_PATH = "export";
+    private static final String RULE_ID = "rule";
 
     private Options options;
     private String[] args;
@@ -38,8 +43,8 @@ public class LaunchOptions {
     }
 
     private Settings createSettings(CommandLine cli) {
-        String[] statementPaths = cli.getOptionValues(OPT_STATEMENT_PATH);
-        String userPropertiesPath = cli.getOptionValue(OPT_PROPS_PATH);
+        String[] statementPaths = cli.getOptionValues(STATEMENT_PATH);
+        String userPropertiesPath = cli.getOptionValue(PROPS_PATH);
 
         Properties properties;
         if (userPropertiesPath == null) {
@@ -49,7 +54,7 @@ public class LaunchOptions {
         }
         LocalDate minDate;
         LocalDate maxDate;
-        String rawYearMonth = cli.getOptionValue(OPT_MONTH, null);
+        String rawYearMonth = cli.getOptionValue(MONTH, null);
         if (rawYearMonth == null) {
             minDate = LocalDate.MIN;
             maxDate = LocalDate.MAX;
@@ -59,13 +64,16 @@ public class LaunchOptions {
             maxDate = yearMonth.atEndOfMonth();
         }
 
+        String rule = cli.getOptionValue(RULE_ID, RuleId.KM_PLATINUM.name());
+
         Settings settings = new Settings();
         settings.setPathsToStatement(statementPaths);
         settings.setMinDate(minDate);
         settings.setMaxDate(maxDate);
         settings.setProperties(properties);
-        settings.setPrintHelpAndExit(cli.hasOption(OPT_HELP));
-        settings.setExportPath(cli.getOptionValue(OPT_EXPORT_PATH, ""));
+        settings.setPrintHelpAndExit(cli.hasOption(HELP));
+        settings.setExportPath(cli.getOptionValue(EXPORT_PATH, ""));
+        settings.setRuleId(RuleId.valueOf(rule));
 
         return settings;
     }
@@ -79,7 +87,7 @@ public class LaunchOptions {
         Options options = new Options();
 
         options.addOption(Option
-                .builder(OPT_STATEMENT_PATH)
+                .builder(STATEMENT_PATH)
                 .desc("path to statement.csv downloaded from http://telebank.ru." +
                         " You can specify few paths like -s statement1.csv -s statement.csv. In this case transactions will be merged")
                 .numberOfArgs(1)
@@ -87,28 +95,35 @@ public class LaunchOptions {
                 .build());
 
         options.addOption(Option
-                .builder(OPT_PROPS_PATH)
+                .builder(PROPS_PATH)
                 .desc("path to .properties file")
                 .numberOfArgs(1)
                 .required(false)
                 .build());
 
         options.addOption(Option
-                .builder(OPT_MONTH)
+                .builder(MONTH)
                 .desc("month, for example 062017. If specified, transactions will be processed only for this month. Otherwise - all transactions in statement.csv")
                 .numberOfArgs(1)
                 .required(false)
                 .build());
 
         options.addOption(Option
-                .builder(OPT_HELP)
+                .builder(HELP)
                 .desc("print this help message and exit")
                 .required(false)
                 .build());
 
         options.addOption(Option
-                .builder(OPT_EXPORT_PATH)
+                .builder(EXPORT_PATH)
                 .desc("path to file, where result will be exported as CSV. For example, statement-miles.csv")
+                .numberOfArgs(1)
+                .required(false)
+                .build());
+
+        options.addOption(Option
+                .builder(RULE_ID)
+                .desc("calculate rule, by default - KM_PLATINUM. Available values: " + Arrays.toString(RulesFactory.RuleId.values()))
                 .numberOfArgs(1)
                 .required(false)
                 .build());

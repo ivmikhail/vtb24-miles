@@ -23,12 +23,12 @@ public final class Main {
         Calculator calculator = new Calculator(settings);
         RewardSummary reward = calculator.process(CSVLoader.load(settings));
 
-        if (settings.getExportPath().isEmpty()) {
-            String txt = ExportAs.txt(reward);
-            System.out.println(txt);
-        } else {
+        if (!settings.getExportPath().isEmpty()) {
             ExportAs.csv(reward, settings.getExportPath());
         }
+
+        String txt = ExportAs.txt(reward);
+        System.out.println(txt);
     }
 
     private static void tryToMakeWorldBetter() {
