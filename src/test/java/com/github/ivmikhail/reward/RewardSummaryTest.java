@@ -2,7 +2,6 @@ package com.github.ivmikhail.reward;
 
 import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.statement.Operation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -13,26 +12,16 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class RewardSummaryTest {
 
-//    @Test
-//    public void testZeroEffectiveCashback() {
-//        RewardSummary reward = new RewardSummary();
-//        assertEquals(0, BigDecimal.ZERO.compareTo(reward.getEffectiveCashback()));
-//    }
+    @Test
+    public void test() {
+        RewardSummary result = processMockOperations();
 
-//    @Test
-//    public void test() {
-//        RewardSummary result = processMockOperations();
-//
-//        assertEquals(2, result.getTransactionsMap().values().size());
-//
-//        assertEquals(0, result.getTotalRefillRUR().compareTo(new BigDecimal("50")));
-//        assertEquals(0, result.getTotalWithdrawRUR().compareTo(new BigDecimal("-100")));
-////        assertEquals(0, result.getTotalRewardMiles().compareTo(new BigDecimal("4")));
-////        assertEquals(0, result.getEffectiveCashback().compareTo(new BigDecimal("4")));
-//    }
+        assertEquals(2, result.getTransactionsMap().values().size());
+        assertEquals(0, result.getTotalRefillRUR().compareTo(new BigDecimal("50")));
+        assertEquals(0, result.getTotalWithdrawRUR().compareTo(new BigDecimal("-100")));
+    }
 
     private RewardSummary processMockOperations() {
         Calculator calculator = new Calculator(new Settings());

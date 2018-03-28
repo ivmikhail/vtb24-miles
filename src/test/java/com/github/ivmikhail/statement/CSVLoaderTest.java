@@ -47,7 +47,6 @@ public class CSVLoaderTest {
         '462235XXXXXX4741;2017-07-15 00:00:00;2017-07-16;-3 200,00;RUR;-3 200,00;RUR;"MUZEY-ZAPOVEDNIK &quot;PETERGO";Исполнено
 */
         Operation o = ops.get(2);
-        LOG.info(o.toString());
 
         assertEquals("'123456XXXXXX7890", o.getAccountNumberMasked());
         assertEquals(LocalDateTime.of(2017, Month.JUNE, 4, 11, 21, 6), o.getDateTime());
@@ -58,5 +57,12 @@ public class CSVLoaderTest {
         assertEquals("RUR", o.getAccountCurrencyCode());
         assertEquals("kassa 6", o.getDescription());
         assertEquals("Исполнено", o.getStatus());
+    }
+
+
+    @Test(expected = IllegalStateException.class)
+    public void testNonExistingPath() {
+        settings.setPathsToStatement(new String[]{"statement-not-exist.csv"});
+        CSVLoader.load(settings);
     }
 }

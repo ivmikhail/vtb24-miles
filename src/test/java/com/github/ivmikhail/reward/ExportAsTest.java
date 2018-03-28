@@ -3,7 +3,6 @@ package com.github.ivmikhail.reward;
 import com.github.ivmikhail.app.Settings;
 import com.github.ivmikhail.statement.Operation;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,7 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+
 public class ExportAsTest {
 
     private RewardSummary rewardSummary;
@@ -49,7 +48,7 @@ public class ExportAsTest {
 
         List<String> lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
         String lastLine = lines.get(lines.size() - 1).replace("\"", "");
-        assertEquals("Эффективный кэшбек %    4.00", lastLine);
+        assertEquals("Всего списаний  , в руб,-100.0", lastLine);
     }
 
     @Test
@@ -58,6 +57,6 @@ public class ExportAsTest {
         String lines[] = result.split("\\r?\\n");
         String lastLine = lines[lines.length - 1];
 
-        assertEquals("Эффективный кэшбек %    4.00", lastLine);
+        assertEquals("Всего списаний  , в руб -100.0", lastLine);
     }
 }
