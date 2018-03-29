@@ -7,6 +7,7 @@ import org.apache.commons.csv.QuoteMode;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +45,7 @@ public final class ExportAs {
     public static File csv(RewardSummary reward, String pathToCsv) {
         File f = new File(pathToCsv);
 
-        try (FileWriter out = new FileWriter(f)) {
+        try (Writer out = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8)) {
             write(reward, FILE_FORMAT, out);
         } catch (IOException e) {
             throw new IllegalStateException(e);

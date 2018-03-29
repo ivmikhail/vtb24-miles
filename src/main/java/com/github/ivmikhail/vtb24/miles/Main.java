@@ -8,6 +8,9 @@ import com.github.ivmikhail.vtb24.miles.reward.RewardSummary;
 import com.github.ivmikhail.vtb24.miles.statement.CSVLoader;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 public final class Main {
@@ -15,7 +18,7 @@ public final class Main {
 
     private Main() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
         tryToMakeWorldBetter();
 
         Settings settings = getSettingsOrExit(new LaunchOptions(args));
@@ -28,7 +31,8 @@ public final class Main {
         }
 
         String txt = ExportAs.txt(reward);
-        System.out.println(txt);
+        PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8.name());
+        out.println(txt);
     }
 
     private static void tryToMakeWorldBetter() {
