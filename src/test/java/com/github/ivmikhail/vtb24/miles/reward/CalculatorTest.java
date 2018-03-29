@@ -60,36 +60,6 @@ public class CalculatorTest {
 
         assertEquals(1, transactions.size());
     }
-//
-//    @Test
-//    public void testWithdrawNormalLessThan100() {
-//        operation.setAmount(new BigDecimal("-99.9"));
-//        operation.setAmountInAccountCurrency(new BigDecimal("-99.9"));
-//        RewardSummary result = calculator.process(Collections.singletonList(operation));
-//        List<Reward> tRewards = result.getTransactionsMap().get(Transaction.Type.WITHDRAW);
-//
-//        assertEquals(1, tRewards.size());
-//        assertEquals(0, tRewards.get(0).getMiles().compareTo(BigDecimal.ZERO));
-//    }
-//
-//    @Test
-//    public void testWithdrawForeignByCurrencyCode() {
-//        operation.setCurrencyCode("USD");
-//        RewardSummary result = calculator.process(Collections.singletonList(operation));
-//        List<Transaction> transactions = result.getTransactionsMap().get(Transaction.Type.WI);
-//
-//        assertEquals(1, transactions.size());
-//    }
-
-//    @Test
-//    public void testWithdrawForeignByDescription() {
-//        operation.setDescription("my foreign operation");
-//        RewardSummary result = calculator.process(Collections.singletonList(operation));
-//        List<Reward> tRewards = result.getTransactionsMap().get(Operation.Type.WITHDRAW_FOREIGN);
-//
-//        assertEquals(0, tRewards.get(0).getMiles().compareTo(new BigDecimal("5")));
-//        assertEquals(1, tRewards.size());
-//    }
 
     @Test
     public void testWithdrawIgnoreByDescription() {
