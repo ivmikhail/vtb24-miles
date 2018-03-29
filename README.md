@@ -5,7 +5,7 @@
 
 Приспособа для подсчета мильного/бонусного вознаграждения карт ВТБ24. Поддерживаются:
  * Карта Мира, Platinum/Gold https://www.vtb24.ru/cards/credit/platinum/worldcard/
- * Мультикарта, опции путешестия/коллекция, cashback https://www.vtb24.ru/cards/multicard/
+ * Мультикарта c опцией путешестия/коллекция/cashback https://www.vtb24.ru/cards/multicard/
 
 Полезно для сверки с расчетом Банка
 
