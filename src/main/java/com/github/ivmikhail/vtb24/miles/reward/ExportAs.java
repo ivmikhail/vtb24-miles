@@ -1,7 +1,6 @@
 package com.github.ivmikhail.vtb24.miles.reward;
 
 import com.github.ivmikhail.vtb24.miles.statement.Operation;
-import com.github.ivmikhail.vtb24.miles.util.IOUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
@@ -37,34 +36,24 @@ public final class ExportAs {
     private ExportAs() { /* helper class */}
 
     public static String txt(RewardSummary reward) {
-        Writer out = null;
-        try {
-            out = new StringWriter();
-            write(reward, TEXT_FORMAT, out);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        } finally {
-            IOUtils.close(out);
-        }
+        StringWriter out = new StringWriter();
+        write(reward, TEXT_FORMAT, out);
         return out.toString();
     }
 
     public static File csv(RewardSummary reward, String pathToCsv) {
         File f = new File(pathToCsv);
 
-        FileWriter out = null;
-        try {
-            out = new FileWriter(f);
+        try (FileWriter out = new FileWriter(f)) {
             write(reward, FILE_FORMAT, out);
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        } finally {
-            IOUtils.close(out);
         }
+
         return f;
     }
 
-    private static void write(RewardSummary reward, CSVFormat format, Writer out) throws IOException {
+    static void write(RewardSummary reward, CSVFormat format, Writer out) {
         try (
                 CSVPrinter csv = new CSVPrinter(out, format)
         ) {
@@ -88,6 +77,8 @@ public final class ExportAs {
             csv.println();
             csv.printRecord("Всего пополнений, в руб", reward.getTotalRefillRUR());
             csv.printRecord("Всего списаний  , в руб", reward.getTotalWithdrawRUR());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
     }
 

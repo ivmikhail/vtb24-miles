@@ -2,11 +2,13 @@ package com.github.ivmikhail.vtb24.miles.reward;
 
 import com.github.ivmikhail.vtb24.miles.app.Settings;
 import com.github.ivmikhail.vtb24.miles.statement.Operation;
+import org.apache.commons.csv.CSVFormat;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -67,5 +69,27 @@ public class ExportAsTest {
         String lastLine = lines[lines.length - 1];
 
         assertEquals("Всего списаний  , в руб -100.0", lastLine);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testWrite() {
+        Writer fake = new Writer() {
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                throw new IOException("Fake writer");
+            }
+
+            @Override
+            public void flush() throws IOException {
+
+            }
+
+            @Override
+            public void close() throws IOException {
+
+            }
+        };
+
+        ExportAs.write(rewardSummary, CSVFormat.DEFAULT, fake);
     }
 }
