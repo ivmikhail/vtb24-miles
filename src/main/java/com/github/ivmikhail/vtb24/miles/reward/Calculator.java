@@ -7,6 +7,7 @@ import com.github.ivmikhail.vtb24.miles.fx.vtb.VTBFxProvider;
 import com.github.ivmikhail.vtb24.miles.reward.rule.RewardRule;
 import com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory;
 import com.github.ivmikhail.vtb24.miles.statement.Operation;
+import com.github.ivmikhail.vtb24.miles.util.PersonNameUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -103,8 +104,15 @@ public class Calculator {
     }
 
     private boolean isIgnore(Operation o) {
+        String description = o.getDescription();
+
+        if(PersonNameUtil.isMaskedPersonName(description)) {
+            //перевод по номеру телефона
+            return true;
+        }
+
         for (String word : ignoreWords) {
-            if (o.getDescription().toLowerCase().contains(word.toLowerCase())) {
+            if (description.toLowerCase().contains(word.toLowerCase())) {
                 return true;
             }
         }
