@@ -69,4 +69,13 @@ public class CalculatorTest {
 
         assertEquals(1, transactions.size());
     }
+
+    @Test
+    public void testWithdrawIgnoreMoneyTransfer() {
+        operation.setDescription("И**в Иван Иваноич");
+        RewardSummary result = calculator.process(Collections.singletonList(operation));
+        List<Transaction> transactions = result.getTransactionsMap().get(Transaction.Type.WITHDRAW_IGNORE);
+
+        assertEquals(1, transactions.size());
+    }
 }
