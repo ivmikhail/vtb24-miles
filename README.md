@@ -3,7 +3,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5420977c69824cce879294432154eb58)](https://app.codacy.com/app/ivmikhail/vtb24-miles?utm_source=github.com&utm_medium=referral&utm_content=ivmikhail/vtb24-miles&utm_campaign=badger) 
 [![Build Status](https://travis-ci.org/ivmikhail/vtb24-miles.svg?branch=master)](https://travis-ci.org/ivmikhail/vtb24-miles)
 
-Приспособа для подсчета мильного вознаграждения Карты Мира(Платинум) ВТБ24 https://www.vtb24.ru/cards/credit/platinum/worldcard/
+Приспособа для подсчета мильного/бонусного вознаграждения карт ВТБ24. Поддерживаются:
+ * Карта Мира, Platinum/Gold https://www.vtb24.ru/cards/credit/platinum/worldcard/
+ * Мультикарта, опции путешестия/коллекция, cashback https://www.vtb24.ru/cards/multicard/
 
 Полезно для сверки с расчетом Банка
 
@@ -25,9 +27,11 @@
    * Рекомендую выбрать весь период использования карты. Месяц можно будет указать при анализе выписки
    * Положите выписку (обычно называется `statement.csv`) в ту директорию, куда вы скачали `*.jar` файл
 1. Откройте терминал, перейдите в директорию где лежит выписка и программа
-1. Запустите анализ, введя команду `java -jar vtb24-miles-1.4.jar -s statement.csv`. Программа напечатает отчет
-  1. Чтобы сохранить результат в формате `csv` выполните `java -jar vtb24-miles-1.4.jar -s statement.csv -export 1.csv`
+1. Запустите анализ, введя команду `java -jar vtb24-miles-1.5.jar -s statement.csv`. Программа напечатает отчет
+  1. Чтобы сохранить результат в формате `csv` выполните `java -jar vtb24-miles-1.5.jar -s statement.csv -export 1.csv`
   1. Откройте файл 1.csv, который появился в той же директории с помощью Excel или LibreOffice(если предлагается выбрать кодировку, нужно выставить UTF-8)
+  1. Название файла может отличаться, в этом примере - `vtb24-miles-1.5.jar`
+1. Чтобы сменить способ начисления миль/бонусов, добавьте ключ `-rule %опция%`, например `-rule MC_TRAVEL`. Поддерживаемые опции: `KM_PLATINUM, KM_GOLD, MC_TRAVEL, MC_CASHBACK`. По умолчанию, бонусы считаются по правилу `KM_PLATINUM`(Карта Мира Платинум)
 
 В примере ниже я сохранил программу и выписку в папке vtb24-miles. Мне нужно посмотреть мили за декабрь 2017г
  
