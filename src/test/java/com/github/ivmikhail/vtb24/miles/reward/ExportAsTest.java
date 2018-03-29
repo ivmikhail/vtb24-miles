@@ -66,6 +66,6 @@ public class ExportAsTest {
         String lines[] = result.split("\\r?\\n");
         String lastLine = lines[lines.length - 1];
 
-        assertEquals("Всего списаний  , в руб -100.0", lastLine);
+        assertEquals("Всего\u200B списаний\u200B \u200B ,\u200B в\u200B руб -100.0", lastLine);
     }
 }
