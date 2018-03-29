@@ -83,7 +83,7 @@ public class Calculator {
     private RewardRule createRule(BigDecimal totalWithdraw) {
         RulesFactory f = new RulesFactory();
         f.setForeignTransactionWords(foreignTransactionWords);
-        f.setWithdraw(totalWithdraw.abs());
+        f.setWithdrawAbs(totalWithdraw.abs());
 
         return f.create(settings.getRuleId());
     }

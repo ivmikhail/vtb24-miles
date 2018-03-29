@@ -13,16 +13,16 @@ public class KMRule extends RewardRule {
     KMRule() {
     }
 
+    public BigDecimal getForeignRewardPercent() {
+        return foreignRewardPercent;
+    }
+
     public Set<String> getForeignTransactionWords() {
         return foreignTransactionWords;
     }
 
     public void setForeignTransactionWords(Set<String> foreignTransactionWords) {
         this.foreignTransactionWords = foreignTransactionWords;
-    }
-
-    public BigDecimal getForeignRewardPercent() {
-        return foreignRewardPercent;
     }
 
     public void setForeignRewardPercent(BigDecimal foreignRewardPercent) {

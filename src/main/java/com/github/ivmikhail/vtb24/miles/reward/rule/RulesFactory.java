@@ -8,11 +8,11 @@ import static com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory.RuleId.*
 public class RulesFactory {
     public enum RuleId {KM_PLATINUM, KM_GOLD, MC_TRAVEL, MC_CASHBACK}
 
-    private BigDecimal withdraw;
+    private BigDecimal withdrawAbs;
     private Set<String> foreignTransactionWords;
 
-    public void setWithdraw(BigDecimal withdraw) {
-        this.withdraw = withdraw;
+    public void setWithdrawAbs(BigDecimal withdrawAbs) {
+        this.withdrawAbs = withdrawAbs;
     }
 
     public void setForeignTransactionWords(Set<String> foreignTransactionWords) {
@@ -51,7 +51,7 @@ public class RulesFactory {
     }
 
     private RewardRule createCashback() {
-        BigDecimal reward = getReward(withdraw,
+        BigDecimal reward = getReward(withdrawAbs,
                 new BigDecimal("0.01"),
                 new BigDecimal("0.015"),
                 new BigDecimal("0.02"));
@@ -64,14 +64,13 @@ public class RulesFactory {
     }
 
     private RewardRule createTravel() {
-
-        BigDecimal reward = getReward(withdraw,
+        BigDecimal reward = getReward(withdrawAbs,
                 new BigDecimal("0.01"),
                 new BigDecimal("0.02"),
                 new BigDecimal("0.04"));
 
         Multicard travel = new Multicard();
-        travel.setName("Мльтикарта Travel/Коллекция");
+        travel.setName("Мультикарта Travel/Коллекция");
         travel.setRewardPercent(reward);
 
         return travel;
