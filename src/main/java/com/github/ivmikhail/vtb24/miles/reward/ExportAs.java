@@ -14,7 +14,7 @@ import java.util.Map;
 
 public final class ExportAs {
     private static final char ZERO_WIDTH_SPACE = '\u200B';
-    private static final char SPACE = '\u0020';
+    private static final char SPACE = '\u2000';
 
     private static final CSVFormat TEXT_FORMAT = CSVFormat.DEFAULT
             .withDelimiter(SPACE)
