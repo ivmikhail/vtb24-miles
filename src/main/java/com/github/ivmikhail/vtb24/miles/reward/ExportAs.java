@@ -1,6 +1,7 @@
 package com.github.ivmikhail.vtb24.miles.reward;
 
 import com.github.ivmikhail.vtb24.miles.statement.Operation;
+import com.github.ivmikhail.vtb24.miles.util.IOUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
@@ -19,8 +20,7 @@ public final class ExportAs {
     private static final CSVFormat TEXT_FORMAT = CSVFormat.DEFAULT
             .withDelimiter(SPACE)
             .withEscape(ZERO_WIDTH_SPACE)
-            .withQuoteMode(QuoteMode.NONE)
-            ;
+            .withQuoteMode(QuoteMode.NONE);
 
     private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
     private static final String HEADER_DELIMITER = String.join("", Collections.nCopies(110, "-"));
@@ -37,26 +37,34 @@ public final class ExportAs {
     private ExportAs() { /* helper class */}
 
     public static String txt(RewardSummary reward) {
-        StringWriter out = new StringWriter();
-        writeAndClose(reward, TEXT_FORMAT, out);
+        Writer out = null;
+        try {
+            out = new StringWriter();
+            write(reward, TEXT_FORMAT, out);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            IOUtils.close(out);
+        }
         return out.toString();
     }
 
     public static File csv(RewardSummary reward, String pathToCsv) {
         File f = new File(pathToCsv);
 
-        FileWriter out;
+        FileWriter out = null;
         try {
             out = new FileWriter(f);
+            write(reward, FILE_FORMAT, out);
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        } finally {
+            IOUtils.close(out);
         }
-        writeAndClose(reward, FILE_FORMAT, out);
-
         return f;
     }
 
-    private static void writeAndClose(RewardSummary reward, CSVFormat format, Writer out) {
+    private static void write(RewardSummary reward, CSVFormat format, Writer out) throws IOException {
         try (
                 CSVPrinter csv = new CSVPrinter(out, format)
         ) {
@@ -80,8 +88,6 @@ public final class ExportAs {
             csv.println();
             csv.printRecord("Всего пополнений, в руб", reward.getTotalRefillRUR());
             csv.printRecord("Всего списаний  , в руб", reward.getTotalWithdrawRUR());
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         }
     }
 
