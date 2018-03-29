@@ -7,7 +7,6 @@ import org.apache.commons.csv.QuoteMode;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +21,9 @@ public final class ExportAs {
             .withEscape(ZERO_WIDTH_SPACE)
             .withQuoteMode(QuoteMode.NONE);
 
-    private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
+    private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL
+            .withDelimiter(';')
+            .withQuoteMode(QuoteMode.ALL);
     private static final String HEADER_DELIMITER = String.join("", Collections.nCopies(110, "-"));
 
     private static final int PAD_ACC = 17;
@@ -38,15 +39,18 @@ public final class ExportAs {
 
     public static String txt(RewardSummary reward) {
         StringWriter out = new StringWriter();
-        write(reward, TEXT_FORMAT, out);
+        write(reward, TEXT_FORMAT, out, true);
         return out.toString();
     }
 
+    /**
+     * Export reward to CSV file using default character encoding. Encoding can be specified with -Dfile.encoding=UTF8
+     */
     public static File csv(RewardSummary reward, String pathToCsv) {
         File f = new File(pathToCsv);
 
-        try (Writer out = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8)) {
-            write(reward, FILE_FORMAT, out);
+        try (Writer out = new FileWriter(f)) {
+            write(reward, FILE_FORMAT, out, false);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -54,19 +58,19 @@ public final class ExportAs {
         return f;
     }
 
-    public static void write(RewardSummary reward, CSVFormat format, Writer out) {
+    public static void write(RewardSummary reward, CSVFormat format, Writer out, boolean withHeaderDelimiter) {
         try (
                 CSVPrinter csv = new CSVPrinter(out, format)
         ) {
             Map<Transaction.Type, List<Transaction>> transactionMap = reward.getTransactionsMap();
 
-            printTransactions(csv, "Операции c кэшбеком", transactionMap.get(Transaction.Type.WITHDRAW), true);
+            printTransactions(csv, "Операции c кэшбеком", transactionMap.get(Transaction.Type.WITHDRAW), true, withHeaderDelimiter);
             csv.println();
 
-            printTransactions(csv, "Операции, кешбэк за которые не положен", transactionMap.get(Transaction.Type.WITHDRAW_IGNORE));
+            printTransactions(csv, "Операции, кешбэк за которые не положен", transactionMap.get(Transaction.Type.WITHDRAW_IGNORE), withHeaderDelimiter);
             csv.println();
 
-            printTransactions(csv, "Пополнения", transactionMap.get(Transaction.Type.REFILL));
+            printTransactions(csv, "Пополнения", transactionMap.get(Transaction.Type.REFILL), withHeaderDelimiter);
             csv.println();
 
             csv.printRecord("Период, с " + reward.getMinDate() + " по " + reward.getMaxDate());
@@ -85,18 +89,22 @@ public final class ExportAs {
 
     private static void printTransactions(CSVPrinter csv,
                                           String title,
-                                          List<Transaction> transactions) throws IOException {
-        printTransactions(csv, title, transactions, false);
+                                          List<Transaction> transactions,
+                                          boolean withHeaderDelimiter) throws IOException {
+        printTransactions(csv, title, transactions, false, withHeaderDelimiter);
     }
 
     private static void printTransactions(CSVPrinter csv,
                                           String title,
                                           List<Transaction> transactions,
-                                          boolean withReward) throws IOException {
+                                          boolean withReward,
+                                          boolean withHeaderDelimiter) throws IOException {
         csv.printRecord(title);
         csv.println();
         csv.printRecord(createHeader(withReward));
-        csv.printRecord(HEADER_DELIMITER);
+        if (withHeaderDelimiter) {
+            csv.printRecord(HEADER_DELIMITER);
+        }
 
         if (transactions == null || transactions.isEmpty()) {
             csv.printRecord("<нет операций>");

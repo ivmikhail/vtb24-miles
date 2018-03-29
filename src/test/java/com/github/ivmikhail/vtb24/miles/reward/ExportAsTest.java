@@ -50,7 +50,7 @@ public class ExportAsTest {
 
         List<String> lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
         String lastLine = lines.get(lines.size() - 1).replace("\"", "");
-        assertEquals("Всего списаний  , в руб,-100.0", lastLine);
+        assertEquals("Всего списаний  , в руб;-100.0", lastLine);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -90,6 +90,6 @@ public class ExportAsTest {
             }
         };
 
-        ExportAs.write(rewardSummary, CSVFormat.DEFAULT, fake);
+        ExportAs.write(rewardSummary, CSVFormat.DEFAULT, fake, true);
     }
 }
