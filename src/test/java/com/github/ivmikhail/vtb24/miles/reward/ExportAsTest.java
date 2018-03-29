@@ -75,7 +75,7 @@ public class ExportAsTest {
     public void testWrite() {
         Writer fake = new Writer() {
             @Override
-            public void write(char[] cbuf, int off, int len) throws IOException {
+            public void write(char[] buf, int off, int len) throws IOException {
                 throw new IOException("Fake writer");
             }
 
