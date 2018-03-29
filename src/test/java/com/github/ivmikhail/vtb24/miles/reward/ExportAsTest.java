@@ -81,12 +81,12 @@ public class ExportAsTest {
 
             @Override
             public void flush() throws IOException {
-
+                throw new IOException("Fake writer");
             }
 
             @Override
             public void close() throws IOException {
-
+                throw new IOException("Fake writer");
             }
         };
 

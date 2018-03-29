@@ -53,7 +53,7 @@ public final class ExportAs {
         return f;
     }
 
-    static void write(RewardSummary reward, CSVFormat format, Writer out) {
+    public static void write(RewardSummary reward, CSVFormat format, Writer out) {
         try (
                 CSVPrinter csv = new CSVPrinter(out, format)
         ) {
