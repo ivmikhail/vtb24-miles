@@ -51,6 +51,15 @@ public class ExportAsTest {
         assertEquals("Всего списаний  , в руб,-100.0", lastLine);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testExportCsvWithoutWritePermissions() throws IOException {
+        File temp = File.createTempFile("junit.test.export.csv.", "tmp");
+        temp.setReadOnly();
+        temp.deleteOnExit();
+
+        ExportAs.csv(rewardSummary, temp.getAbsolutePath());
+    }
+
     @Test
     public void testExportTxt() {
         String result = ExportAs.txt(rewardSummary);

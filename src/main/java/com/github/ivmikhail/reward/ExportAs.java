@@ -14,14 +14,16 @@ import java.util.Map;
 
 public final class ExportAs {
     private static final char ZERO_WIDTH_SPACE = '\u200B';
+    private static final char SPACE = '\u200B';
+
     private static final CSVFormat TEXT_FORMAT = CSVFormat.DEFAULT
-            .withDelimiter('\u2000')
+            .withDelimiter(SPACE)
             .withEscape(ZERO_WIDTH_SPACE)
             .withQuoteMode(QuoteMode.NONE)
             ;
 
     private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL;
-    private static final String TXT_HEADER_DELIMITER = String.join("", Collections.nCopies(110, "-"));
+    private static final String HEADER_DELIMITER = String.join("", Collections.nCopies(110, "-"));
 
     private static final int PAD_ACC = 17;
     private static final int PAD_DATE = 10;
@@ -54,7 +56,7 @@ public final class ExportAs {
         return f;
     }
 
-    public static void writeAndClose(RewardSummary reward, CSVFormat format, Writer out) {
+    private static void writeAndClose(RewardSummary reward, CSVFormat format, Writer out) {
         try (
                 CSVPrinter csv = new CSVPrinter(out, format)
         ) {
@@ -96,7 +98,7 @@ public final class ExportAs {
         csv.printRecord(title);
         csv.println();
         csv.printRecord(createHeader(withReward));
-        csv.printRecord(TXT_HEADER_DELIMITER);
+        csv.printRecord(HEADER_DELIMITER);
 
         if (transactions == null || transactions.isEmpty()) {
             csv.printRecord("<нет операций>");
@@ -128,7 +130,6 @@ public final class ExportAs {
     }
 
     private static List<String> createRow(Transaction t, boolean withRewards) {
-
         List<String> row = new ArrayList<>();
 
         Operation op = t.getOperation();

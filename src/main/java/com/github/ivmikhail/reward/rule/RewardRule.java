@@ -11,10 +11,6 @@ public abstract class RewardRule {
     RewardRule() {
     }
 
-    public BigDecimal getRewardPercent() {
-        return rewardPercent;
-    }
-
     public void setRewardPercent(BigDecimal rewardPercent) {
         this.rewardPercent = rewardPercent;
     }
