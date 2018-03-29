@@ -35,11 +35,11 @@
 
 В примере ниже я сохранил программу и выписку в папке vtb24-miles. Мне нужно посмотреть мили за декабрь 2017г
  
-![Как использовать vtb24-miles](/static/how-to-use.gif?raw=true)
+![Как использовать vtb24-miles](/static/howto-v2.gif?raw=true)
 
 #### Параметры запуска
 
-![Параметры запуска](/static/help.png?raw=true)
+![Параметры запуска](/static/help-v2.png?raw=true)
 
 ### Вопросы и ответы
 
