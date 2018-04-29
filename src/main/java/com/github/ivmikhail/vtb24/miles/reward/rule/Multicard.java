@@ -10,11 +10,14 @@ public class Multicard extends RewardRule {
 
     @Override
     public Transaction.Reward calculate(Transaction t) {
-        BigDecimal amount = getRoundedAmountInRUR(t);
+        Transaction.Reward reward = new Transaction.Reward();
+        reward.setPercent(this.rewardPercent);
+        reward.setMiles(null);//there are no miles for each transaction
+        return reward;
+    }
 
-        Transaction.Reward r = new Transaction.Reward();
-        r.setPercent(rewardPercent);
-        r.setMiles(amount.multiply(rewardPercent));
-        return r;
+    @Override
+    public boolean calcMilesForEachTransaction() {
+        return false;
     }
 }

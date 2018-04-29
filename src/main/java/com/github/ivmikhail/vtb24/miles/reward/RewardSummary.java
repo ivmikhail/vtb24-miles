@@ -29,6 +29,10 @@ public class RewardSummary {
         this.transactionsMap = new HashMap<>();
     }
 
+    public void setTotalMiles(BigDecimal totalMiles) {
+        this.totalMiles = totalMiles;
+    }
+
     public BigDecimal getTotalRefillRUR() {
         return totalRefillRUR;
     }

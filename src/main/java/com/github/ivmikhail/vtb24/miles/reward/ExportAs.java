@@ -149,7 +149,6 @@ public final class ExportAs {
 
         if (withRewards) {
             Transaction.Reward r = t.getReward();
-
             row.add(pad(r.getPercent(), PAD_PERCENT));
             row.add(pad(r.getMiles(), PAD_MILES));
         }
@@ -157,6 +156,8 @@ public final class ExportAs {
     }
 
     private static String pad(Object o, int length) {
+        if (o == null) return pad("N/A", length);
+
         if (o instanceof BigDecimal) {
             BigDecimal b = (BigDecimal) o;
             BigDecimal rounded = b.setScale(2, BigDecimal.ROUND_DOWN);

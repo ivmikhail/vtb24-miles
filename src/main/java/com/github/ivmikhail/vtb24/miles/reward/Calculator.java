@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.github.ivmikhail.vtb24.miles.util.PropsUtil.getAsSet;
+import static com.github.ivmikhail.vtb24.miles.reward.Transaction.Type.*;
 
 /**
  * Created by ivmikhail on 01/07/2017.
@@ -24,6 +26,8 @@ import static com.github.ivmikhail.vtb24.miles.util.PropsUtil.getAsSet;
 public class Calculator {
     private static final String RUR = "RUR";
     private static final String COMMA = ",";
+    private static final Predicate<Transaction> PREDICATE_WITHDRAW_ALL = t -> t.getType() != REFILL;
+    private static final Predicate<Transaction> PREDICATE_WITHDRAW_CASHBACK = t -> t.getType() == WITHDRAW;
 
     private Set<String> ignoreWords;
     private Set<String> foreignTransactionWords;
@@ -42,22 +46,42 @@ public class Calculator {
 
     public RewardSummary process(List<Operation> ops) {
         List<Transaction> transactions = toTransactions(ops);
-        BigDecimal totalWithdraw = getTotalWithdraw(transactions);
+        BigDecimal totalWithdraw = getWithdraw(PREDICATE_WITHDRAW_ALL, transactions);
+
         RewardRule rule = createRule(totalWithdraw);
         RewardSummary result = new RewardSummary(totalWithdraw, rule);
 
+
         for (Transaction t : transactions) {
-            if (t.getType() == Transaction.Type.WITHDRAW) {
-                t.setRewards(rule.calculate(t));
-            }
+            if (t.getType() == WITHDRAW) t.setRewards(rule.calculate(t));
+
             result.add(t);
         }
+
+        if (!rule.calcMilesForEachTransaction()) {
+            BigDecimal withdraw = getWithdraw(PREDICATE_WITHDRAW_CASHBACK, transactions); //cashbackable withdraw
+            BigDecimal totalMiles = withdraw
+                    .abs()
+                    .multiply(rule.getRewardPercent())
+                    .setScale(-2, BigDecimal.ROUND_DOWN);
+            totalMiles = totalMiles.add(BigDecimal.ONE); //найдено эмпирически
+
+            result.setTotalMiles(totalMiles);
+        }
+
 
         LocalDate[] range = getRange(ops);
         result.setMinDate(range[0]);
         result.setMaxDate(range[1]);
 
         return result;
+    }
+
+    private BigDecimal getWithdraw(Predicate<Transaction> predicate, List<Transaction> transactions) {
+        return transactions.stream()
+                .filter(predicate)
+                .map(t -> t.getAmountInRUR())
+                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
     }
 
     private List<Transaction> toTransactions(List<Operation> ops) {
@@ -91,11 +115,11 @@ public class Calculator {
 
     private Transaction.Type determineType(Operation op) {
         if (isRefill(op)) {
-            return Transaction.Type.REFILL;
+            return REFILL;
         } else if (isIgnore(op)) {
-            return Transaction.Type.WITHDRAW_IGNORE;
+            return WITHDRAW_IGNORE;
         } else {
-            return Transaction.Type.WITHDRAW;
+            return WITHDRAW;
         }
     }
 
@@ -106,7 +130,7 @@ public class Calculator {
     private boolean isIgnore(Operation o) {
         String description = o.getDescription();
 
-        if(PersonNameUtil.isMaskedPersonName(description)) {
+        if (PersonNameUtil.isMaskedPersonName(description)) {
             //перевод по номеру телефона
             return true;
         }
@@ -117,16 +141,6 @@ public class Calculator {
             }
         }
         return false;
-    }
-
-    private BigDecimal getTotalWithdraw(List<Transaction> transactions) {
-        BigDecimal totalWithdraw = BigDecimal.ZERO;
-        for (Transaction t : transactions) {
-            if (t.getType() != Transaction.Type.REFILL) {
-                totalWithdraw = totalWithdraw.add(t.getAmountInRUR());
-            }
-        }
-        return totalWithdraw;
     }
 
     private LocalDate[] getRange(List<Operation> ops) {

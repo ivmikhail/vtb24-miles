@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MulticardTest {
     private Multicard rule;
@@ -26,7 +27,7 @@ public class MulticardTest {
         t.setAmountInRUR(new BigDecimal("-100"));
 
         Transaction.Reward r = rule.calculate(t);
-        assertEquals(0, r.getMiles().compareTo(new BigDecimal("1")));
+        assertNull(r.getMiles());
         assertEquals(0, r.getPercent().compareTo(new BigDecimal("0.01")));
     }
 }

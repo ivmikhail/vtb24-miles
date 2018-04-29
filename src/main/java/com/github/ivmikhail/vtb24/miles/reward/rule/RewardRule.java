@@ -35,6 +35,9 @@ public abstract class RewardRule {
      */
     public abstract Transaction.Reward calculate(Transaction t);
 
+
+    public abstract boolean calcMilesForEachTransaction();
+
     protected BigDecimal getRoundedAmountInRUR(Transaction t) {
 
         //4% каждые 100 руб, округление: 199 -> 100, 201 -> 200  и т.д

@@ -40,6 +40,11 @@ public class KMRule extends RewardRule {
         return r;
     }
 
+    @Override
+    public boolean calcMilesForEachTransaction() {
+        return true;
+    }
+
     private boolean isForeign(Transaction t) {
         Operation op = t.getOperation();
         if (!op.getCurrencyCode().equals(op.getAccountCurrencyCode())) {
