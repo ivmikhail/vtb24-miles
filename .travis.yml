@@ -2,9 +2,8 @@ language: java
 jdk:
   - oraclejdk8
 
-sudo: required
 before_install:
-- "install-codacy-coverage-reporter.sh"
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.0/codacy-coverage-reporter-4.0.0-assembly.jar
 
 install: mvn install
 
