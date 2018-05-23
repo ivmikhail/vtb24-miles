@@ -2,8 +2,6 @@ package com.github.ivmikhail.vtb24.miles.reward.rule;
 
 import com.github.ivmikhail.vtb24.miles.reward.Transaction;
 
-import java.math.BigDecimal;
-
 public class Multicard extends RewardRule {
     Multicard() {
     }
