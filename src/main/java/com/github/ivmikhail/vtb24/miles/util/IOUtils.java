@@ -12,7 +12,7 @@ public final class IOUtils {
         try {
             closeable.close();
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to close input stream", e);
+            throw new IllegalStateException("Failed to close Closeable object", e);
         }
     }
 }

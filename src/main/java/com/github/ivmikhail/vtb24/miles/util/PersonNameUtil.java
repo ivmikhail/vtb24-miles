@@ -9,7 +9,7 @@ public final class PersonNameUtil {
     private PersonNameUtil() { /* helper class*/}
 
     /**
-     * Return true is value something like that М*******й Евгений Юрьевич
+     * Return true if value something like that М*******й Евгений Юрьевич
      *
      * Otherwise return false
      */
