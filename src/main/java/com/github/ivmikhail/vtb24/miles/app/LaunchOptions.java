@@ -30,14 +30,14 @@ public class LaunchOptions {
 
     private Options options;
     private String[] args;
-    private String exexName;
+    private String execName;
     private HelpFormatter helpFormatter;
 
     public LaunchOptions(String[] args) {
         this.options = createOptions();
         this.args = args;
         this.helpFormatter = new HelpFormatter();
-        this.exexName = determineExecName();
+        this.execName = determineExecName();
     }
 
     public Settings createSettings() {
@@ -87,7 +87,7 @@ public class LaunchOptions {
     }
 
     public void printHelp() {
-        helpFormatter.printHelp("java -jar " + exexName, options, true);
+        helpFormatter.printHelp("java -jar " + execName, options, true);
     }
 
     private String determineExecName() {
