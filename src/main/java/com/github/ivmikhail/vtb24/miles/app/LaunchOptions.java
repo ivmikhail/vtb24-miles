@@ -4,6 +4,9 @@ import com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory;
 import com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory.RuleId;
 import org.apache.commons.cli.*;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +19,7 @@ import static com.github.ivmikhail.vtb24.miles.util.LoadProperties.fromFile;
 public class LaunchOptions {
     private static final String PROPERTIES_CLASSPATH = "/app.properties";
     private static final DateTimeFormatter DATEFORMAT_ARG = DateTimeFormatter.ofPattern("MMyyyy");
+    private static final String DEFAULT_JAR_NAME = "vtb24-miles.jar";
 
     private static final String STATEMENT_PATH = "s";
     private static final String MONTH = "m";
@@ -26,10 +30,14 @@ public class LaunchOptions {
 
     private Options options;
     private String[] args;
+    private String exexName;
+    private HelpFormatter helpFormatter;
 
     public LaunchOptions(String[] args) {
         this.options = createOptions();
         this.args = args;
+        this.helpFormatter = new HelpFormatter();
+        this.exexName = determineExecName();
     }
 
     public Settings createSettings() {
@@ -79,8 +87,26 @@ public class LaunchOptions {
     }
 
     public void printHelp() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar vtb24-miles.jar -s statement.csv", options);
+        helpFormatter.printHelp("java -jar " + exexName, options, true);
+    }
+
+    private String determineExecName() {
+        try {
+            URI uri = this.getClass()
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI();
+            File f = new File(uri);
+            if (f.isDirectory()) {
+                //exec from sources
+                return DEFAULT_JAR_NAME;
+            } else {
+                return f.getName();
+            }
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Failed to get URI of executable file", e);
+        }
     }
 
     private Options createOptions() {

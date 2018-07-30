@@ -13,6 +13,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
+import static java.util.logging.Level.WARNING;
+
 public final class Main {
     private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
@@ -59,7 +61,7 @@ public final class Main {
         try {
             settings = opts.createSettings();
         } catch (IllegalArgumentException e) {
-            LOG.warning(e.getMessage());
+            LOG.log(WARNING, "Failed to parse arguments", e);
             exitCode = 1;
         }
         if (settings != null && settings.isPrintHelpAndExit()) exitCode = 0;
