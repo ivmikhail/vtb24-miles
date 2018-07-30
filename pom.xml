@@ -73,14 +73,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <!--<configuration>-->
-                        <!--<artifactSet>-->
-                        <!--<includes>-->
-                        <!--<include>org.apache.commons:commons-csv</include>-->
-                        <!--<include>commons-cli:commons-cli</include>-->
-                        <!--</includes>-->
-                        <!--</artifactSet>-->
-                        <!--</configuration>-->
                     </execution>
                 </executions>
             </plugin>
