@@ -24,11 +24,11 @@ public final class ExportAs {
     private static final CSVFormat FILE_FORMAT = CSVFormat.EXCEL
             .withDelimiter(';')
             .withQuoteMode(QuoteMode.ALL);
-    private static final String HEADER_DELIMITER = String.join("", Collections.nCopies(110, "-"));
+    private static final String HEADER_DELIMITER = String.join("", Collections.nCopies(120, "-"));
 
     private static final int PAD_ACC = 17;
     private static final int PAD_DATE = 10;
-    private static final int PAD_DESCRIPTION = 30;
+    private static final int PAD_DESCRIPTION = 38;
     private static final int PAD_AMOUNT = 11;
     private static final int PAD_CCY = 6;
     private static final int PAD_RATE = 6;
