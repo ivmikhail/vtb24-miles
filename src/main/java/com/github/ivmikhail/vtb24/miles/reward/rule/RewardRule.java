@@ -35,8 +35,7 @@ public abstract class RewardRule {
      */
     public abstract Transaction.Reward calculate(Transaction t);
 
-
-    public abstract boolean calcMilesForEachTransaction();
+    public abstract boolean isSpecialTotalMilesCalc();
 
     protected BigDecimal getRoundedAmountInRUR(Transaction t) {
 

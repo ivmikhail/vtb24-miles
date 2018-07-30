@@ -41,8 +41,8 @@ public class KMRule extends RewardRule {
     }
 
     @Override
-    public boolean calcMilesForEachTransaction() {
-        return true;
+    public boolean isSpecialTotalMilesCalc() {
+        return false;
     }
 
     private boolean isForeign(Transaction t) {

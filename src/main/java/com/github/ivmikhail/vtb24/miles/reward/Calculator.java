@@ -58,13 +58,12 @@ public class Calculator {
             result.add(t);
         }
 
-        if (!rule.calcMilesForEachTransaction()) {
+        if (rule.isSpecialTotalMilesCalc()) {
             BigDecimal withdraw = getWithdraw(PREDICATE_WITHDRAW_CASHBACK, transactions); //cashbackable withdraw
             BigDecimal totalMiles = withdraw
-                    .abs()
+                    .negate()
                     .multiply(rule.getRewardPercent())
-                    .setScale(-2, BigDecimal.ROUND_DOWN);
-            totalMiles = totalMiles.add(BigDecimal.ONE); //найдено эмпирически
+                    .setScale(0, BigDecimal.ROUND_UP);
 
             result.setTotalMiles(totalMiles);
         }
