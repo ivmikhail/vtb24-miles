@@ -88,6 +88,6 @@ public class LaunchOptionsTest {
 
         System.setOut(System.out);//restore out
 
-        assertTrue(outContent.size() > 0);
+        assertTrue(outContent.toString().startsWith("usage: java -jar vtb24-miles.jar"));
     }
 }
