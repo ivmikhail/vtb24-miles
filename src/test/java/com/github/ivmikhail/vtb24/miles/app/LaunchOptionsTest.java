@@ -80,6 +80,7 @@ public class LaunchOptionsTest {
     @Test
     public void testHelpPrint() {
         LaunchOptions opts = new LaunchOptions(new String[]{});
+        opts.setExecutableName("MyFunnyApp");
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));//change out
@@ -88,6 +89,6 @@ public class LaunchOptionsTest {
 
         System.setOut(System.out);//restore out
 
-        assertTrue(outContent.toString().startsWith("usage: java -jar vtb24-miles.jar"));
+        assertTrue(outContent.toString().startsWith("usage: java -jar MyFunnyApp"));
     }
 }

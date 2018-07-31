@@ -4,9 +4,6 @@ import com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory;
 import com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory.RuleId;
 import org.apache.commons.cli.*;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +16,6 @@ import static com.github.ivmikhail.vtb24.miles.util.LoadProperties.fromFile;
 public class LaunchOptions {
     private static final String PROPERTIES_CLASSPATH = "/app.properties";
     private static final DateTimeFormatter DATEFORMAT_ARG = DateTimeFormatter.ofPattern("MMyyyy");
-    private static final String DEFAULT_JAR_NAME = "vtb24-miles.jar";
 
     private static final String STATEMENT_PATH = "s";
     private static final String MONTH = "m";
@@ -30,27 +26,31 @@ public class LaunchOptions {
 
     private Options options;
     private String[] args;
-    private String execName;
+    private String executableName;
     private HelpFormatter helpFormatter;
+
+    public LaunchOptions() {
+        this.options = createOptions();
+        this.helpFormatter = new HelpFormatter();
+    }
 
     public LaunchOptions(String[] args) {
         this.options = createOptions();
-        this.args = args;
         this.helpFormatter = new HelpFormatter();
-        this.execName = determineExecName();
+        this.args = args;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    public void setExecutableName(String executableName) {
+        this.executableName = executableName;
     }
 
     public Settings createSettings() {
-        CommandLine cli;
-        try {
-            cli = new DefaultParser().parse(options, args);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return createSettings(cli);
-    }
+        CommandLine cli = parseArgsOrFail();
 
-    private Settings createSettings(CommandLine cli) {
         String[] statementPaths = cli.getOptionValues(STATEMENT_PATH);
         String userPropertiesPath = cli.getOptionValue(PROPS_PATH);
 
@@ -86,27 +86,16 @@ public class LaunchOptions {
         return settings;
     }
 
-    public void printHelp() {
-        helpFormatter.printHelp("java -jar " + execName, options, true);
+    private CommandLine parseArgsOrFail() {
+        try {
+            return new DefaultParser().parse(options, args);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    private String determineExecName() {
-        try {
-            URI uri = this.getClass()
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .toURI();
-            File f = new File(uri);
-            if (f.isDirectory()) {
-                //exec from sources
-                return DEFAULT_JAR_NAME;
-            } else {
-                return f.getName();
-            }
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("Failed to get URI of executable file", e);
-        }
+    public void printHelp() {
+        helpFormatter.printHelp("java -jar " + executableName, options, true);
     }
 
     private Options createOptions() {

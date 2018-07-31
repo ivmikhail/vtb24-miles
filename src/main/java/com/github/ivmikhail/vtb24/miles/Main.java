@@ -9,20 +9,28 @@ import com.github.ivmikhail.vtb24.miles.statement.CSVLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 public final class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
+    private static final String DEFAULT_JAR_NAME = "vtb24-miles.jar";
+
     private Main() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
+    public static void main(String[] args) throws UnsupportedEncodingException, URISyntaxException {
         tryToMakeWorldBetter();
 
-        Settings settings = getSettingsOrExit(new LaunchOptions(args));
+        LaunchOptions opts = new LaunchOptions(args);
+        opts.setExecutableName(determineExecName());
+
+        Settings settings = getSettingsOrExit(opts);
 
         Calculator calculator = new Calculator(settings);
         RewardSummary reward = calculator.process(CSVLoader.load(settings));
@@ -51,6 +59,22 @@ public final class Main {
             if (exitCode != 0) LOG.warn("Failed to change code page, exit code {}", exitCode);
         } catch (IOException | InterruptedException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private static String determineExecName() throws URISyntaxException {
+        URI uri = Main.class
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .toURI();
+
+        File f = new File(uri);
+        if (f.isDirectory()) {
+            //exec from sources
+            return DEFAULT_JAR_NAME;
+        } else {
+            return f.getName();
         }
     }
 

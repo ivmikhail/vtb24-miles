@@ -18,18 +18,18 @@ public class Settings {
     private String exportPath;
     private RuleId ruleId;
 
+    public Settings() {
+        this.minDate = LocalDate.MIN;
+        this.maxDate = LocalDate.MAX;
+        this.properties = new Properties();
+    }
+
     public RuleId getRuleId() {
         return ruleId;
     }
 
     public void setRuleId(RuleId ruleId) {
         this.ruleId = ruleId;
-    }
-
-    public Settings() {
-        this.minDate = LocalDate.MIN;
-        this.maxDate = LocalDate.MAX;
-        this.properties = new Properties();
     }
 
     public boolean isPrintHelpAndExit() {
