@@ -51,7 +51,6 @@ public class Calculator {
         RewardRule rule = createRule(totalWithdraw);
         RewardSummary result = new RewardSummary(totalWithdraw, rule);
 
-
         for (Transaction t : transactions) {
             if (t.getType() == WITHDRAW) t.setRewards(rule.calculate(t));
 
@@ -67,7 +66,6 @@ public class Calculator {
 
             result.setTotalMiles(totalMiles);
         }
-
 
         LocalDate[] range = getRange(ops);
         result.setMinDate(range[0]);
@@ -143,16 +141,15 @@ public class Calculator {
     }
 
     private LocalDate[] getRange(List<Operation> ops) {
-        Operation first = ops.get(0);
-        Operation last = ops.get(ops.size() - 1);
-
         LocalDate min = settings.getMinDate();
-        if (min == null || min.isEqual(LocalDate.MIN)) {
+        if (min.isEqual(LocalDate.MIN)) {
+            Operation first = ops.get(0);
             min = first.getProcessedDate();
         }
 
         LocalDate max = settings.getMaxDate();
-        if (max == null || max.isEqual(LocalDate.MAX)) {
+        if (max.isEqual(LocalDate.MAX)) {
+            Operation last = ops.get(ops.size() - 1);
             max = last.getProcessedDate();
         }
 

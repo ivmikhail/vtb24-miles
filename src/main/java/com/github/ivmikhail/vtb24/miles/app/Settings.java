@@ -27,6 +27,8 @@ public class Settings {
     }
 
     public Settings() {
+        this.minDate = LocalDate.MIN;
+        this.maxDate = LocalDate.MAX;
         this.properties = new Properties();
     }
 
