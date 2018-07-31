@@ -29,18 +29,9 @@ public class LaunchOptions {
     private String executableName;
     private HelpFormatter helpFormatter;
 
-    public LaunchOptions() {
-        this.options = createOptions();
-        this.helpFormatter = new HelpFormatter();
-    }
-
     public LaunchOptions(String[] args) {
         this.options = createOptions();
         this.helpFormatter = new HelpFormatter();
-        this.args = args;
-    }
-
-    public void setArgs(String[] args) {
         this.args = args;
     }
 
