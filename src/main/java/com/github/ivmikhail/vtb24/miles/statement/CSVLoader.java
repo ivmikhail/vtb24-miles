@@ -53,7 +53,6 @@ public final class CSVLoader {
         DF.setGroupingUsed(true);
     }
 
-
     enum Column {
         CARD_NUM_MASKED,
         DATETIME,
