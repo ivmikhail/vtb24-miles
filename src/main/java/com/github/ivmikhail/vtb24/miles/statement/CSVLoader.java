@@ -4,6 +4,8 @@ import com.github.ivmikhail.vtb24.miles.app.Settings;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static com.github.ivmikhail.vtb24.miles.statement.CSVLoader.Column.*;
 
@@ -28,7 +29,7 @@ import static com.github.ivmikhail.vtb24.miles.statement.CSVLoader.Column.*;
  * Created by ivmikhail on 01/07/2017.
  */
 public final class CSVLoader {
-    private static final Logger LOG = Logger.getLogger(CSVLoader.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CSVLoader.class);
 
     private static final Character DELIMITER = ';';
     private static final String CHARSET_NAME = "windows-1251";
@@ -98,14 +99,14 @@ public final class CSVLoader {
             for (CSVRecord r : parser) {
                 if (parser.getCurrentLineNumber() <= SKIP_FIRST_ROWS) continue;
                 if (r.size() != values().length) {
-                    LOG.warning("Skip row, expected size " + values().length + ", row " + r.toString());
+                    LOG.warn("Skip row, expected size {}, row {}", values().length, r);
                     continue;
                 }
 
                 Operation o = mapRecord(r);
                 LocalDate date = o.getProcessedDate();
                 if (date == null) {
-                    LOG.info("Operation not processed by Bank, skip it " + r.toString());
+                    LOG.info("Operation not processed by Bank, skip {}", r);
                     continue;
                 }
                 boolean isInRange = (date.isEqual(min) || date.isAfter(min)) && (date.isEqual(max) || date.isBefore(max));

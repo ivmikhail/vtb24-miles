@@ -3,6 +3,8 @@ package com.github.ivmikhail.vtb24.miles.statement;
 import com.github.ivmikhail.vtb24.miles.app.Settings;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
  * Created by ivmikhail on 01/07/2017.
  */
 public class CSVLoaderTest {
-    private static final Logger LOG = Logger.getLogger(CSVLoaderTest.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CSVLoaderTest.class);
 
     private Settings settings;
 
@@ -48,7 +49,7 @@ public class CSVLoaderTest {
 */
         Operation o = ops.get(2);
 
-        LOG.info("Loaded operation: " + o.toString());
+        LOG.info("Loaded operation: {}", o);
 
         assertEquals("'123456XXXXXX7890", o.getAccountNumberMasked());
         assertEquals(LocalDateTime.of(2017, Month.JUNE, 4, 11, 21, 6), o.getDateTime());

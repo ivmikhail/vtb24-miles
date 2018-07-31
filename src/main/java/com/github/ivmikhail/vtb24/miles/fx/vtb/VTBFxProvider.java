@@ -9,6 +9,8 @@ import com.github.ivmikhail.vtb24.miles.fx.vtb.util.LocalDateTimeDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,14 +24,13 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /**
  * Retrieves rates from
  * https://www.vtb24.ru/banking/currency/rate-of-conversion/?NoMobileRedirect=true
  */
 public class VTBFxProvider implements FxProvider {
-    private static final Logger LOG = Logger.getLogger(VTBFxProvider.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(VTBFxProvider.class);
 
     private static final ZoneId MOSCOW = ZoneId.of("Europe/Moscow");
     private static final Gson GSON = new GsonBuilder()
@@ -134,7 +135,7 @@ public class VTBFxProvider implements FxProvider {
     }
 
     private RatesWrapper loadFromRemote() throws IOException {
-        LOG.info("Fetching FX rates from " + url);
+        LOG.info("Fetching FX rates from {}", url);
 
         RequestBody requestBody = RequestBody.create(JSON, GSON.toJson(PayloadFactory.createFX()));
 

@@ -6,17 +6,16 @@ import com.github.ivmikhail.vtb24.miles.reward.Calculator;
 import com.github.ivmikhail.vtb24.miles.reward.ExportAs;
 import com.github.ivmikhail.vtb24.miles.reward.RewardSummary;
 import com.github.ivmikhail.vtb24.miles.statement.CSVLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
-
-import static java.util.logging.Level.WARNING;
 
 public final class Main {
-    private static final Logger LOG = Logger.getLogger(Main.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     private Main() {/* static class with Main method, no need to initialize */}
 
@@ -49,7 +48,7 @@ public final class Main {
         try {
             Process p = pb.start();
             int exitCode = p.waitFor();
-            if (exitCode != 0) LOG.warning("Failed to change code page, exit code " + exitCode);
+            if (exitCode != 0) LOG.warn("Failed to change code page, exit code {}", exitCode);
         } catch (IOException | InterruptedException e) {
             throw new IllegalStateException(e);
         }
@@ -61,7 +60,7 @@ public final class Main {
         try {
             settings = opts.createSettings();
         } catch (IllegalArgumentException e) {
-            LOG.log(WARNING, "Failed to parse arguments", e);
+            LOG.warn("Failed to parse arguments", e);
             exitCode = 1;
         }
         if (settings != null && settings.isPrintHelpAndExit()) exitCode = 0;
