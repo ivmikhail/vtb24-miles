@@ -92,7 +92,7 @@ public final class App {
             LOG.warn(e.getMessage());
             opts.printHelp();
 
-            Runtime.getRuntime().exit(0);
+            Runtime.getRuntime().exit(1);
         }
 
         if (settings.isPrintHelpAndExit()) {
