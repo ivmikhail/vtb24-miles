@@ -1,5 +1,6 @@
 package com.github.ivmikhail.vtb24.miles.app;
 
+import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -14,7 +15,7 @@ import static org.junit.Assert.*;
 public class LaunchOptionsTest {
 
     @Test
-    public void testPathToStatements() {
+    public void testPathToStatements() throws ParseException {
         LaunchOptions opts = new LaunchOptions("-s statement1.csv -s statement2.csv".split(" "));
         Settings s = opts.createSettings();
 
@@ -23,7 +24,7 @@ public class LaunchOptionsTest {
     }
 
     @Test
-    public void testPeriod() {
+    public void testPeriod() throws ParseException {
         LaunchOptions opts = new LaunchOptions("-s 1.txt -m 032018".split(" "));
         Settings s = opts.createSettings();
 
@@ -32,21 +33,21 @@ public class LaunchOptionsTest {
     }
 
     @Test
-    public void helpFlagShouldBeTrue() {
+    public void helpFlagShouldBeTrue() throws ParseException {
         LaunchOptions opts = new LaunchOptions("-s 1.txt -h".split(" "));
         Settings s = opts.createSettings();
         assertTrue(s.isPrintHelpAndExit());
     }
 
     @Test
-    public void helpFlagShouldBeFalse() {
+    public void helpFlagShouldBeFalse() throws ParseException {
         LaunchOptions opts = new LaunchOptions("-s 1.txt".split(" "));
         Settings s = opts.createSettings();
         assertFalse(s.isPrintHelpAndExit());
     }
 
     @Test
-    public void testExportPath() {
+    public void testExportPath() throws ParseException {
         LaunchOptions opts = new LaunchOptions("-s 1.txt -export export.txt".split(" "));
         Settings s = opts.createSettings();
 
@@ -54,7 +55,7 @@ public class LaunchOptionsTest {
     }
 
     @Test
-    public void testUserProperties() throws IOException {
+    public void testUserProperties() throws IOException, ParseException {
         File f = File.createTempFile("user.properties.", ".tmp");
 
         String args = "-s 1.txt -p " + f.getAbsolutePath();
@@ -65,14 +66,14 @@ public class LaunchOptionsTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testWrongArguments() {
+    @Test(expected = ParseException.class)
+    public void testWrongArguments() throws ParseException {
         LaunchOptions opts = new LaunchOptions(new String[]{"-h f g"});
         opts.createSettings();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testWithoutRequiredArgument() {
+    @Test(expected = ParseException.class)
+    public void testWithoutRequiredArgument() throws ParseException {
         LaunchOptions opts = new LaunchOptions("no minuss arg".split(" "));
         opts.createSettings();
     }

@@ -6,6 +6,7 @@ import com.github.ivmikhail.vtb24.miles.reward.Calculator;
 import com.github.ivmikhail.vtb24.miles.reward.ExportAs;
 import com.github.ivmikhail.vtb24.miles.reward.RewardSummary;
 import com.github.ivmikhail.vtb24.miles.statement.CSVLoader;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,19 +81,20 @@ public final class Main {
 
     private static Settings getSettingsOrExit(LaunchOptions opts) {
         Settings settings = null;
-        int exitCode = -1;
         try {
             settings = opts.createSettings();
-        } catch (IllegalArgumentException e) {
-            LOG.warn("Failed to parse arguments", e);
-            exitCode = 1;
-        }
-        if (settings != null && settings.isPrintHelpAndExit()) exitCode = 0;
-
-        if (exitCode >= 0) {
+        } catch (ParseException e) {
+            LOG.warn(e.getMessage());
             opts.printHelp();
-            System.exit(exitCode);
+
+            System.exit(-1);
         }
+
+        if (settings.isPrintHelpAndExit()) {
+            opts.printHelp();
+            System.exit(0);
+        }
+
         return settings;
     }
 }

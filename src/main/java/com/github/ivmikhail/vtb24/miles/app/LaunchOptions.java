@@ -39,8 +39,8 @@ public class LaunchOptions {
         this.executableName = executableName;
     }
 
-    public Settings createSettings() {
-        CommandLine cli = parseArgsOrFail();
+    public Settings createSettings() throws ParseException {
+        CommandLine cli = new DefaultParser().parse(options, args);
 
         String[] statementPaths = cli.getOptionValues(STATEMENT_PATH);
         String userPropertiesPath = cli.getOptionValue(PROPS_PATH);
@@ -75,14 +75,6 @@ public class LaunchOptions {
         settings.setRuleId(RuleId.valueOf(rule));
 
         return settings;
-    }
-
-    private CommandLine parseArgsOrFail() {
-        try {
-            return new DefaultParser().parse(options, args);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
     public void printHelp() {
