@@ -17,7 +17,7 @@ public class LaunchOptionsTest {
     @Test
     public void testPathToStatements() throws ParseException {
         LaunchOptions opts = new LaunchOptions();
-        opts.setArgs("-s statement1.csv -s statement2.csv".split(" "));
+        opts.setArgs("-s", "statement1.csv", "-s", "statement2.csv");
         Settings s = opts.createSettings();
 
         assertEquals("statement1.csv", s.getPathsToStatement()[0]);
@@ -27,7 +27,7 @@ public class LaunchOptionsTest {
     @Test
     public void testPeriod() throws ParseException {
         LaunchOptions opts = new LaunchOptions();
-        opts.setArgs("-s 1.txt -m 032018".split(" "));
+        opts.setArgs("-s", "1.txt", "-m", "032018");
         Settings s = opts.createSettings();
 
         assertEquals(LocalDate.of(2018, Month.MARCH, 1), s.getMinDate());
@@ -37,7 +37,7 @@ public class LaunchOptionsTest {
     @Test
     public void helpFlagShouldBeTrue() throws ParseException {
         LaunchOptions opts = new LaunchOptions();
-        opts.setArgs("-s 1.txt -h".split(" "));
+        opts.setArgs("-s", "1.txt", "-h");
         Settings s = opts.createSettings();
         assertTrue(s.isPrintHelpAndExit());
     }
@@ -45,7 +45,7 @@ public class LaunchOptionsTest {
     @Test
     public void helpFlagShouldBeFalse() throws ParseException {
         LaunchOptions opts = new LaunchOptions();
-        opts.setArgs("-s 1.txt".split(" "));
+        opts.setArgs("-s", "1.txt");
         Settings s = opts.createSettings();
         assertFalse(s.isPrintHelpAndExit());
     }
@@ -53,7 +53,7 @@ public class LaunchOptionsTest {
     @Test
     public void testExportPath() throws ParseException {
         LaunchOptions opts = new LaunchOptions();
-        opts.setArgs("-s 1.txt -export export.txt".split(" "));
+        opts.setArgs("-s", "1.txt", "-export", "export.txt");
         Settings s = opts.createSettings();
 
         assertEquals("export.txt", s.getExportPath());
@@ -63,20 +63,11 @@ public class LaunchOptionsTest {
     public void testUserProperties() throws IOException, ParseException {
         File f = File.createTempFile("user.properties.", ".tmp");
 
-        String args = "-s 1.txt -p " + f.getAbsolutePath();
         LaunchOptions opts = new LaunchOptions();
-        opts.setArgs(args.split(" "));
+        opts.setArgs("-s", "1.txt", "-p", f.getAbsolutePath());
         Settings s = opts.createSettings();
 
         assertEquals(0, s.getProperties().size());
-    }
-
-
-    @Test(expected = ParseException.class)
-    public void testWrongArguments() throws ParseException {
-        LaunchOptions opts = new LaunchOptions();
-        opts.setArgs(new String[]{"-h f g"});
-        opts.createSettings();
     }
 
     @Test

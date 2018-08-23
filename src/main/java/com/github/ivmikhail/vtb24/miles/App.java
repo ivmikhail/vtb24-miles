@@ -18,14 +18,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
-public final class Main {
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+public final class App {
+    private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     private static final String DEFAULT_JAR_NAME = "vtb24-miles.jar";
 
-    private Main() {/* static class with Main method, no need to initialize */}
+    private App() {/* static class with App method, no need to initialize */}
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
+    public static void main(String... args) throws UnsupportedEncodingException {
         tryToMakeWorldBetter();
 
         Settings settings = getSettingsOrExit(args, determineExecName());
@@ -48,7 +48,7 @@ public final class Main {
         }
     }
 
-    static void setOwnConsoleCodePage(String codePage) {
+    private static void setOwnConsoleCodePage(String codePage) {
         ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "chcp", codePage).inheritIO();
         try {
             Process p = pb.start();
@@ -59,10 +59,10 @@ public final class Main {
         }
     }
 
-    static String determineExecName() {
+    private static String determineExecName() {
         URI uri;
         try {
-            uri = Main.class
+            uri = App.class
                     .getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
@@ -80,7 +80,7 @@ public final class Main {
         }
     }
 
-    static Settings getSettingsOrExit(String[] args, String executableName) {
+    private static Settings getSettingsOrExit(String[] args, String executableName) {
         LaunchOptions opts = new LaunchOptions();
         opts.setArgs(args);
         opts.setExecutableName(executableName);

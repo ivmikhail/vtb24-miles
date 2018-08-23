@@ -1,13 +1,11 @@
 package com.github.ivmikhail.vtb24.miles;
 
-import com.github.ivmikhail.vtb24.miles.app.Settings;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Permission;
-
-import static org.junit.Assert.assertNotNull;
 
 public class ExitMethodsTest {
     private SecurityManager systemSecurityManager;
@@ -39,18 +37,19 @@ public class ExitMethodsTest {
     }
 
     @Test
-    public void testGetSettings() {
-        Settings s = Main.getSettingsOrExit("-s statement.csv -m 062018".split(" "), "");
-        assertNotNull(s);
+    public void testNormalExit() throws UnsupportedEncodingException {
+        String pathToCsv = getClass().getClassLoader().getResource("statement-example.csv").getPath();
+
+        App.main("-s", pathToCsv, "-m", "062018");
     }
 
     @Test(expected = SecurityException.class)
-    public void testPrintHelp() {
-        Main.getSettingsOrExit("-h".split(" "), "");
+    public void testPrintHelpAndExit() throws UnsupportedEncodingException {
+        App.main("-h");
     }
 
     @Test(expected = SecurityException.class)
-    public void testExitInCaseOfWrongArgs() {
-        Main.getSettingsOrExit("-ddsf".split(" "), "");
+    public void testExitInCaseOfWrongArgs() throws UnsupportedEncodingException {
+        App.main("-ddsf");
     }
 }

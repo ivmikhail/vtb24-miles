@@ -52,7 +52,7 @@ public class Settings {
         return pathsToStatement;
     }
 
-    public void setPathsToStatement(String[] pathsToStatement) {
+    public void setPathsToStatement(String... pathsToStatement) {
         this.pathsToStatement = pathsToStatement;
     }
 

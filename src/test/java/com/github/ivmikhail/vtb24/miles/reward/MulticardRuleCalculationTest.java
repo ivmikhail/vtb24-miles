@@ -23,7 +23,7 @@ public class MulticardRuleCalculationTest {
         settings.setMinDate(LocalDate.MIN);
         settings.setMaxDate(LocalDate.MAX);
         settings.setProperties(new Properties());
-        settings.setPathsToStatement(new String[]{pathToCsv});
+        settings.setPathsToStatement(pathToCsv);
         settings.setRuleId(RulesFactory.RuleId.MC_TRAVEL);
     }
 

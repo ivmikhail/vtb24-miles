@@ -58,7 +58,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.github.ivmikhail.vtb24.miles.Main</mainClass>
+                            <mainClass>com.github.ivmikhail.vtb24.miles.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -28,7 +28,7 @@ public class CSVLoaderTest {
         String pathToCsv = getClass().getClassLoader().getResource("statement-example.csv").getPath();
 
         settings = new Settings();
-        settings.setPathsToStatement(new String[]{pathToCsv});
+        settings.setPathsToStatement(pathToCsv);
         settings.setProperties(new Properties());
         settings.setMinDate(LocalDate.MIN);
         settings.setMaxDate(LocalDate.MAX);
@@ -65,7 +65,7 @@ public class CSVLoaderTest {
 
     @Test(expected = IllegalStateException.class)
     public void testNonExistingPath() {
-        settings.setPathsToStatement(new String[]{"statement-not-exist.csv"});
+        settings.setPathsToStatement("statement-not-exist.csv");
         CSVLoader.load(settings);
     }
 }

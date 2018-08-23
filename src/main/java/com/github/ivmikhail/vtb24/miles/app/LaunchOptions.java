@@ -34,7 +34,7 @@ public class LaunchOptions {
         this.helpFormatter = new HelpFormatter();
     }
 
-    public void setArgs(String[] args) {
+    public void setArgs(String... args) {
         this.args = args;
     }
 
