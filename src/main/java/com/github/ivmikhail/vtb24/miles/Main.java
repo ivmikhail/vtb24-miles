@@ -25,14 +25,10 @@ public final class Main {
 
     private Main() {/* static class with Main method, no need to initialize */}
 
-    public static void main(String[] args) throws UnsupportedEncodingException, URISyntaxException {
+    public static void main(String[] args) throws UnsupportedEncodingException {
         tryToMakeWorldBetter();
 
-        LaunchOptions opts = new LaunchOptions(args);
-        opts.setExecutableName(determineExecName());
-
-        Settings settings = getSettingsOrExit(opts);
-
+        Settings settings = getSettingsOrExit(args, determineExecName());
         Calculator calculator = new Calculator(settings);
         RewardSummary reward = calculator.process(CSVLoader.load(settings));
 
@@ -48,12 +44,12 @@ public final class Main {
     private static void tryToMakeWorldBetter() {
         boolean isWin = System.getProperty("os.name").toLowerCase().contains("win");
         if (isWin) { //running on Windows
-            setOwnConsoleCodePage(65001);//unicode
+            setOwnConsoleCodePage("65001");//unicode
         }
     }
 
-    private static void setOwnConsoleCodePage(int codePage) {
-        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "chcp", String.valueOf(codePage)).inheritIO();
+    static void setOwnConsoleCodePage(String codePage) {
+        ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "chcp", codePage).inheritIO();
         try {
             Process p = pb.start();
             int exitCode = p.waitFor();
@@ -63,12 +59,17 @@ public final class Main {
         }
     }
 
-    private static String determineExecName() throws URISyntaxException {
-        URI uri = Main.class
-                .getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .toURI();
+    static String determineExecName() {
+        URI uri;
+        try {
+            uri = Main.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(e);
+        }
 
         File f = new File(uri);
         if (f.isDirectory()) {
@@ -79,7 +80,11 @@ public final class Main {
         }
     }
 
-    private static Settings getSettingsOrExit(LaunchOptions opts) {
+    static Settings getSettingsOrExit(String[] args, String executableName) {
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs(args);
+        opts.setExecutableName(executableName);
+
         Settings settings = null;
         try {
             settings = opts.createSettings();

@@ -16,7 +16,8 @@ public class LaunchOptionsTest {
 
     @Test
     public void testPathToStatements() throws ParseException {
-        LaunchOptions opts = new LaunchOptions("-s statement1.csv -s statement2.csv".split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs("-s statement1.csv -s statement2.csv".split(" "));
         Settings s = opts.createSettings();
 
         assertEquals("statement1.csv", s.getPathsToStatement()[0]);
@@ -25,7 +26,8 @@ public class LaunchOptionsTest {
 
     @Test
     public void testPeriod() throws ParseException {
-        LaunchOptions opts = new LaunchOptions("-s 1.txt -m 032018".split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs("-s 1.txt -m 032018".split(" "));
         Settings s = opts.createSettings();
 
         assertEquals(LocalDate.of(2018, Month.MARCH, 1), s.getMinDate());
@@ -34,21 +36,24 @@ public class LaunchOptionsTest {
 
     @Test
     public void helpFlagShouldBeTrue() throws ParseException {
-        LaunchOptions opts = new LaunchOptions("-s 1.txt -h".split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs("-s 1.txt -h".split(" "));
         Settings s = opts.createSettings();
         assertTrue(s.isPrintHelpAndExit());
     }
 
     @Test
     public void helpFlagShouldBeFalse() throws ParseException {
-        LaunchOptions opts = new LaunchOptions("-s 1.txt".split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs("-s 1.txt".split(" "));
         Settings s = opts.createSettings();
         assertFalse(s.isPrintHelpAndExit());
     }
 
     @Test
     public void testExportPath() throws ParseException {
-        LaunchOptions opts = new LaunchOptions("-s 1.txt -export export.txt".split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs("-s 1.txt -export export.txt".split(" "));
         Settings s = opts.createSettings();
 
         assertEquals("export.txt", s.getExportPath());
@@ -59,7 +64,8 @@ public class LaunchOptionsTest {
         File f = File.createTempFile("user.properties.", ".tmp");
 
         String args = "-s 1.txt -p " + f.getAbsolutePath();
-        LaunchOptions opts = new LaunchOptions(args.split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs(args.split(" "));
         Settings s = opts.createSettings();
 
         assertEquals(0, s.getProperties().size());
@@ -68,19 +74,14 @@ public class LaunchOptionsTest {
 
     @Test(expected = ParseException.class)
     public void testWrongArguments() throws ParseException {
-        LaunchOptions opts = new LaunchOptions(new String[]{"-h f g"});
-        opts.createSettings();
-    }
-
-    @Test(expected = ParseException.class)
-    public void testWithoutRequiredArgument() throws ParseException {
-        LaunchOptions opts = new LaunchOptions("no minuss arg".split(" "));
+        LaunchOptions opts = new LaunchOptions();
+        opts.setArgs(new String[]{"-h f g"});
         opts.createSettings();
     }
 
     @Test
     public void testHelpPrint() {
-        LaunchOptions opts = new LaunchOptions(new String[]{});
+        LaunchOptions opts = new LaunchOptions();
         opts.setExecutableName("MyFunnyApp");
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();

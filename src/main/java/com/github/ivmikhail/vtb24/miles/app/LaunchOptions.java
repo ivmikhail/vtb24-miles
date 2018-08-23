@@ -29,9 +29,12 @@ public class LaunchOptions {
     private String executableName;
     private HelpFormatter helpFormatter;
 
-    public LaunchOptions(String[] args) {
+    public LaunchOptions() {
         this.options = createOptions();
         this.helpFormatter = new HelpFormatter();
+    }
+
+    public void setArgs(String[] args) {
         this.args = args;
     }
 
@@ -89,7 +92,7 @@ public class LaunchOptions {
                 .desc("path to statement.csv downloaded from http://telebank.ru." +
                         " You can specify few paths like -s statement1.csv -s statement.csv. In this case transactions will be merged")
                 .numberOfArgs(1)
-                .required(true)
+                .required(false)
                 .build());
 
         options.addOption(Option
