@@ -36,13 +36,6 @@ public class ExitMethodsTest {
         System.setSecurityManager(systemSecurityManager);
     }
 
-    @Test
-    public void testNormalExit() throws UnsupportedEncodingException {
-        String pathToCsv = getClass().getClassLoader().getResource("statement-example.csv").getPath();
-
-        App.main("-s", pathToCsv, "-m", "062018");
-    }
-
     @Test(expected = SecurityException.class)
     public void testPrintHelpAndExit() throws UnsupportedEncodingException {
         App.main("-h");
