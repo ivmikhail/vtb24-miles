@@ -1,6 +1,7 @@
 package com.github.ivmikhail.vtb24.miles;
 
 import com.github.ivmikhail.vtb24.miles.app.Settings;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,10 +10,13 @@ import java.security.Permission;
 import static org.junit.Assert.assertNotNull;
 
 public class ExitMethodsTest {
+    private SecurityManager systemSecurityManager;
 
     @Before
     public void setUp() {
-        SecurityManager sm = new SecurityManager() {
+        systemSecurityManager = System.getSecurityManager();
+
+        SecurityManager nonExitSecurityManager = new SecurityManager() {
             @Override
             public void checkPermission(Permission permission) {
                 if (permission.getName().startsWith("exitVM")) {
@@ -26,7 +30,12 @@ public class ExitMethodsTest {
                 //allow anything, to shut up log4j2 initialization error/warning in test
             }
         };
-        System.setSecurityManager(sm);
+        System.setSecurityManager(nonExitSecurityManager);
+    }
+
+    @After
+    public void tearDown() {
+        System.setSecurityManager(systemSecurityManager);
     }
 
     @Test
