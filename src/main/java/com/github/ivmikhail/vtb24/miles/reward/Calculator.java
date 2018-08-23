@@ -7,7 +7,6 @@ import com.github.ivmikhail.vtb24.miles.fx.vtb.VTBFxProvider;
 import com.github.ivmikhail.vtb24.miles.reward.rule.RewardRule;
 import com.github.ivmikhail.vtb24.miles.reward.rule.RulesFactory;
 import com.github.ivmikhail.vtb24.miles.statement.Operation;
-import com.github.ivmikhail.vtb24.miles.util.PersonNameUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,6 +16,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static com.github.ivmikhail.vtb24.miles.util.PersonNameUtil.isMaskedPersonName;
 import static com.github.ivmikhail.vtb24.miles.util.PropsUtil.getAsSet;
 import static com.github.ivmikhail.vtb24.miles.reward.Transaction.Type.*;
 
@@ -54,7 +54,7 @@ public class Calculator {
         for (Transaction t : transactions) {
             if (t.getType() == WITHDRAW) t.setRewards(rule.calculate(t));
 
-            result.add(t);
+            result.append(t);
         }
 
         if (rule.isSpecialTotalMilesCalc()) {
@@ -77,8 +77,8 @@ public class Calculator {
     private BigDecimal getWithdraw(Predicate<Transaction> predicate, List<Transaction> transactions) {
         return transactions.stream()
                 .filter(predicate)
-                .map(t -> t.getAmountInRUR())
-                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+                .map(Transaction::getAmountInRUR)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private List<Transaction> toTransactions(List<Operation> ops) {
@@ -127,10 +127,8 @@ public class Calculator {
     private boolean isIgnore(Operation o) {
         String description = o.getDescription();
 
-        if (PersonNameUtil.isMaskedPersonName(description)) {
-            //перевод по номеру телефона
-            return true;
-        }
+        //перевод по номеру телефона
+        if (isMaskedPersonName(description)) return true;
 
         for (String word : ignoreWords) {
             if (description.toLowerCase().contains(word.toLowerCase())) {

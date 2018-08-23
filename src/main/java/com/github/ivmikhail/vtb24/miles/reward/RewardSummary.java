@@ -69,7 +69,7 @@ public class RewardSummary {
         return transactionsMap;
     }
 
-    public void add(Transaction t) {
+    public void append(Transaction t) {
         appendToTransactions(t);
         appendToTotals(t);
         appendToMiles(t);
