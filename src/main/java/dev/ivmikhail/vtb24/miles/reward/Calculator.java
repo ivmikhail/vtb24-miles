@@ -127,7 +127,7 @@ public class Calculator {
     private boolean isIgnore(Operation o) {
         String description = o.getDescription();
 
-        //перевод по номеру телефона
+        // Transfer by phone number (masked person name in description)
         if (PersonNameUtil.isMaskedPersonName(description)) return true;
 
         for (String word : ignoreWords) {

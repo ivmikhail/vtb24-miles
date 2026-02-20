@@ -40,12 +40,12 @@ public class CSVLoaderTest {
 
         assertEquals(4, ops.size());
 /*
-        Номер карты/счета/договора;Дата операции;Дата обработки;Сумма операции;Валюта операции;Сумма пересчитанная в валюту счета;Валюта счета;Основание;Статус
-        '123456XXXXXX7890;2017-06-01 21:53:09;;-177,00;RUR;-177,00;RUR;MINI?-MARKET;В обработке
-        '123456XXXXXX7890;2017-06-02 21:53:09;2017-06-03;-177,00;RUR;-177,00;RUR;MINI-MARKET;Исполнено
-        '123456XXXXXX7890;2017-06-03 12:43:22;2017-06-04;-267,00;RUR;-267,00;RUR;UBER RU JUN29 ABCD HELP;Исполнено
-        '123456XXXXXX7890;2017-06-04 11:21:06;2017-06-05;-41,00;RUR;-41,00;RUR;kassa 6;Исполнено
-        '462235XXXXXX4741;2017-07-15 00:00:00;2017-07-16;-3 200,00;RUR;-3 200,00;RUR;"MUZEY-ZAPOVEDNIK &quot;PETERGO";Исполнено
+        Card/account/contract number;Operation date;Processing date;Operation amount;Operation currency;Amount converted to account currency;Account currency;Description;Status
+        '123456XXXXXX7890;2017-06-01 21:53:09;;-177,00;RUR;-177,00;RUR;MINI?-MARKET;In processing
+        '123456XXXXXX7890;2017-06-02 21:53:09;2017-06-03;-177,00;RUR;-177,00;RUR;MINI-MARKET;Processed
+        '123456XXXXXX7890;2017-06-03 12:43:22;2017-06-04;-267,00;RUR;-267,00;RUR;UBER RU JUN29 ABCD HELP;Processed
+        '123456XXXXXX7890;2017-06-04 11:21:06;2017-06-05;-41,00;RUR;-41,00;RUR;kassa 6;Processed
+        '462235XXXXXX4741;2017-07-15 00:00:00;2017-07-16;-3 200,00;RUR;-3 200,00;RUR;"MUZEY-ZAPOVEDNIK &quot;PETERGO";Processed
 */
         Operation o = ops.get(2);
 

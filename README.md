@@ -3,120 +3,114 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5420977c69824cce879294432154eb58)](https://app.codacy.com/app/ivmikhail/vtb24-miles?utm_source=github.com&utm_medium=referral&utm_content=ivmikhail/vtb24-miles&utm_campaign=badger) 
 [![Build Status](https://travis-ci.org/ivmikhail/vtb24-miles.svg?branch=master)](https://travis-ci.org/ivmikhail/vtb24-miles)
 
-Приспособа для подсчета мильного/бонусного вознаграждения карт ВТБ24. Поддерживаются:
- * Карта Мира, Platinum/Gold https://www.vtb24.ru/cards/credit/platinum/worldcard/
- * Мультикарта c опцией путешестия/коллекция/cashback https://www.vtb24.ru/cards/multicard/
+A small utility to calculate miles/bonus rewards for VTB24 cards. Supported cards:
+ * Card of the World, Platinum/Gold https://www.vtb24.ru/cards/credit/platinum/worldcard/
+ * Multicard with travel/collection/cashback option https://www.vtb24.ru/cards/multicard/
 
-Полезно для сверки с расчетом Банка
+Useful for validating the bank's reward calculation.
 
-## Как использовать
+## How to use
 
-### Системные требования
+### System requirements
 
-* Подойдет любая ОС: Windows, Mac и т.п
-* У вас должна быть установлена Java 8 и выше
-  * Скорее всего, она у вас уже установлена. Но если нет, [скачайте отсюда](https://www.java.com/ru/download/)
-  * [Подробная инструкция по установке](https://www.java.com/ru/download/help/download_options.xml), если у вас возникли трудности
+* Any OS works: Windows, Mac, etc.
+* Java 8 or newer must be installed.
+  * It is likely already installed, but if not, [download it here](https://www.java.com/en/download/).
+  * If needed, use the [installation guide](https://www.java.com/en/download/help/download_options.xml).
   
-### Как пользоваться
+### Usage
 
-1. Скачайте последнюю версию программы здесь - https://github.com/ivmikhail/vtb24-miles/releases/
-   * Нужен `*.jar` файл
-1. Скачайте выписку по операциям
-   * https://online.vtb.ru > аутентифицируйтесь > найдите нужную карту > выписка > выберите период > "Показать" > Экспорт > CSV
-   * Рекомендую выбрать весь период использования карты. Месяц можно будет указать при анализе выписки
-   * Положите выписку (обычно называется `statement.csv`) в ту директорию, куда вы скачали `*.jar` файл
-1. Откройте терминал, перейдите в директорию где лежит выписка и программа
-1. Запустите анализ, введя команду `java -jar vtb24-miles-1.5.jar -s statement.csv`. Программа напечатает отчет
-  1. Чтобы сохранить результат в формате `csv` выполните `java -jar vtb24-miles-1.5.jar -s statement.csv -export 1.csv`
-  1. Откройте файл 1.csv, который появился в той же директории с помощью Excel или LibreOffice
-  1. Название файла может отличаться, в этом примере - `vtb24-miles-1.5.jar`
-1. Чтобы сменить способ начисления миль/бонусов, добавьте ключ `-rule %опция%`, например `-rule MC_TRAVEL`. Поддерживаемые опции: `KM_PLATINUM, KM_GOLD, MC_TRAVEL, MC_CASHBACK`. По умолчанию, бонусы считаются по правилу `KM_PLATINUM`(Карта Мира Платинум)
+1. Download the latest release from https://github.com/ivmikhail/vtb24-miles/releases/.
+   * You need the `*.jar` file.
+1. Download your transaction statement.
+   * https://online.vtb.ru > authenticate > find your card > statement > select period > "Show" > Export > CSV
+   * It is recommended to export the full card usage period. You can filter by month during analysis.
+   * Place the statement (usually named `statement.csv`) into the same directory as the `*.jar` file.
+1. Open a terminal and navigate to that directory.
+1. Run analysis with `java -jar vtb24-miles-1.5.jar -s statement.csv`. The program prints a report.
+  1. To save the result as `csv`, run `java -jar vtb24-miles-1.5.jar -s statement.csv -export 1.csv`.
+  1. Open `1.csv` from the same directory in Excel or LibreOffice.
+  1. The jar filename may differ; `vtb24-miles-1.5.jar` is only an example.
+1. To change reward rules, pass `-rule %option%`, for example `-rule MC_TRAVEL`. Supported options: `KM_PLATINUM, KM_GOLD, MC_TRAVEL, MC_CASHBACK`. By default, rewards are calculated using `KM_PLATINUM` (Card of the World Platinum).
 
-В примере ниже я сохранил программу и выписку в папке vtb24-miles. Мне нужно посмотреть мили за декабрь 2017г
+In the example below, both the program and statement are in the `vtb24-miles` folder, and the goal is to view miles for December 2017.
  
-![Как использовать vtb24-miles](/static/howto-v2.gif)
+![How to use vtb24-miles](/static/howto-v2.gif)
 
-#### Параметры запуска
+#### Launch options
 
-![Параметры запуска](/static/help-v2.png)
+![Launch options](/static/help-v2.png)
 
-### Вопросы и ответы
+### FAQ
 
 <dl>
-  <dt>Счет карты у меня USD(или EUR), как считаются мили?</dt>
+  <dt>My card account is in USD (or EUR). How are miles calculated?</dt>
   <dd>
-    Сумма списания переводится в рубли(т.к 1 миля = 1 руб). Курс берется с сайта ВТБ https://www.vtb24.ru/banking/currency/rate-of-conversion/, на дату проведения операции. От суммы списания в рублях берется 4% или 5%
+    The transaction amount is converted to rubles (because 1 mile = 1 RUB). The exchange rate is taken from VTB at https://www.vtb24.ru/banking/currency/rate-of-conversion/ for the operation date. Then 4% or 5% is applied to the amount in RUB.
   </dd>
   
-  <dt>Счет карты у меня USD(или EUR), можно ли верить программе насчет миль?</dt>
+  <dt>My card account is in USD (or EUR). Can I trust the result?</dt>
   <dd>
-    В этом случае количество миль будет примерным. Есть нескольким причин: не учитывается комиссия(и/или курс) банка(и/или платежной системы) при конвертации, неизвестно, какой курс использует банк для подсчета миль
+    In this case, the miles value is approximate. There are several reasons: bank/payment-system conversion fees and rates are not included, and the exact internal bank rate used for miles calculation is unknown.
   </dd>
   
-  <dt>Счет карты у меня RUR, можно ли верить программе насчет миль?</dt>
+  <dt>My card account is in RUR. Can I trust the result?</dt>
   <dd>
-    По идее, да
+    In general, yes.
   </dd> 
   
-  <dt>Какие операции попадают в "заграничные"(кешбэк 5%)?</dt>
-  <dd>Те, у которых валюта списания не совпадает с валютой счета и те, в описании которых встречаются слова заданные в конфигурационном файле - https://github.com/ivmikhail/vtb24-miles/blob/master/src/main/resources/app.properties</dd>
+  <dt>Which operations are treated as "foreign" (5% cashback)?</dt>
+  <dd>Operations where transaction currency differs from account currency, and operations whose descriptions match keywords from the config file: https://github.com/ivmikhail/vtb24-miles/blob/master/src/main/resources/app.properties</dd>
     
-  <dt>На какие операции не начисляются мили?</dt>
-  <dd>Сумма списания  < 100 руб и те, в описании которых встречаются слова заданные в конфигурационном файле - https://github.com/ivmikhail/vtb24-miles/blob/master/src/main/resources/app.properties</dd>
+  <dt>Which operations do not get miles?</dt>
+  <dd>Transactions with amount &lt; 100 RUB and transactions whose descriptions match keywords from the config file: https://github.com/ivmikhail/vtb24-miles/blob/master/src/main/resources/app.properties</dd>
   
-  <dt>Почему не используется MCC для определения категории операции?</dt>
-  <dd>MCC код операции отсутствует в выписке</dd>
+  <dt>Why is MCC not used to determine transaction category?</dt>
+  <dd>The statement does not include MCC code.</dd>
   
-  <dt>У меня количество миль не совпадает с тем, что начислил банк</dt>
-  <dd>Скорее всего, операции попадают не в ту категорию, проверьте(если выявили проблему см. след. вопрос) или Банк неправильно начислил мили. БИНГО! Пишите претензию в БАНК, а мне благодарность - ivmikhail собака gmail com</dd>
+  <dt>My calculated miles do not match the bank's miles</dt>
+  <dd>Most likely some operations were categorized incorrectly (see the next question if you found such a case), or the bank credited miles incorrectly. In that case, submit a claim to the bank.</dd>
   
-  <dt>Я знаю что операция XXX должна быть как "заграничная"/игнорирована. Что мне делать?</dt>
-  <dd>Скачайте конфигурацию(https://github.com/ivmikhail/vtb24-miles/blob/master/src/main/resources/app.properties) в директорию программы, измените как нужно, и запустите программу указав конф. файл. Пример: "java -jar vtb24-miles.jar -s statement.csv -p app.properties". Если не трудно, пришлите свой измененный файл мне ivmikhail собака gmail com, я добавлю ваши настройки для всех</dd>
+  <dt>I know operation XXX should be treated as "foreign" or ignored. What should I do?</dt>
+  <dd>Download the config file (https://github.com/ivmikhail/vtb24-miles/blob/master/src/main/resources/app.properties) into the program directory, adjust it, and run the program with that file. Example: "java -jar vtb24-miles.jar -s statement.csv -p app.properties". If possible, send your updated file to ivmikhail at gmail com so it can be added for everyone.</dd>
   
-  <dt>Как подсчитать мили по 2-м и более картам?</dt>
-  <dd>Скачайте выписку отдельно по каждой карте, см. п. 2. Запустите программу как то так:  
+  <dt>How can I calculate miles for 2 or more cards?</dt>
+  <dd>Download a separate statement for each card (see step 2), then run:  
  "java -jar vtb24-miles.jar -s statement.csv -s statement2.csv"</dd>
   
-  <dt>У меня большое расхождение миль по операциям проведенным до 1 июля 2017</dt>
-  <dd>Тогда были другие правила. ВТБ сконвертировал старые баллы в новые, и сделал это, кажется, без учета каждой транзакции по отдельности. Это могло привести к расхождению. Если вам нужно посчитать старые операции используйте старую версию https://github.com/ivmikhail/vtb24-miles/releases/tag/vtb24-miles-1.1</dd>
+  <dt>I see a large difference for operations before July 1, 2017</dt>
+  <dd>Rules were different at that time. VTB converted old points to the new format, apparently not per transaction, which may cause differences. To calculate old operations, use the older version: https://github.com/ivmikhail/vtb24-miles/releases/tag/vtb24-miles-1.1</dd>
  
-  <dt>Я хочу улучшить программу(код), что мне делать?</dt>
+  <dt>I want to improve the program/code. What should I do?</dt>
   <dd>https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project</dd>
   
-  <dt>Если у вас есть предложение/вопрос или вы нашли ошибку</dt>
-  <dd>Пишите на почту ivmikhail собака gmail com, а еще лучше сюда https://github.com/ivmikhail/vtb24-miles/issues/</dd>
+  <dt>If you have a suggestion/question or found a bug</dt>
+  <dd>Email ivmikhail at gmail com, or better create an issue: https://github.com/ivmikhail/vtb24-miles/issues/</dd>
 </dl>
 
-### Лицензия/License
+### License
 
 ```
 Copyright (c) 2017, Mikhail Ivanov <ivmikhail at gmail com>
 
-Разрешается повторное распространение и использование как в виде исходного
-кода, так и в двоичной форме, с изменениями или без, при соблюдении
-следующих условий:
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-    * При повторном распространении исходного кода должно оставаться
-      указанное выше уведомление об авторском праве, этот список условий и
-      последующий отказ от гарантий.
-    * При повторном распространении двоичного кода должна сохраняться
-      указанная выше информация об авторском праве, этот список условий и
-      последующий отказ от гарантий в документации и/или в других
-      материалах, поставляемых при распространении.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
 
-ЭТА ПРОГРАММА ПРЕДОСТАВЛЕНА ВЛАДЕЛЬЦАМИ АВТОРСКИХ ПРАВ И/ИЛИ ДРУГИМИ
-СТОРОНАМИ "КАК ОНА ЕСТЬ" БЕЗ КАКОГО-ЛИБО ВИДА ГАРАНТИЙ, ВЫРАЖЕННЫХ ЯВНО
-ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ ИМИ, ПОДРАЗУМЕВАЕМЫЕ
-ГАРАНТИИ КОММЕРЧЕСКОЙ ЦЕННОСТИ И ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ. НИ В
-КОЕМ СЛУЧАЕ, ЕСЛИ НЕ ТРЕБУЕТСЯ СООТВЕТСТВУЮЩИМ ЗАКОНОМ, ИЛИ НЕ УСТАНОВЛЕНО
-В УСТНОЙ ФОРМЕ, НИ ОДИН ВЛАДЕЛЕЦ АВТОРСКИХ ПРАВ И НИ ОДНО  ДРУГОЕ ЛИЦО,
-КОТОРОЕ МОЖЕТ ИЗМЕНЯТЬ И/ИЛИ ПОВТОРНО РАСПРОСТРАНЯТЬ ПРОГРАММУ, КАК БЫЛО
-СКАЗАНО ВЫШЕ, НЕ НЕСЁТ ОТВЕТСТВЕННОСТИ, ВКЛЮЧАЯ ЛЮБЫЕ ОБЩИЕ, СЛУЧАЙНЫЕ,
-СПЕЦИАЛЬНЫЕ ИЛИ ПОСЛЕДОВАВШИЕ УБЫТКИ, ВСЛЕДСТВИЕ ИСПОЛЬЗОВАНИЯ ИЛИ
-НЕВОЗМОЖНОСТИ ИСПОЛЬЗОВАНИЯ ПРОГРАММЫ (ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ
-ПОТЕРЕЙ ДАННЫХ, ИЛИ ДАННЫМИ, СТАВШИМИ НЕПРАВИЛЬНЫМИ, ИЛИ ПОТЕРЯМИ
-ПРИНЕСЕННЫМИ ИЗ-ЗА ВАС ИЛИ ТРЕТЬИХ ЛИЦ, ИЛИ ОТКАЗОМ ПРОГРАММЫ РАБОТАТЬ
-СОВМЕСТНО С ДРУГИМИ ПРОГРАММАМИ), ДАЖЕ ЕСЛИ ТАКОЙ ВЛАДЕЛЕЦ ИЛИ ДРУГОЕ
-ЛИЦО БЫЛИ ИЗВЕЩЕНЫ О ВОЗМОЖНОСТИ ТАКИХ УБЫТКОВ.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
 ```

@@ -9,9 +9,9 @@ public final class PersonNameUtil {
     private PersonNameUtil() { /* helper class*/}
 
     /**
-     * Return true if value something like that М*******й Евгений Юрьевич
+     * Returns true if the value matches a masked Cyrillic full-name pattern.
      *
-     * Otherwise return false
+     * Otherwise returns false.
      */
     public static boolean isMaskedPersonName(String value) {
         Matcher m = FIO_PATTERN.matcher(value);

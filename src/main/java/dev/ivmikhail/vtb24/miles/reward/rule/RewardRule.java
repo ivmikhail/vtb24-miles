@@ -39,7 +39,7 @@ public abstract class RewardRule {
 
     protected BigDecimal getRoundedAmountInRUR(Transaction t) {
 
-        //4% каждые 100 руб, округление: 199 -> 100, 201 -> 200  и т.д
+        // 4% for each full 100 RUB, rounding down: 199 -> 100, 201 -> 200, etc.
         return t.getAmountInRUR()
                 .negate()
                 .setScale(-2, BigDecimal.ROUND_DOWN);
